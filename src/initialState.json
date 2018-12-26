@@ -1,0 +1,96 @@
+{
+  "storeInfo": {
+    "id": 2,
+    "name": "Victoria",
+    "address": "Brianwood Mall",
+    "phone": "734-765 3526"
+  },
+  "customers": {
+    "byId": {
+      "4": {
+        "id": 4,
+        "firstName": "David",
+        "lastName": "Don",
+        "email": "david@mail.com",
+        "phone": "734-353 9287",
+        "customerServices": [15, 25]
+      },
+      "5": {
+        "id": 5,
+        "firstName": "Leo",
+        "lastName": "Teo",
+        "email": "aaaa@mail.com",
+        "phone": "734-353 9288",
+        "customerServices": [15, 25]
+      }
+    },
+    "allIds": [4, 5]
+  },
+  "customerServices": {
+    "byId": {
+      "15": {
+        "id": 15,
+        "serviceId": 2,
+        "serviceDateTime": "11/20/2018 16:00",
+        "note": "customer note",
+        "status": "SCHEDULED",
+        "employeeServices": [10, 20]
+      }
+    },
+    "allIds": [15]
+  },
+
+  "employees": {
+    "byId": {
+      "40": {
+        "id": 40,
+        "firstName": "Emp",
+        "lastName": "Teo",
+        "email": "teo@mail.com",
+        "phone": "734-353 1111",
+        "employeeServices": [10, 20]
+      }
+    },
+    "allIds": [40]
+  },
+  "employeeServices": {
+    "byId": {
+      "16": {
+        "id": 16,
+        "creditPay": "$20.00",
+        "cashPay": "$20.00",
+        "giftPay": "",
+        "checkPay": "",
+        "tipPay": ""
+      }
+    },
+    "allIds": [16]
+  },
+  "services": {
+    "byId": {
+      "2": {
+        "id": 2,
+        "name": "Medicare",
+        "price": "$25.00"
+      },
+      "3": {
+        "id": 3,
+        "name": "Pedicare",
+        "price": "$35.00"
+      }
+    },
+    "allIds": [2, 3]
+  },
+
+  "errors": ["System error"],
+  "customerResults": [
+    {
+      "id": 4,
+      "firstName": "David",
+      "lastName": "Don",
+      "email": "david@mail.com",
+      "phone": "734-353 9287"
+    }
+  ],
+  "isCheckInPage": true
+}
