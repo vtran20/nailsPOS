@@ -1,40 +1,31 @@
 import C from '../constants'
 import { combineReducers } from 'redux'
+import produce from "immer"
 
-export const byId = (state = {}, action) => {
+export const byId = (state = {}, action) => 
+  produce(state, draft => {
   let existing
   switch (action.type) {
     case C.EMPLOYEE_SERVICE_ADD:
-      existing = state[action.payload.id] ? true : false
-      if (existing) {
-        return state
-      } else {
-        return {
-          ...state,
-          [action.payload.id]: action.payload
-        }
-      }
+      // existing = draft[action.payload.id] ? true : false
+      // if (existing) {
+      //   return draft
+      // } else {
+      //   return {
+      //     ...draft,
+      //     [action.payload.id]: action.payload
+      //   }
+      // }
     case C.EMPLOYEE_SERVICE_UPDATE:
-      existing = state[action.payload.id] ? true : false
-      if (!existing) {
-        return state
-      } else {
-        return {
-          ...state,
-          [action.payload.id]: state[action.payload.id],
-          [action.payload.id]: action.payload
-        }
-      }
+      // existing = draft[action.payload.id] ? true : false
+        draft[action.payload.id]= action.payload
+      // }
     case C.EMPLOYEE_SERVICE_REMOVE:
-      return Object.keys(state).reduce(
-        (result, key) =>
-          key === action.payload ? result : { ...result, [key]: state[key] },
-        {}
-      )
+        delete draft[action.payload] 
     default:
-      return state
+      // return draft
   }
-}
+})
 
 export const allIds = (state = [], action) => {
   let existing

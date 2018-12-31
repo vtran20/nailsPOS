@@ -21,8 +21,8 @@ export const byId = (state = {}, action) => {
       } else {
         return {
           ...state,
-          [action.payload.id]: state[action.payload.id],
-          [action.payload.id]: action.payload
+          [action.payload.id]: {...state[action.payload.id]},
+          [action.payload.id]: {...action.payload, employeeServices: state[action.payload.id].employeeServices}
         }
       }
     case C.CUSTOMER_SERVICE_REMOVE:

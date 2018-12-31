@@ -9,10 +9,12 @@ import classNames from 'classnames'
 import SvgIcon from '@material-ui/core/SvgIcon'
 
 import ServiceTables from './ServiceTables'
+import ServiceCostSummary from './ServiceCostSummary'
 import { connect } from 'react-redux'
-
-import { getServicePrice } from '../../../actions/customers'
-import { cents2Dollars } from '../../../utils'
+import { updateCustomerDB } from '../../../actions/customers'
+import { cents2Dollars, getServiceCost } from '../../../utils'
+import { changePOSScreen } from '../../../actions'
+import { updateCurrentCheckout, handlePayment } from '../../../actions/payments'
 
 const styles = theme => ({
   root: {
@@ -38,11 +40,59 @@ const styles = theme => ({
 })
 
 class CustomerDetail extends React.Component {
-  handleChange = value => {}
+
+  handleStartCustomerService = customerId => {
+    this.props.dispatch(updateCustomerDB({id:customerId, status: 'IN_PROGRESS'}))
+  }
+  handlePayment = (screen) => {
+    this.props.dispatch(handlePayment(screen))
+  }
+
+  renderCustomerDetailButtons() {
+    if (this.props.customerId && this.props.customers[this.props.customerId]) {
+      const customer = this.props.customers[this.props.customerId]
+      switch (customer.status) {
+        case 'SCHEDULED':
+          return (
+                <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                // className={classes.button}
+                onClick={() => this.handleStartCustomerService(this.props.customerId)}
+              >
+                <SvgIcon>
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </SvgIcon>
+                Start
+              </Button>
+            )
+        case 'IN_PROGRESS':
+        case 'WAITING':
+          return (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                // className={classes.button}
+                onClick={() => this.handlePayment({screen: 'PAYMENT_CUSTOMER', customerId: this.props.customerId})}
+              >
+                <SvgIcon>
+                  <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+                </SvgIcon>
+                Pay
+              </Button>
+            )
+        case 'COMPLETED':
+          return ''
+        default:
+          return ''
+      }
+    }
+  }
 
   render() {
     const { classes } = this.props
-    console.log('CustomerDetail')
     return (
       <div>
         {this.props.customerId && this.props.customers[this.props.customerId]? (
@@ -68,75 +118,13 @@ class CustomerDetail extends React.Component {
                   </Grid>
                 </Grid>
                 <Grid item xs={6} container>
-                  <Grid item xs={6}>
-                    <Typography align="right" variant="body2">
-                      Services:
-                    </Typography>
-                    <Typography align="right" variant="body2">
-                      Tax:
-                    </Typography>
-                    <Typography align="right" variant="body2">
-                      Tip:
-                    </Typography>
-                    <Divider />
-                    <Typography align="right" variant="subtitle1">
-                      Total:
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Typography align="right" variant="body2">
-                      {cents2Dollars(this.props.servicePrices)}
-                    </Typography>
-                    <Typography align="right" variant="body2">
-                      $0
-                    </Typography>
-                    <Typography align="right" variant="body2">
-                      $0
-                    </Typography>
-                    <Divider />
-                    <Typography align="right" variant="subtitle1">
-                      {cents2Dollars(this.props.servicePrices)}
-                    </Typography>
-                  </Grid>
+                  <ServiceCostSummary/>
                 </Grid>
               </Grid>
               <Grid item xs={5} container>
                 <Grid item xs container direction="column" spacing={16}>
                   <Grid item xs>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      className={classes.button}
-                    >
-                      <SvgIcon>
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                      </SvgIcon>
-                      Check In
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      className={classes.button}
-                    >
-                      <SvgIcon>
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                      </SvgIcon>
-                      Start
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      className={classes.button}
-                    >
-                      <SvgIcon>
-                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
-                      </SvgIcon>
-                      Pay
-                    </Button>
+                  {this.renderCustomerDetailButtons()}
                   </Grid>
                 </Grid>
               </Grid>
@@ -164,22 +152,10 @@ CustomerDetail.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-const getServiceCost = (customer, customerServices )  => {
-  let total = 0
-    if (customer && customer.customerServices) {
-      customer.customerServices.map(csId => {
-        total = total + customerServices[csId].price
-      })
-    }
-    return total
-}
-
 const mapStateToProps = state => ({
   customers: state.customers.byId,
   customerId: state.posScreen.customerId,
-  services: state.services.byId,
-  customerServices: state.customerServices.byId,
-  servicePrices : getServiceCost (state.customers.byId[state.posScreen.customerId], state.customerServices.byId)
+  customerServices: state.customerServices.byId
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(CustomerDetail))

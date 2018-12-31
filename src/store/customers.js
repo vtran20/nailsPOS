@@ -21,10 +21,10 @@ export const byId = (state = {}, action) => {
       } else {
         return {
           ...state,
-          [action.payload.id]: state[action.payload.id],
-          [action.payload.id]: action.payload
+          [action.payload.id]: {...state[action.payload.id]},
+          [action.payload.id]: {...action.payload, customerServices: state[action.payload.id].customerServices}
         }
-      }
+      }      
     case C.CUSTOMER_REMOVE:
       return Object.keys(state).reduce(
         (result, key) =>

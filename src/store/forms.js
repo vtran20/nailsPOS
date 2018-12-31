@@ -8,8 +8,6 @@ export const customerForm = (state = null, action) => {
     case C.FORM_CUSTOMER_UPDATE:
       return Object.assign({}, state, action.payload)
     case C.FORM_CUSTOMER_SERVICE_ADD:
-      // const keys = Object.keys(action.payload)
-      //action.payload : {1: true, 2:false}
       const values = action.payload
         ? Object.keys(action.payload).filter(key => action.payload[key])
         : []

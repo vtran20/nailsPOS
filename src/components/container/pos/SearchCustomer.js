@@ -28,7 +28,7 @@ import {
   searchCustomers,
   clearCustomerSearchs
 } from '../../../actions/customerSearch'
-import {checkInCustomer} from '../../../actions/customers'
+import {checkInCustomerAtPOS} from '../../../actions/customers'
 import { selectCustomer } from '../../../actions'
 
 const styles = theme => ({
@@ -57,9 +57,7 @@ class SearchCustom extends React.Component {
   }
 
   handleSelectCustomer = customer => {
-    this.props.dispatch(checkInCustomer(customer.id))
-    this.props.dispatch(clearCustomerSearchs())
-    this.props.dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: customer.id }))
+    this.props.dispatch(checkInCustomerAtPOS(customer.id))
   }
 
   render() {

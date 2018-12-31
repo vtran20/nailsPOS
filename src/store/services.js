@@ -21,7 +21,7 @@ export const byId = (state = {}, action) => {
       } else {
         return {
           ...state,
-          [action.payload.id]: state[action.payload.id],
+          [action.payload.id]: {...state[action.payload.id]},
           [action.payload.id]: action.payload
         }
       }

@@ -2,8 +2,9 @@ import fetch from 'isomorphic-fetch'
 import { addCustomer } from './customers'
 import { addService } from './services'
 import { addEmployee } from './employees'
+import { addCustomerCheckout } from './payments'
 import { addCustomerService } from './customerServices'
-import { addEmployeeService } from './employeeServices'
+import { addEmployeeService, updateEmployeeService } from './employeeServices'
 import { addStore, selectStoreId } from './stores'
 import { handleErrors, urlAPI } from '../utils'
 import Cookies from 'universal-cookie'
@@ -33,6 +34,10 @@ export const initialData = storeId => (dispatch, getState) => {
       if (result.employeeServices)
         result.employeeServices.map(employeeSrevice =>
           dispatch(addEmployeeService(employeeSrevice))
+        )
+      if (result.payments)
+        result.payments.map(payment =>
+          dispatch(addCustomerCheckout(payment))
         )
       dispatch(fetchGlobalComplete())
       //select store

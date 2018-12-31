@@ -1,6 +1,10 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import { handleErrors, urlAPI } from '../utils'
+import {
+  clearCustomerSearchs
+} from './customerSearch'
+import { selectCustomer } from './index'
 
 export const addCustomer = customer => {
   return {
@@ -128,7 +132,41 @@ export const checkInCustomer = customerId => dispatch => {
     })
 }
 
-export const getServicePrice = () => (dispatch, getState) => {
+export const checkInCustomerAtPOS = customerId => dispatch => {
+  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=1`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(data => {
+      dispatch(addCustomer(data))
+      dispatch(clearCustomerSearchs())
+      dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: data.id }))
 
-  return 1000
+    })
+    .catch(error => {
+      dispatch(addCustomerError(error))
+    })
+}
+
+
+export const updateCustomerDB = customer => dispatch => {
+  fetch(urlAPI + `/customers/${customer.id}.json?storeId=1`, {
+    method: 'PUT',
+    body: JSON.stringify(customer),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(data => {
+      dispatch(updateCustomer(data))
+    })
+    .catch(error => {
+      dispatch(addCustomerError(error))
+    })
 }

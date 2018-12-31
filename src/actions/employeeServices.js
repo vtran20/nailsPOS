@@ -59,6 +59,17 @@ export const fetchEmployeeServiceError = error => {
   }
 }
 
+export const updateEmployeeServiceInfo = data  => (
+  dispatch,
+  getState
+) => {
+  const employeeService = getState().employeeServices.byId[data.id]
+  if (employeeService) {
+    const employeeServiceEdit = Object.assign ({}, employeeService, data)
+    dispatch(updateEmployeeService(employeeServiceEdit))
+  }
+}
+
 //Delete mean delete from database and remove from store as well
 export const deleteEmployeeService = employeeService => (
   dispatch,
@@ -78,9 +89,9 @@ export const deleteEmployeeService = employeeService => (
   )
     .then(handleErrors)
     .then(response => {
-      dispatch(removeEmployeeService(employeeService.id))
       dispatch(removeEmployeeServiceFromEmployee(employeeService))
       dispatch(removeEmployeeServiceFromCustomerService(employeeService))
+      dispatch(removeEmployeeService(employeeService.id))
     })
     .catch(error => {
       dispatch(fetchEmployeeServiceError(error))

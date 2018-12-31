@@ -10,13 +10,15 @@ import Paper from '@material-ui/core/Paper'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
+import TextField from '@material-ui/core/TextField'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { connect } from 'react-redux'
-import { deleteEmployeeService } from '../../../actions/employeeServices'
+import { deleteEmployeeService, updateEmployeeServiceInfo } from '../../../actions/employeeServices'
 import { deleteCustomerService } from '../../../actions/customerServices'
+import { cents2Dollars, cents2Fixed2, dollars2Cents } from '../../../utils'
 
 const styles = theme => ({
   root: {
@@ -30,6 +32,9 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit
   },
+  margin: {
+    margin: theme.spacing.unit,
+  },  
   leftIcon: {
     marginRight: theme.spacing.unit
   },
@@ -42,7 +47,9 @@ const styles = theme => ({
 })
 
 class ServiceTables extends React.Component {
-  handleChange = value => {}
+  handleServicePayChange = (employeeServiceId) => ({ target: { value } }) => {
+    this.props.dispatch(updateEmployeeServiceInfo({id: employeeServiceId, servicePay:dollars2Cents(value)}))
+  }
 
   handleRemoveEmployeeService = employeeService => {
     this.props.dispatch(deleteEmployeeService(employeeService))
@@ -71,7 +78,7 @@ class ServiceTables extends React.Component {
                     <TableHead>
                       <TableRow>
                         <TableCell>{service.name}</TableCell>
-                        <TableCell align="right">{service.price}</TableCell>
+                        <TableCell align="right">{cents2Dollars(service.price)}</TableCell>
                         <TableCell align="right">
                           <Button
                             variant="contained"
@@ -112,26 +119,17 @@ class ServiceTables extends React.Component {
                                 {employee.firstName + ' ' + employee.lastName}
                               </TableCell>
                               <TableCell align="right">
-                                <FormControl
-                                  fullWidth
-                                  className={classes.margin}
-                                >
-                                  <InputLabel htmlFor="adornment-amount">
-                                    Amount
-                                  </InputLabel>
+                                <FormControl className={classes.margin}>
+                                  <InputLabel htmlFor="adornment-amount">Pay</InputLabel>
                                   <Input
-                                    id="price"
-                                    value={employeeService.price}
-                                    onChange={this.handleChange('amount')}
-                                    startAdornment={
-                                      <InputAdornment position="start">
-                                        $
-                                      </InputAdornment>
-                                    }
+                                    id="adornment-amount"
+                                    // value={}
+                                    defaultValue = {cents2Fixed2(employeeService.servicePay)}
+                                    onChange={this.handleServicePayChange(employeServiceId)}
+                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                   />
-                                </FormControl>
+                                </FormControl>                              
                               </TableCell>
-
                               <TableCell align="right">
                                 <Button
                                   variant="contained"

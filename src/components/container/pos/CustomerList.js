@@ -43,7 +43,7 @@ class CustomerList extends Component {
                 key={customerId}
                 onClick={() =>
                   this.handleClick({
-                    screen: 'CUSTOMER_DETAIL',
+                    screen: customer.status === 'COMPLETED' ? 'PAYMENT_CUSTOMER' : 'CUSTOMER_DETAIL',
                     customerId: customerId
                   })
                 }

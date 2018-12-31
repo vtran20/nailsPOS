@@ -25,6 +25,7 @@ import SearchCustomer from './pos/SearchCustomer'
 import ServiceList from './pos/ServiceList'
 import EmployeeList from './pos/EmployeeList'
 import CustomerList from './pos/CustomerList'
+import Payment from './pos/Payment'
 import { selectAddCustomer } from '../../actions'
 
 const drawerWidth = 240
@@ -144,13 +145,14 @@ class DashboardPOS extends React.Component {
         return (<AddCustomer/>)
       case 'SEARCH_CUSTOMER':
         return (<SearchCustomer/>)
+      case 'PAYMENT_CUSTOMER':
+        return (<Payment />)
       default:
         return ''
     }
   }
   render() {
     const { classes } = this.props
-
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -177,7 +179,7 @@ class DashboardPOS extends React.Component {
               noWrap
               className={classes.title}
             >
-              Dashboard POS
+              {this.props.store? this.props.store.name : ''}
             </Typography>
             <Button
               variant="contained"
@@ -189,7 +191,6 @@ class DashboardPOS extends React.Component {
                     screen: 'SEARCH_CUSTOMER'
                   })
                 }
-
             >
             <SvgIcon>
               <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
@@ -282,7 +283,8 @@ DashboardPOS.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  screen: state.posScreen
+  screen: state.posScreen,
+  store: state.stores.byId[state.stores.currentStoreId]
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(DashboardPOS))

@@ -9,6 +9,7 @@ import employeeServices from './employeeServices'
 import stores from './stores'
 import forms from './forms'
 import customerSearch from './customerSearch'
+import payments from './payments'
 
 import { combineReducers } from 'redux'
 
@@ -72,7 +73,8 @@ const reducer = combineReducers({
   errors,
   customerSearch,
   forms,
-  posScreen
+  posScreen,
+  payments
 })
 
 export const appReducer = (state, action) => {
