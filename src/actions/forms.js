@@ -2,7 +2,7 @@ import C from '../constants'
 import { handleErrors, urlAPI } from '../utils'
 import { addCustomer, updateCustomer } from './customers'
 import { addCustomerService, updateCustomerService } from './customerServices'
-import {resetPOSScreen, changePOSScreen} from './index'
+import {resetPOSScreen, changePOSScreen, addGlobalError} from './index'
 
 export const addCustomerForm = customer => {
   return {
@@ -27,13 +27,6 @@ export const clearCustomerForm = () => {
 export const clearAllForm = () => {
   return {
     type: C.FORM_ALL_CLEAR
-  }
-}
-
-export const addFormError = error => {
-  return {
-    type: C.FORM_ERROR_ADD,
-    payload: error
   }
 }
 
@@ -70,7 +63,7 @@ export const createNewCustomerServiceForCheckIn = () => (
       dispatch(clearCustomerForm())
     })
     .catch(error => {
-      dispatch(addFormError(error))
+      dispatch(addGlobalError(error.message))
     })
 }
 
@@ -90,6 +83,6 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
       )
     })
     .catch(error => {
-      dispatch(addFormError(error))
+      dispatch(addGlobalError(error.message))
     })
 }

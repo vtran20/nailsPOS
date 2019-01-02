@@ -13,7 +13,8 @@ import {
   Divider,
   IconButton,
   Badge,
-  Button
+  Button,
+  Snackbar
 } from '@material-ui/core'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import AddIcon from '@material-ui/icons/Add'
@@ -26,7 +27,8 @@ import ServiceList from './pos/ServiceList'
 import EmployeeList from './pos/EmployeeList'
 import CustomerList from './pos/CustomerList'
 import Payment from './pos/Payment'
-import { selectAddCustomer } from '../../actions'
+import { selectAddCustomer, removeGlobalError } from '../../actions'
+import ErrorMessages from '../common/ErrorMessages'
 
 const drawerWidth = 240
 
@@ -135,6 +137,10 @@ class DashboardPOS extends React.Component {
 
   handleDrawerClose = () => {
     this.setState({ open: false })
+  }
+
+  handleClose = (index) => (event, reason) => {
+    this.props.dispatch(removeGlobalError(index))
   }
 
   renderSwitch(param) {
@@ -255,6 +261,23 @@ class DashboardPOS extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {this.props.screen? this.renderSwitch(this.props.screen.screen) : ''}
+            {this.props.errors.map((error, index) => 
+              <Snackbar
+                  key={index}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  open={true}
+                  onClose={this.handleClose}
+                >
+                  <ErrorMessages
+                      onClose={this.handleClose (index)}
+                      variant="error"
+                      message={error}
+                    />
+              </Snackbar>
+            )}
         </main>
         <Drawer
           variant="permanent"
@@ -273,6 +296,7 @@ class DashboardPOS extends React.Component {
           <Divider />
           <List>{<EmployeeList />}</List>
         </Drawer>
+
       </div>
     )
   }
@@ -284,7 +308,8 @@ DashboardPOS.propTypes = {
 
 const mapStateToProps = state => ({
   screen: state.posScreen,
-  store: state.stores.byId[state.stores.currentStoreId]
+  store: state.stores.byId[state.stores.currentStoreId],
+  errors: state.errors
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(DashboardPOS))

@@ -123,7 +123,7 @@ class ServiceTables extends React.Component {
                                   <InputLabel htmlFor="adornment-amount">Pay</InputLabel>
                                   <Input
                                     id="adornment-amount"
-                                    // value={}
+                                    onFocus={e => e.target.select()}
                                     defaultValue = {cents2Fixed2(employeeService.servicePay)}
                                     onChange={this.handleServicePayChange(employeServiceId)}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}

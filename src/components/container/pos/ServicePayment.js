@@ -43,7 +43,6 @@ const styles = theme => ({
 })
 
 class ServicePayment extends React.Component {
-  handleChange = value => {}
 
   handleRemoveEmployeeService = employeeService => {
     this.props.dispatch(deleteEmployeeService(employeeService))

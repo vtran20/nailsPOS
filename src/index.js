@@ -41,15 +41,15 @@ const theme = createMuiTheme({
 const store = storeFactory()
 // store.subscribe(saveState)
 
-const handleError = error => {
-  store.dispatch(addCustomerError(error.message))
-}
+// const handleError = error => {
+//   store.dispatch(addCustomerError(error.message))
+// }
 const cookies = new Cookies()
 const storeIdFromCookie = cookies.get('STORE_ID_COOKIE')
 store.dispatch(initialData(storeIdFromCookie))
 
 window.store = store
-window.addEventListener('error', handleError)
+// window.addEventListener('error', handleError)
 
 // store.dispatch(
 //   addCustomer({

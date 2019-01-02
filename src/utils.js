@@ -6,6 +6,8 @@ const DEFAULT_LOCALE = 'en-US'
 export const handleErrors = response => {
   if (!response.ok) {
     console.log(JSON.stringify(response))
+    console.log(response)
+    console.log(response.statusText)
     throw Error(response.statusText)
   }
   return response
@@ -23,7 +25,7 @@ export const cents2Fixed2 = (cents) => {
 
 export const dollars2Cents = (dollars) => {
 	var cents = dollars * 100;
-	return cents.toFixed(0)
+	return parseInt(cents.toFixed(0))
 }
 
 export const getServiceCost = (customer, customerServices, employeeServices )  => {
@@ -39,7 +41,6 @@ export const getServiceCost = (customer, customerServices, employeeServices )  =
     			}
     		})
     	} 
-      console.log(serviceTotal)
     	//use servicePay from employeeService if any
     	if (serviceTotal > 0) {
     		total = total + serviceTotal

@@ -2,6 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import { handleErrors, urlAPI } from '../utils'
 import { addEmployeeService } from './employeeServices'
+import { addGlobalError } from './index'
 export const addEmployee = employee => {
   return {
     type: C.EMPLOYEE_ADD,
@@ -23,37 +24,10 @@ export const removeEmployee = employeeId => {
   }
 }
 
-export const addEmployeeError = message => {
-  return {
-    type: C.EMPLOYEE_ERROR_ADD,
-    payload: message
-  }
-}
-
-export const removeEmployeeError = index => {
-  return {
-    type: C.EMPLOYEE_ERROR_REMOVE,
-    payload: index
-  }
-}
-
-export const clearEmployeeError = () => {
-  return {
-    type: C.EMPLOYEE_ERROR_CLEAR
-  }
-}
-
 export const fetchEmployeeBegin = () => {
   return {
     type: C.EMPLOYEE_FETCHING,
     payload: true
-  }
-}
-
-export const fetchEmployeeError = error => {
-  return {
-    type: C.EMPLOYEE_ERROR_ADD,
-    payload: error
   }
 }
 
@@ -90,7 +64,7 @@ export const addEmployeeToCustomer = employeeId => (dispatch, getState) => {
         )
       })
       .catch(error => {
-        dispatch(addEmployeeError(error))
+        dispatch(addGlobalError(error.message))
       })
   }
 }

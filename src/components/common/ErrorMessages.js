@@ -24,6 +24,7 @@ const variantIcon = {
 const styles = theme => ({
   success: {
     backgroundColor: green[600]
+
   },
   error: {
     backgroundColor: theme.palette.error.dark
@@ -35,6 +36,7 @@ const styles = theme => ({
     backgroundColor: amber[700]
   },
   icon: {
+    color: 'white',
     fontSize: 20
   },
   iconVariant: {
@@ -43,11 +45,13 @@ const styles = theme => ({
   },
   message: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    color: 'white'
   }
 })
 
 class ErrorMessages extends Component {
+
   render() {
     const {
       classes,
@@ -59,7 +63,7 @@ class ErrorMessages extends Component {
     } = this.props
     const Icon = variantIcon[variant]
     return (
-      <SnackbarContent
+      <SnackbarContent className={classNames(classes[variant])}
         aria-describedby="client-snackbar"
         message={
           <span id="client-snackbar" className={classes.message}>

@@ -28,7 +28,7 @@ export const searchCustomers = (value, type) => dispatch => {
       dispatch(changeCustomerSearchResults(results))
     })
     .catch(error => {
-      dispatch(addGlobalError(error))
+      dispatch(addGlobalError(error.message))
       dispatch(customerSearchFetching(false))
     })
 }

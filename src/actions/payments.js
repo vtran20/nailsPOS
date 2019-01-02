@@ -1,6 +1,6 @@
 import C from '../constants'
 
-import {resetPOSScreen, changePOSScreen, fetchGlobalError} from './index'
+import {resetPOSScreen, changePOSScreen, addGlobalError} from './index'
 import {updateCustomer} from './customers'
 import { handleErrors, urlAPI, getServiceCost } from '../utils'
 
@@ -96,7 +96,7 @@ export const completePayment = () => (dispatch, getState) => {
         inputData['employeeServices'].push(getState().employeeServices.byId[esId])
       })
     } else {
-      dispatch(fetchGlobalError('Missing assign employee to services'))
+      dispatch(addGlobalError('Missing assign employee to services'))
     }
   })
 
@@ -114,6 +114,6 @@ export const completePayment = () => (dispatch, getState) => {
       dispatch(updateCustomer(outputData.customer))
     })
     .catch(error => {
-      dispatch(fetchGlobalError(error))
+      dispatch(addGlobalError(error.message))
     })
 }

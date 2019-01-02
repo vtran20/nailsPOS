@@ -58,7 +58,7 @@ export const initialData = storeId => (dispatch, getState) => {
         }
       }
     })
-    .catch(error => dispatch(fetchGlobalError(error)))
+    .catch(error => dispatch(addGlobalError(error.message)))
 }
 
 export const addGlobalError = message => {
@@ -91,13 +91,6 @@ export const fetchGlobalComplete = () => {
   return {
     type: C.GLOBAL_FETCHING,
     payload: false
-  }
-}
-
-export const fetchGlobalError = error => {
-  return {
-    type: C.GLOBAL_ERROR_ADD,
-    payload: error
   }
 }
 

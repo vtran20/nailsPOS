@@ -2,6 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import { handleErrors, urlAPI } from '../utils'
+import { addGlobalError } from './index'
 
 export const addService = service => {
   return {
@@ -24,39 +25,12 @@ export const removeService = serviceId => {
   }
 }
 
-export const addServiceError = message => {
-  return {
-    type: C.SERVICE_ERROR_ADD,
-    payload: message
-  }
-}
-
-export const removeServiceError = index => {
-  return {
-    type: C.SERVICE_ERROR_REMOVE,
-    payload: index
-  }
-}
-export const clearServiceError = () => {
-  return {
-    type: C.SERVICE_ERROR_CLEAR
-  }
-}
-
 export const fetchServiceBegin = () => {
   return {
     type: C.SERVICE_FETCHING,
     payload: true
   }
 }
-
-export const fetchServiceError = error => {
-  return {
-    type: C.SERVICE_ERROR_ADD,
-    payload: error
-  }
-}
-
 
 export const addServiceToCustomer = serviceId => (dispatch, getState) => {
   if (
@@ -82,7 +56,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
           dispatch(addCustomerService(customerService))
       )
       .catch(error => {
-        dispatch(addServiceError(error))
+        dispatch(addGlobalError(error.message))
       })
   }
 }

@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { handleErrors, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
+import { addGlobalError } from './index'
 
 export const addCustomerService = customerService => {
   return {
@@ -25,25 +26,6 @@ export const removeCustomerService = customerServiceId => {
   }
 }
 
-export const addCustomerServiceError = message => {
-  return {
-    type: C.CUSTOMER_SERVICE_ERROR_ADD,
-    payload: message
-  }
-}
-
-export const removeCustomerServiceError = index => {
-  return {
-    type: C.CUSTOMER_SERVICE_ERROR_REMOVE,
-    payload: index
-  }
-}
-export const clearCustomerServiceError = () => {
-  return {
-    type: C.CUSTOMER_SERVICE_ERROR_CLEAR
-  }
-}
-
 export const fetchCustomerServiceBegin = () => {
   return {
     type: C.CUSTOMER_SERVICE_FETCHING,
@@ -51,12 +33,6 @@ export const fetchCustomerServiceBegin = () => {
   }
 }
 
-export const fetchCustomerServiceError = error => {
-  return {
-    type: C.CUSTOMER_SERVICE_ERROR_ADD,
-    payload: error
-  }
-}
 export const removeCustomerServiceFromCustomer = customerService => {
   return {
     type: C.CUSTOMER_SERVICE_REMOVE,
@@ -109,6 +85,6 @@ export const deleteCustomerService = customerService => (
       dispatch(removeCustomerServiceFromCustomer(customerService))
     })
     .catch(error => {
-      dispatch(fetchCustomerServiceError(error))
+      dispatch(addGlobalError(error.message))
     })
 }
