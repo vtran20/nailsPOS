@@ -14,6 +14,7 @@ const cookies = new Cookies()
 export const initialData = storeId => (dispatch, getState) => {
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
+
   fetch(urlAPI + '/initialData.json?storeId=' + storeId, {
     credentials: 'same-origin'
   })
@@ -77,6 +78,25 @@ export const removeGlobalError = index => {
 export const clearGlobalError = () => {
   return {
     type: C.GLOBAL_ERROR_CLEAR
+  }
+}
+
+export const addGlobalMessage = message => {
+  return {
+    type: C.GLOBAL_MESSAGE_ADD,
+    payload: message
+  }
+}
+
+export const removeGlobalMessage = index => {
+  return {
+    type: C.GLOBAL_MESSAGE_REMOVE,
+    payload: index
+  }
+}
+export const clearGlobalMessage = () => {
+  return {
+    type: C.GLOBAL_MESSAGE_CLEAR
   }
 }
 

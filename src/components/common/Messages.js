@@ -50,7 +50,7 @@ const styles = theme => ({
   }
 })
 
-class ErrorMessages extends Component {
+class Messages extends Component {
 
   render() {
     const {
@@ -87,7 +87,7 @@ class ErrorMessages extends Component {
     )
   }
 }
-ErrorMessages.propTypes = {
+Messages.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   message: PropTypes.node,
@@ -95,4 +95,4 @@ ErrorMessages.propTypes = {
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired
 }
 
-export default withStyles(styles)(ErrorMessages)
+export default withStyles(styles)(Messages)

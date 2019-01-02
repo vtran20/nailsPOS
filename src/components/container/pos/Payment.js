@@ -74,7 +74,7 @@ class Payment extends React.Component {
             </Typography>
             </Grid>
             <Grid item xs={6}>
-                <ServiceCostSummary />
+                <ServiceCostSummary page="payment"/>
             </Grid>
           </Grid>
           <div className={classes.tableContainer}>{<ServicePayment />}</div>

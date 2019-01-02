@@ -89,7 +89,7 @@ class ServicePayment extends React.Component {
                                 {employee.firstName + ' ' + employee.lastName}
                               </TableCell>
                               <TableCell align="right">
-                              {cents2Dollars(employeeService.servicePay)}
+                              {cents2Dollars(employeeService.servicePrice)}
                               </TableCell>
                             </TableRow>
                           )

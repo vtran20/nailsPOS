@@ -13,6 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
+import Tooltip from '@material-ui/core/Tooltip'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { connect } from 'react-redux'
@@ -27,10 +28,13 @@ const styles = theme => ({
     overflowX: 'auto'
   },
   table: {
-    minWidth: 700
+    minWidth: 600
   },
   button: {
     margin: theme.spacing.unit
+  },
+  input: {
+    width: 100,
   },
   margin: {
     margin: theme.spacing.unit,
@@ -48,7 +52,7 @@ const styles = theme => ({
 
 class ServiceTables extends React.Component {
   handleServicePayChange = (employeeServiceId) => ({ target: { value } }) => {
-    this.props.dispatch(updateEmployeeServiceInfo({id: employeeServiceId, servicePay:dollars2Cents(value)}))
+    this.props.dispatch(updateEmployeeServiceInfo({id: employeeServiceId, servicePrice:dollars2Cents(value)}))
   }
 
   handleRemoveEmployeeService = employeeService => {
@@ -80,6 +84,7 @@ class ServiceTables extends React.Component {
                         <TableCell>{service.name}</TableCell>
                         <TableCell align="right">{cents2Dollars(service.price)}</TableCell>
                         <TableCell align="right">
+                        <Tooltip disableFocusListener title="Add Employee">
                           <Button
                             variant="contained"
                             color="secondary"
@@ -90,6 +95,8 @@ class ServiceTables extends React.Component {
                               <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </SvgIcon>
                           </Button>
+                          </Tooltip>
+                        <Tooltip disableFocusListener title="Remove Service">
                           <Button
                             variant="contained"
                             color="secondary"
@@ -101,6 +108,7 @@ class ServiceTables extends React.Component {
                           >
                             <DeleteIcon className={classes.icon} />
                           </Button>
+                          </Tooltip>
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -119,18 +127,19 @@ class ServiceTables extends React.Component {
                                 {employee.firstName + ' ' + employee.lastName}
                               </TableCell>
                               <TableCell align="right">
-                                <FormControl className={classes.margin}>
+                                <FormControl className={classes.input}>
                                   <InputLabel htmlFor="adornment-amount">Pay</InputLabel>
                                   <Input
                                     id="adornment-amount"
                                     onFocus={e => e.target.select()}
-                                    defaultValue = {cents2Fixed2(employeeService.servicePay)}
+                                    defaultValue = {cents2Fixed2(employeeService.servicePrice)}
                                     onChange={this.handleServicePayChange(employeServiceId)}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                   />
-                                </FormControl>                              
+                                </FormControl>
                               </TableCell>
                               <TableCell align="right">
+                              <Tooltip disableFocusListener title="Remove Employee">
                                 <Button
                                   variant="contained"
                                   color="secondary"
@@ -146,6 +155,7 @@ class ServiceTables extends React.Component {
                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                                   </SvgIcon>
                                 </Button>
+                                </Tooltip>
                               </TableCell>
                             </TableRow>
                           )

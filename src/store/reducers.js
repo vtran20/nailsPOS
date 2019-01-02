@@ -61,6 +61,19 @@ export const errors = (state = [], action) => {
   }
 }
 
+export const messages = (state = [], action) => {
+  switch (action.type) {
+    case C.GLOBAL_MESSAGE_ADD:
+      return [...state, action.payload]
+    case C.GLOBAL_MESSAGE_REMOVE:
+      return state.filter((message, i) => i !== action.payload)
+    case C.GLOBAL_MESSAGE_CLEAR:
+      return []
+    default:
+      return state
+  }
+}
+
 //https://stackoverflow.com/questions/35622588/how-to-reset-the-state-of-a-redux-store
 const reducer = combineReducers({
   stores,
@@ -71,6 +84,7 @@ const reducer = combineReducers({
   employeeServices,
   fetching,
   errors,
+  messages,
   customerSearch,
   forms,
   posScreen,

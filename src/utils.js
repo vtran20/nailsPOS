@@ -29,6 +29,7 @@ export const dollars2Cents = (dollars) => {
 }
 
 export const getServiceCost = (customer, customerServices, employeeServices )  => {
+  console.log ('calling getServiceCost')
   let total = 0
     if (customer && customer.customerServices) {
       customer.customerServices.map(csId => {
@@ -36,12 +37,12 @@ export const getServiceCost = (customer, customerServices, employeeServices )  =
     	if (customerServices[csId].employeeServices) {
     		customerServices[csId].employeeServices.map (esId => {
     			const employeeService = employeeServices[esId]
-    			if (employeeService && employeeService.servicePay > 0) {
-    				serviceTotal = serviceTotal + employeeService.servicePay
+    			if (employeeService && employeeService.servicePrice > 0) {
+    				serviceTotal = serviceTotal + employeeService.servicePrice
     			}
     		})
     	} 
-    	//use servicePay from employeeService if any
+    	//use servicePrice from employeeService if any
     	if (serviceTotal > 0) {
     		total = total + serviceTotal
     	} else {
@@ -50,4 +51,12 @@ export const getServiceCost = (customer, customerServices, employeeServices )  =
       })
     }
     return total
+}
+
+export const getTotalPrice = (servicePrice, tipPrice, taxPrice )  => {
+  let total = 0
+  if (servicePrice) total += servicePrice
+  if (tipPrice) total += tipPrice
+  if (taxPrice) total += tipPrice
+  return total
 }

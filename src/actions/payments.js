@@ -1,8 +1,8 @@
 import C from '../constants'
 
-import {resetPOSScreen, changePOSScreen, addGlobalError} from './index'
+import {resetPOSScreen, changePOSScreen, addGlobalError, addGlobalMessage} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, urlAPI, getServiceCost, dollars2Cents } from '../utils'
 
 export const addCustomerCheckout = data => {
   return {
@@ -66,6 +66,7 @@ export const selectGiftCard = data => {
   }
 }
 
+
 export const handlePayment = screen => (dispatch, getState) => {
   const servicePrice = getServiceCost(getState().customers.byId[getState().posScreen.customerId], getState().customerServices.byId, getState().employeeServices.byId)
   dispatch(changePOSScreen(screen))
@@ -81,10 +82,23 @@ export const handlePayment = screen => (dispatch, getState) => {
   }))
 }
 
+export const updateTipPay = data => (dispatch, getState) => {
+  let  temp = getState().payments.currentCheckout
+  const totalPrice = (data.tipPrice? data.tipPrice : 0) + temp.servicePrice
+  const currentCheckout = Object.assign ({}, temp, data, {totalPrice: totalPrice})
+  dispatch(updateCurrentCheckout(currentCheckout))
+}
+
 export const completePayment = () => (dispatch, getState) => {
+  const currentCheckout = getState().payments['currentCheckout']
+  if (!currentCheckout.credit && !currentCheckout.cash && !currentCheckout.check && !currentCheckout.giftcard) {
+    dispatch(addGlobalError('Please select a payment method'))
+    return;
+  }
+
   const customerId = getState().posScreen.customerId
   let inputData = {}
-  inputData['currentCheckout'] = getState().payments['currentCheckout']
+  inputData['currentCheckout'] = currentCheckout
   inputData['customer'] = getState().customers.byId[customerId]
   inputData['customerServices'] = []
   inputData['employeeServices'] = []
@@ -116,4 +130,6 @@ export const completePayment = () => (dispatch, getState) => {
     .catch(error => {
       dispatch(addGlobalError(error.message))
     })
+
+    dispatch(addGlobalMessage('Payment was completed. Thank you!'))
 }

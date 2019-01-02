@@ -14,7 +14,8 @@ import {
   IconButton,
   Badge,
   Button,
-  Snackbar
+  Snackbar,
+  Hidden
 } from '@material-ui/core'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import AddIcon from '@material-ui/icons/Add'
@@ -27,8 +28,8 @@ import ServiceList from './pos/ServiceList'
 import EmployeeList from './pos/EmployeeList'
 import CustomerList from './pos/CustomerList'
 import Payment from './pos/Payment'
-import { selectAddCustomer, removeGlobalError } from '../../actions'
-import ErrorMessages from '../common/ErrorMessages'
+import { selectAddCustomer, removeGlobalError, clearGlobalError, clearGlobalMessage } from '../../actions'
+import Messages from '../common/Messages'
 
 const drawerWidth = 240
 
@@ -139,8 +140,11 @@ class DashboardPOS extends React.Component {
     this.setState({ open: false })
   }
 
-  handleClose = (index) => (event, reason) => {
-    this.props.dispatch(removeGlobalError(index))
+  handleCloseError = (event, reason) => {
+    this.props.dispatch(clearGlobalError())
+  }
+  handleCloseMessage = (event, reason) => {
+    this.props.dispatch(clearGlobalMessage())
   }
 
   renderSwitch(param) {
@@ -213,7 +217,6 @@ class DashboardPOS extends React.Component {
                     screen: 'ADD_CUSTOMER'
                   })
                 }
-
             >
               <AddIcon
                 className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -255,12 +258,12 @@ class DashboardPOS extends React.Component {
           <List>{<CustomerList title="Scheduled" status="SCHEDULED" />}</List>
           <Divider />
           <List>{<CustomerList title="Completed" status="COMPLETED" />}</List>
-          <Divider />
-          <List>{/*<CustomerAppointmentList />*/}</List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           {this.props.screen? this.renderSwitch(this.props.screen.screen) : ''}
+
+          {/*Error messages*/}
             {this.props.errors.map((error, index) => 
               <Snackbar
                   key={index}
@@ -269,16 +272,38 @@ class DashboardPOS extends React.Component {
                     horizontal: 'center',
                   }}
                   open={true}
-                  onClose={this.handleClose}
+                  onClose={this.handleCloseError}
+                  autoHideDuration={6000}
                 >
-                  <ErrorMessages
-                      onClose={this.handleClose (index)}
+                  <Messages
+                      onClose={this.handleCloseError}
                       variant="error"
                       message={error}
                     />
               </Snackbar>
             )}
+
+            {/*message*/}
+            {this.props.messages.map((message, index) => 
+              <Snackbar
+                  key={index}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  open={true}
+                  onClose={this.handleCloseMessage}
+               >
+                  <Messages
+                      onClose={this.handleCloseMessage}
+                      variant="success"
+                      message={message}
+                    />
+              </Snackbar>
+            )}
+
         </main>
+        <Hidden mdDown>
         <Drawer
           variant="permanent"
           classes={{
@@ -296,7 +321,7 @@ class DashboardPOS extends React.Component {
           <Divider />
           <List>{<EmployeeList />}</List>
         </Drawer>
-
+        </Hidden>
       </div>
     )
   }
@@ -309,7 +334,8 @@ DashboardPOS.propTypes = {
 const mapStateToProps = state => ({
   screen: state.posScreen,
   store: state.stores.byId[state.stores.currentStoreId],
-  errors: state.errors
+  errors: state.errors,
+  messages: state.messages
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(DashboardPOS))
