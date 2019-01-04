@@ -17,7 +17,7 @@ import ServiceTables from './ServiceTables'
 import { connect } from 'react-redux'
 import { updateCustomerDB } from '../../../actions/customers'
 import { updateTipPay } from '../../../actions/payments'
-import { cents2Dollars, getServiceCost, dollars2Cents } from '../../../utils'
+import { cents2Dollars, getServiceCost, dollars2Cents, cents2Fixed2 } from '../../../utils'
 import { changePOSScreen } from '../../../actions'
 
 
@@ -73,8 +73,19 @@ class ServiceCostSummary extends React.Component {
     this.props.dispatch(updateTipPay({tipPrice : dollars2Cents(value)}))
   }
 
+  componentDidMount() {
+    console.log (this.props.currentCheckout.tipPrice)
+   //this.setState({inputValue: this.props.inputValue});
+}
+handleChange = (e) => {
+  this.setState({inputValue: e.target.value});
+}
+
+// <input value={this.state.inputValue} onChange={this.handlechange} onBlur={() => this.props.actions.updateInput(this.state.inputValue)} />
+
   render() {
     const { classes, page } = this.props
+    console.log (this.props.currentCheckout.tipPrice)
     return (
       <div>
         {this.props.customerId && this.props.customers[this.props.customerId]? (
@@ -99,31 +110,33 @@ class ServiceCostSummary extends React.Component {
             </Grid>
             <Grid item xs={6}>
               <Typography align="right" variant="body2">
-                {cents2Dollars(this.props.servicePrices)}
+                {cents2Dollars(this.props.currentCheckout.servicePrice)}
               </Typography>
               <Typography align="right" variant="body2">
                 $0
               </Typography>
-              {page === 'payment'
+              {page === 'payment' && this.props.customerId
               ?
               <FormControl className={classes.input}>
                 <Input
                   className={classes.margin}
                   id="adornment-amount"
                   onFocus={e => e.target.select()}
-                  defaultValue = {0}
-                  onChange={this.handleTipPayChange}
+                  // defaultValue = {cents2Fixed2(this.props.currentCheckout.tipPrice)}
+                  value = {cents2Fixed2(this.props.currentCheckout.tipPrice)}
+                  //onChange={this.handleTipPayChange}
+                  onBlur={this.handleTipPayChange}
                   startAdornment={<InputAdornment position="start">$</InputAdornment>}
                 />
               </FormControl>
               : 
               <Typography align="right" variant="body2" className={classes.tipLabel}>
-                $0
+                {cents2Dollars(this.props.currentCheckout.tipPrice)}
               </Typography>
               }
               <Divider />
               <Typography align="right" variant="subtitle1">
-                {cents2Dollars(this.props.totalPrice)}
+                {cents2Dollars(this.props.currentCheckout.totalPrice)}
               </Typography>
             </Grid>
           </Grid>         
@@ -144,8 +157,7 @@ const mapStateToProps = state => ({
   customerId: state.posScreen.customerId,
   customerServices: state.customerServices.byId,
   employeeServices: state.employeeServices.byId,
-  servicePrices : getServiceCost (state.customers.byId[state.posScreen.customerId], state.customerServices.byId, state.employeeServices.byId),
-  totalPrice : (state.payments && state.payments.currentCheckout && state.payments.currentCheckout.totalPrice)? state.payments.currentCheckout.totalPrice : getServiceCost (state.customers.byId[state.posScreen.customerId], state.customerServices.byId, state.employeeServices.byId)
+  currentCheckout : state.payments.currentCheckout
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(ServiceCostSummary))

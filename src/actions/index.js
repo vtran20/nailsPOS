@@ -2,11 +2,11 @@ import fetch from 'isomorphic-fetch'
 import { addCustomer } from './customers'
 import { addService } from './services'
 import { addEmployee } from './employees'
-import { addCustomerCheckout } from './payments'
+import { addCustomerCheckout, updateCustomerCheckout, updateCurrentCheckout, clearCurrentCheckout } from './payments'
 import { addCustomerService } from './customerServices'
 import { addEmployeeService, updateEmployeeService } from './employeeServices'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, urlAPI, getServiceCost } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 
@@ -133,6 +133,13 @@ export const updatePOSScreen = data => {
   }
 }
 
+export const removePOSDialog = data => {
+  return {
+    type: C.POS_SCREEN_REMOVE,
+    payload: data
+  }
+}
+
 export const resetPOSScreen = () => {
   return {
     type: C.POS_SCREEN_CLEAR
@@ -146,12 +153,41 @@ export const selectStore = storeId => {
   }
 }
 
-export const selectCustomer = data => (dispatch) => {
+export const selectCustomer = data => (dispatch, getState) => {
   dispatch(resetPOSScreen())
   dispatch(changePOSScreen(data))
+  //update currentCheckout
+  const currentCheckout = getState().payments.currentCheckout
+  const newCheckout = getState().payments.byId[data.customerId]
+  //keep the any change from the current customer
+  if (currentCheckout && currentCheckout.customerId) {
+    dispatch(updateCustomerCheckout(currentCheckout))
+  }
+  //load a new or existing payment to currentCheckout
+  dispatch(clearCurrentCheckout())
+  if (newCheckout) {
+      dispatch(updateCurrentCheckout(newCheckout))
+  } else {
+    const servicePrice = getServiceCost(getState().customers.byId[getState().posScreen.customerId], getState().customerServices.byId, getState().employeeServices.byId)
+    const totalPrice = servicePrice
+    dispatch(updateCurrentCheckout({
+      servicePrice: servicePrice,
+      taxPrice: 0,
+      tipPrice: 0,
+      totalPrice: totalPrice,
+      credit: 'N',
+      cash: 'N',
+      check: 'N',
+      giftcard: 'N',
+      customerId: data.customerId
+    }))    
+  }
 }
 
 export const selectAddCustomer = data => (dispatch) => {
   dispatch(resetPOSScreen())
   dispatch(changePOSScreen(data))
+}
+export const handleOpenDialog = data => (dispatch, getState) => {
+  dispatch(updatePOSScreen(data))
 }

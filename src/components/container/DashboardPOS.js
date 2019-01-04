@@ -27,6 +27,8 @@ import SearchCustomer from './pos/SearchCustomer'
 import ServiceList from './pos/ServiceList'
 import EmployeeList from './pos/EmployeeList'
 import CustomerList from './pos/CustomerList'
+import ServicesButtonDialog from './pos/ServicesButtonDialog'
+import EmployeesButtonDialog from './pos/EmployeesButtonDialog'
 import Payment from './pos/Payment'
 import { selectAddCustomer, removeGlobalError, clearGlobalError, clearGlobalMessage } from '../../actions'
 import Messages from '../common/Messages'
@@ -166,6 +168,8 @@ class DashboardPOS extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
+        <ServicesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
+        <EmployeesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}

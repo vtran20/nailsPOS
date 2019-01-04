@@ -13,7 +13,7 @@ import ServiceCostSummary from './ServiceCostSummary'
 import { connect } from 'react-redux'
 import { updateCustomerDB } from '../../../actions/customers'
 import { cents2Dollars, getServiceCost } from '../../../utils'
-import { changePOSScreen } from '../../../actions'
+import { changePOSScreen, handleOpenDialog } from '../../../actions'
 import { updateCurrentCheckout, handlePayment } from '../../../actions/payments'
 
 const styles = theme => ({
@@ -47,8 +47,17 @@ class CustomerDetail extends React.Component {
   handlePayment = (screen) => {
     this.props.dispatch(handlePayment(screen))
   }
+  handleOpenAddServicesDialog = (dialog) => {
+    this.props.dispatch(handleOpenDialog(dialog))
+  }
+
+  handleOpenAddEmployeesDialog = (dialog) => {
+    this.props.dispatch(handleOpenDialog(dialog))
+  }
 
   renderCustomerDetailButtons() {
+    const { classes } = this.props
+
     if (this.props.customerId && this.props.customers[this.props.customerId]) {
       const customer = this.props.customers[this.props.customerId]
       switch (customer.status) {
@@ -58,7 +67,7 @@ class CustomerDetail extends React.Component {
                 variant="contained"
                 color="primary"
                 size="small"
-                // className={classes.button}
+                className={classes.button}
                 onClick={() => this.handleStartCustomerService(this.props.customerId)}
               >
                 <SvgIcon>
@@ -70,11 +79,44 @@ class CustomerDetail extends React.Component {
         case 'IN_PROGRESS':
         case 'WAITING':
           return (
+            <div>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                className={classes.button}
+                onClick={() =>
+                    this.handleOpenAddServicesDialog({
+                      openAddServiceDialog: true
+                    })
+                  }
+              >
+                <SvgIcon>
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
+                </SvgIcon>
+                Services
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                className={classes.button}
+                onClick={() =>
+                    this.handleOpenAddEmployeesDialog({
+                      openAddEmployeeDialog: true
+                    })
+                  }
+              >
+                <SvgIcon>
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
+                </SvgIcon>
+                Employees
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
                 size="small"
-                // className={classes.button}
+                className={classes.button}
                 onClick={() => this.handlePayment({screen: 'PAYMENT_CUSTOMER', customerId: this.props.customerId})}
               >
                 <SvgIcon>
@@ -82,6 +124,7 @@ class CustomerDetail extends React.Component {
                 </SvgIcon>
                 Pay
               </Button>
+            </div>
             )
         case 'COMPLETED':
           return ''

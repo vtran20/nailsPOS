@@ -59,9 +59,6 @@ class Payment extends React.Component {
 
   render() {
     const { classes, customer } = this.props
-    let currentCheckout = this.props.payments[this.props.customerId]
-    ? this.props.payments[this.props.customerId]
-    : this.props.currentCheckout
 
   return (
     <div>
@@ -82,7 +79,7 @@ class Payment extends React.Component {
         <Grid item xs={4}>
         <Paper className={classes.paper}>
           <Typography variant="h4" gutterBottom>
-          {cents2Dollars(currentCheckout.totalPrice)}
+          {cents2Dollars(this.props.currentCheckout.totalPrice)}
           </Typography>
           <br/>
           <Typography variant="subtitle1" gutterBottom>
@@ -94,8 +91,8 @@ class Payment extends React.Component {
             size="small"
             className={classes.button}
             fullWidth
-            onClick={() => this.handleSelectPaymentMethod({credit: !this.props.credit})}
-            variant={this.props.credit? 'outlined' : 'text'}
+            onClick={() => this.handleSelectPaymentMethod({credit: this.props.credit === 'Y'? 'N' : 'Y'})}
+            variant={this.props.credit === 'Y'? 'outlined' : 'text'}
           >
             <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
               <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
@@ -109,8 +106,8 @@ class Payment extends React.Component {
             size="small"
             className={classes.button}
             fullWidth
-            onClick={() => this.handleSelectPaymentMethod({cash: !this.props.cash})}
-            variant={this.props.cash? 'outlined' : 'text'}
+            onClick={() => this.handleSelectPaymentMethod({cash: this.props.cash === 'Y'? 'N' : 'Y'})}
+            variant={this.props.cash === 'Y'? 'outlined' : 'text'}
           >
             <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
               <path fill="none" d="M0 0h24v24H0V0z"/><path d="M5 8h2v8H5zm7 0H9c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 6h-1v-4h1v4zm7-6h-3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 6h-1v-4h1v4z"/><path fill="none" d="M4 6h16v12H4z"/><path d="M2 4v16h20V4H2zm2 14V6h16v12H4z"/>
@@ -124,8 +121,8 @@ class Payment extends React.Component {
             size="small"
             className={classes.button}
             fullWidth
-            onClick={() => this.handleSelectPaymentMethod({giftcard: !this.props.giftcard})}
-            variant={this.props.giftcard? 'outlined' : 'text'}
+            onClick={() => this.handleSelectPaymentMethod({giftcard: this.props.giftcard === 'Y'? 'N' : 'Y'})}
+            variant={this.props.giftcard === 'Y'? 'outlined' : 'text'}
           >
             <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
               <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z" />
@@ -139,8 +136,8 @@ class Payment extends React.Component {
             size="small"
             className={classes.button}
             fullWidth
-            onClick={() => this.handleSelectPaymentMethod({check: !this.props.check})}
-            variant={this.props.check? 'outlined' : 'text'}
+            onClick={() => this.handleSelectPaymentMethod({check: this.props.check === 'Y'? 'N' : 'Y'})}
+            variant={this.props.check === 'Y'? 'outlined' : 'text'}
           >
             <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
               <path d="M19 12h-2v3h-3v2h5v-5zM7 9h3V7H5v5h2V9zm14-6H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16.01H3V4.99h18v14.02z"/><path d="M0 0h24v24H0z" fill="none"/>

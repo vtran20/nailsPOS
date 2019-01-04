@@ -28,8 +28,8 @@ export const dollars2Cents = (dollars) => {
 	return parseInt(cents.toFixed(0))
 }
 
+//Get cost for services only
 export const getServiceCost = (customer, customerServices, employeeServices )  => {
-  console.log ('calling getServiceCost')
   let total = 0
     if (customer && customer.customerServices) {
       customer.customerServices.map(csId => {
@@ -59,4 +59,37 @@ export const getTotalPrice = (servicePrice, tipPrice, taxPrice )  => {
   if (tipPrice) total += tipPrice
   if (taxPrice) total += tipPrice
   return total
+}
+
+//Get array serviceIds of the current customer
+export const getServiceIdsOfCustomer = (customerServiceIds, customerServices)  => {
+  let serviceIds = []
+    if (customerServiceIds && customerServices) {
+      customerServiceIds.map(csId => {
+        let customerService = customerServices[csId]
+        if (customerService && customerService.serviceId) {
+          serviceIds = [...serviceIds, customerService.serviceId]
+        }
+      })
+    }
+    return serviceIds
+}
+
+//Get array employeeIds of the current customer
+export const getEmployeeIdsOfCustomer = (customerServiceIds, customerServices, employeeServices)  => {
+  let employeeIds = []
+    if (customerServiceIds && customerServices) {
+      customerServiceIds.map(csId => {
+        let customerService = customerServices[csId]
+        if (customerService && customerService.employeeServices) {
+          customerService.employeeServices.map (esId => {
+            let employeeService = employeeServices[esId]
+            if (employeeService && employeeService.employeeId) {
+              employeeIds = [...employeeIds, employeeService.employeeId]
+            }
+          })
+        }
+      })
+    }
+  return employeeIds
 }

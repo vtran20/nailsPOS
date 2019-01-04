@@ -70,12 +70,12 @@ export const deleteCustomerService = customerService => (
         customerService.employeeServices.map(employeeServiceId => {
           dispatch(
             removeEmployeeServiceFromEmployee({
-              ...getState().employeeServices[employeeServiceId]
+              ...getState().employeeServices.byId[employeeServiceId]
             })
           )
           dispatch(
             removeEmployeeServiceFromCustomerService({
-              ...getState().employeeServices[employeeServiceId]
+              ...getState().employeeServices.byId[employeeServiceId]
             })
           )
           dispatch(removeEmployeeService(employeeServiceId))

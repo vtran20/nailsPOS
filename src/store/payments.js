@@ -7,25 +7,26 @@ export const byId = (state = {}, action) =>
     let existing
     switch (action.type) {
       case C.CUSTOMER_CHECKOUT_ADD:
-        existing = draft[action.payload.customerId] ? true : false
-        if (existing) {
-          return draft
-        } else {
-          return {
-            ...draft,
-            [action.payload.customerId]: action.payload
-          }
-        }
+        // existing = draft[action.payload.customerId] ? true : false
+        // if (existing) {
+        //   return draft
+        // } else {
+        //   return {
+        //     ...draft,
+        //     [action.payload.customerId]: action.payload
+        //   }
+        // }
       case C.CUSTOMER_CHECKOUT_UPDATE:
-        existing = draft[action.payload.customerId] ? true : false
-        if (!existing) {
-          return draft
-        } else {
-          return {
-            ...draft,
-            [action.payload.customerId]: action.payload
-          }
-        }      
+        draft[action.payload.customerId]= action.payload
+        // existing = draft[action.payload.customerId] ? true : false
+        // if (!existing) {
+        //   return draft
+        // } else {
+        //   return {
+        //     ...draft,
+        //     [action.payload.customerId]: action.payload
+        //   }
+        // }      
       case C.CUSTOMER_CHECKOUT_REMOVE:
         delete draft[action.payload] 
       default:

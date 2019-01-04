@@ -38,16 +38,18 @@ export const removeEmployeeServiceFromEmployee = employeeService => {
   }
 }
 
-export const addEmployeeToCustomer = employeeId => (dispatch, getState) => {
+export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatch, getState) => {
   if (
     getState().posScreen && 
     getState().posScreen.customerId &&
     getState().posScreen.screen === 'CUSTOMER_DETAIL'
   ) {
     const customerId = getState().posScreen.customerId
-
+    const url = customerServiceId
+    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=1`
+    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=1`
     fetch(
-      urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=1`,
+      url,
       {
         method: 'POST',
         body: { customerId: customerId, employeeId: employeeId },

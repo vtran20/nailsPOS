@@ -68,18 +68,7 @@ export const selectGiftCard = data => {
 
 
 export const handlePayment = screen => (dispatch, getState) => {
-  const servicePrice = getServiceCost(getState().customers.byId[getState().posScreen.customerId], getState().customerServices.byId, getState().employeeServices.byId)
   dispatch(changePOSScreen(screen))
-  dispatch(updateCurrentCheckout({
-    servicePrice: servicePrice,
-    taxPrice: 0,
-    tipPrice: 0,
-    totalPrice: servicePrice,
-    credit: false,
-    cash: false,
-    check: false,
-    giftcard: false
-  }))
 }
 
 export const updateTipPay = data => (dispatch, getState) => {

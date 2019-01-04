@@ -10,6 +10,7 @@ import stores from './stores'
 import forms from './forms'
 import customerSearch from './customerSearch'
 import payments from './payments'
+import produce from "immer"
 
 import { combineReducers } from 'redux'
 
@@ -19,6 +20,10 @@ export const posScreen = (state = null, action) => {
       return action.payload
     case C.POS_SCREEN_UPDATE:
       return { ...state, ...action.payload }
+    case C.POS_SCREEN_REMOVE:
+      return produce(state, draft => {
+        delete draft[action.payload] 
+       })
     case C.POS_SCREEN_CLEAR:
       return null
     default:

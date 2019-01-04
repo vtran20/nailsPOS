@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   Checkbox
 } from '@material-ui/core'
-import { createCustomer, updateCustomer } from '../../../actions/customers'
+import { createCustomer } from '../../../actions/customers'
 import {
   addCustomerServiceForm,
   createNewCustomerServiceForCheckIn,
@@ -71,7 +71,7 @@ class ServicesDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {'Please select your servicse'}
+          {'Please select your services'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>

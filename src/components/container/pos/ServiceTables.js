@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 import { deleteEmployeeService, updateEmployeeServiceInfo } from '../../../actions/employeeServices'
 import { deleteCustomerService } from '../../../actions/customerServices'
 import { cents2Dollars, cents2Fixed2, dollars2Cents } from '../../../utils'
+import { changePOSScreen, handleOpenDialog } from '../../../actions'
 
 const styles = theme => ({
   root: {
@@ -63,6 +64,10 @@ class ServiceTables extends React.Component {
     this.props.dispatch(deleteCustomerService(customerService))
   }
 
+  handleOpenAddEmployeesDialog = (dialog) => {
+    this.props.dispatch(handleOpenDialog(dialog))
+  }
+
   render() {
     const { classes } = this.props
     const customerServiceIds = this.props.customers[this.props.customerId]
@@ -90,6 +95,11 @@ class ServiceTables extends React.Component {
                             color="secondary"
                             size="small"
                             className={classes.button}
+                            onClick={() =>
+                              this.handleOpenAddEmployeesDialog({
+                                openAddEmployeeDialog: true, customerServiceId: customerServiceId
+                              })
+                            }
                           >
                             <SvgIcon>
                               <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />

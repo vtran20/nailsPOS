@@ -1,6 +1,6 @@
 import C from '../constants'
 import { handleErrors, urlAPI } from '../utils'
-import { addCustomer, updateCustomer } from './customers'
+import { addCustomer } from './customers'
 import { addCustomerService, updateCustomerService } from './customerServices'
 import {resetPOSScreen, changePOSScreen, addGlobalError} from './index'
 
