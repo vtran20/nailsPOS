@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   Button,
@@ -7,20 +7,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  FormGroup,
-  FormControlLabel,
-  Checkbox
+  FormGroup
 } from '@material-ui/core'
-import { createCustomer } from '../../../actions/customers'
 import { removePOSDialog } from '../../../actions'
-import {
-  addCustomerServiceForm,
-  createNewCustomerServiceForCheckIn,
-  clearCustomerForm
-} from '../../../actions/forms'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
-import { cents2Dollars, getEmployeeIdsOfCustomer } from '../../../utils'
+import { getEmployeeIdsOfCustomer } from '../../../utils'
 import { addEmployeeToCustomer } from '../../../actions/employees'
 
 
@@ -66,7 +58,7 @@ class EmployeesButtonDialog extends Component {
   }
 
   render() {
-    const { classes, open, customerId } = this.props
+    const { classes, customerId } = this.props
     const selectedEmployeeIds = getEmployeeIdsOfCustomer (this.props.customers[customerId]? this.props.customers[customerId].customerServices: [], this.props.customerServices, this.props.employeeServices)
     const customerServiceId = this.props.posScreen? this.props.posScreen.customerServiceId : null
     return (
@@ -84,7 +76,6 @@ class EmployeesButtonDialog extends Component {
             <FormGroup row>
               {this.props.employeesIds.map(employeeId => {
                 let employee = this.props.employees[employeeId]
-                let existing = selectedEmployeeIds.find(x => x === employeeId) 
                 return (
                   <Button
                     key={employeeId}

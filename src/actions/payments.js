@@ -1,8 +1,8 @@
 import C from '../constants'
 
-import {resetPOSScreen, changePOSScreen, addGlobalError, addGlobalMessage} from './index'
+import {changePOSScreen, addGlobalError, addGlobalMessage} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, urlAPI, getServiceCost, dollars2Cents } from '../utils'
+import { handleErrors, urlAPI, getServiceCost } from '../utils'
 
 export const addCustomerCheckout = data => {
   return {
@@ -72,23 +72,87 @@ export const handlePayment = screen => (dispatch, getState) => {
 }
 
 export const updateTipPay = data => (dispatch, getState) => {
+  //update tip employeeService
+  const customerId = getState().posScreen.customerId
+  const currentCustomer = getState().customers.byId[customerId]
+  //Validate and make sure select services before checkout
+  if (!getState().customers.byId[customerId].customerServices) {
+    dispatch(addGlobalError('Please select services'))
+    return;
+  }
+  //Validate each customer service need have at least 1 employee
+  let assignedEmployee = true
+  getState().customers.byId[customerId].customerServices.map (csId => {
+    const customerService = getState().customerServices.byId[csId]
+    if (!customerService.employeeServices) {
+      assignedEmployee = false;
+    }
+  })
+  if (!assignedEmployee) {
+    dispatch(addGlobalError('please make sure all services have been assigned to employees'))
+    return;
+  }
+
+  //Update currentCheckout
   let  temp = getState().payments.currentCheckout
   const totalPrice = (data.tipPrice? data.tipPrice : 0) + temp.servicePrice
   const currentCheckout = Object.assign ({}, temp, data, {totalPrice: totalPrice})
   dispatch(updateCurrentCheckout(currentCheckout))
+
+}
+
+export const updateCurrentPaymentMethod = data => (dispatch, getState) => {
+  let  temp = getState().payments.currentCheckout
+  const currentCheckout = Object.assign ({}, temp, data)
+  dispatch(updateCurrentCheckout(currentCheckout))
+}
+
+export const calculateCurrentPrices = () => (dispatch, getState) => {
+
+  const servicePrice = getServiceCost(
+    getState().customers.byId[getState().posScreen.customerId], 
+    getState().customerServices.byId, 
+    getState().employeeServices.byId
+  )
+  let  temp = getState().payments.currentCheckout
+  const totalPrice = (temp.tipPrice? temp.tipPrice : 0) + servicePrice
+  const currentCheckout = Object.assign ({}, temp, {servicePrice: servicePrice, totalPrice: totalPrice})
+  dispatch(updateCurrentCheckout(currentCheckout))
 }
 
 export const completePayment = () => (dispatch, getState) => {
-  const currentCheckout = getState().payments['currentCheckout']
-  if (!currentCheckout.credit && !currentCheckout.cash && !currentCheckout.check && !currentCheckout.giftcard) {
+  const customerId = getState().posScreen.customerId
+  const currentCustomer = getState().customers.byId[customerId]
+  const currentCheckout = getState().payment.currentCheckout
+  //Validdate data before submit payment
+  //Validate payment method
+  if (currentCheckout.credit === 'N' && currentCheckout.cash === 'N' && currentCheckout.check === 'N' && currentCheckout.giftcard === 'N') {
     dispatch(addGlobalError('Please select a payment method'))
     return;
   }
 
-  const customerId = getState().posScreen.customerId
+  //Validate and make sure select services before checkout
+  if (!getState().customers.byId[customerId].customerServices) {
+    dispatch(addGlobalError('Please select services'))
+    return;
+  }
+  //Validate each customer service need have at least 1 employee
+  let assignedEmployee = true
+  getState().customers.byId[customerId].customerServices.map (csId => {
+    const customerService = getState().customerServices.byId[csId]
+    if (!customerService.employeeServices) {
+      assignedEmployee = false;
+    }
+  })
+  if (!assignedEmployee) {
+    dispatch(addGlobalError('please make sure all services have been assigned to employees'))
+    return;
+  }
+
+  //Process data
   let inputData = {}
   inputData['currentCheckout'] = currentCheckout
-  inputData['customer'] = getState().customers.byId[customerId]
+  inputData['customer'] = currentCustomer
   inputData['customerServices'] = []
   inputData['employeeServices'] = []
   getState().customers.byId[customerId].customerServices.map (csId => {

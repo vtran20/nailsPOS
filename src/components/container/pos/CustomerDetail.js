@@ -3,18 +3,14 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import { Divider, Grid, Typography, Button } from '@material-ui/core'
 
-import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
-import classNames from 'classnames'
 import SvgIcon from '@material-ui/core/SvgIcon'
 
 import ServiceTables from './ServiceTables'
 import ServiceCostSummary from './ServiceCostSummary'
 import { connect } from 'react-redux'
 import { updateCustomerDB } from '../../../actions/customers'
-import { cents2Dollars, getServiceCost } from '../../../utils'
-import { changePOSScreen, handleOpenDialog } from '../../../actions'
-import { updateCurrentCheckout, handlePayment } from '../../../actions/payments'
+import { handleOpenDialog } from '../../../actions'
+import { handlePayment } from '../../../actions/payments'
 
 const styles = theme => ({
   root: {
@@ -161,7 +157,7 @@ class CustomerDetail extends React.Component {
                   </Grid>
                 </Grid>
                 <Grid item xs={6} container>
-                  <ServiceCostSummary/>
+                  <ServiceCostSummary />
                 </Grid>
               </Grid>
               <Grid item xs={5} container>

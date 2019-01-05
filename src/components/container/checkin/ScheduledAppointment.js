@@ -73,8 +73,7 @@ class ScheduledAppointment extends Component {
       fullScreen,
       open,
       onClose,
-      row,
-      selectCustomer
+      row
     } = this.props
     return (
       <Dialog

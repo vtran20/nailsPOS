@@ -10,7 +10,6 @@ import Paper from '@material-ui/core/Paper'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
-import TextField from '@material-ui/core/TextField'
 import Input from '@material-ui/core/Input'
 import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -20,7 +19,7 @@ import { connect } from 'react-redux'
 import { deleteEmployeeService, updateEmployeeServiceInfo } from '../../../actions/employeeServices'
 import { deleteCustomerService } from '../../../actions/customerServices'
 import { cents2Dollars, cents2Fixed2, dollars2Cents } from '../../../utils'
-import { changePOSScreen, handleOpenDialog } from '../../../actions'
+import { handleOpenDialog } from '../../../actions'
 
 const styles = theme => ({
   root: {

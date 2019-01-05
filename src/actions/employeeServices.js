@@ -4,6 +4,7 @@ import { handleErrors, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeServiceFromCustomerService } from './customerServices'
 import {addGlobalError} from './index'
+import { calculateCurrentPrices } from './payments'
 
 export const addEmployeeService = employeeService => {
   return {
@@ -41,6 +42,7 @@ export const updateEmployeeServiceInfo = data  => (
   if (employeeService) {
     const employeeServiceEdit = Object.assign ({}, employeeService, data)
     dispatch(updateEmployeeService(employeeServiceEdit))
+    dispatch(calculateCurrentPrices())
   }
 }
 
@@ -66,6 +68,7 @@ export const deleteEmployeeService = employeeService => (
       dispatch(removeEmployeeServiceFromEmployee(employeeService))
       dispatch(removeEmployeeServiceFromCustomerService(employeeService))
       dispatch(removeEmployeeService(employeeService.id))
+      dispatch(calculateCurrentPrices())
     })
     .catch(error => {
       dispatch(addGlobalError(error.message))

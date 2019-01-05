@@ -1,25 +1,13 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { Divider, Grid, Typography, Button } from '@material-ui/core'
+import { Divider, Grid, Typography } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import TextField from '@material-ui/core/TextField'
 import Input from '@material-ui/core/Input'
 import InputAdornment from '@material-ui/core/InputAdornment'
-
-import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
-import classNames from 'classnames'
-import SvgIcon from '@material-ui/core/SvgIcon'
-
-import ServiceTables from './ServiceTables'
 import { connect } from 'react-redux'
-import { updateCustomerDB } from '../../../actions/customers'
 import { updateTipPay } from '../../../actions/payments'
-import { cents2Dollars, getServiceCost, dollars2Cents, cents2Fixed2 } from '../../../utils'
-import { changePOSScreen } from '../../../actions'
-
+import { cents2Dollars, dollars2Cents, cents2Fixed2 } from '../../../utils'
 
 const styles = theme => ({
   root: {
@@ -69,23 +57,32 @@ const styles = theme => ({
 
 class ServiceCostSummary extends React.Component {
 
-  handleTipPayChange = ({ target: { value } }) => {
-    this.props.dispatch(updateTipPay({tipPrice : dollars2Cents(value)}))
+  state = {}
+
+  handleTipPayUpdate = ({ target: { value } }) => {
+    this.props.dispatch(updateTipPay({tipPrice : dollars2Cents(this.state.tipPriceState)}))
+    this.setState({edit: false, tipPriceState: 0})   
+    console.log(this.props)
+    if (typeof this.props.onBlur === 'function') {      
+      this.props.onBlur()
+    }
   }
 
-  componentDidMount() {
-    console.log (this.props.currentCheckout.tipPrice)
-   //this.setState({inputValue: this.props.inputValue});
-}
-handleChange = (e) => {
-  this.setState({inputValue: e.target.value});
-}
+  handleTipPayChange = (e) => {
+    this.setState({tipPriceState: e.target.value});
+  }
 
-// <input value={this.state.inputValue} onChange={this.handlechange} onBlur={() => this.props.actions.updateInput(this.state.inputValue)} />
+  handleOnFocus = (e) => {
+    console.log(this.props)
+    e.target.select()
+    this.setState({edit: true, tipPriceState: cents2Fixed2(this.props.currentCheckout.tipPrice)}) 
+    if (typeof this.props.onFocus === 'function') {
+      this.props.onFocus()
+    }
+  }
 
   render() {
     const { classes, page } = this.props
-    console.log (this.props.currentCheckout.tipPrice)
     return (
       <div>
         {this.props.customerId && this.props.customers[this.props.customerId]? (
@@ -121,11 +118,10 @@ handleChange = (e) => {
                 <Input
                   className={classes.margin}
                   id="adornment-amount"
-                  onFocus={e => e.target.select()}
-                  // defaultValue = {cents2Fixed2(this.props.currentCheckout.tipPrice)}
-                  value = {cents2Fixed2(this.props.currentCheckout.tipPrice)}
-                  //onChange={this.handleTipPayChange}
-                  onBlur={this.handleTipPayChange}
+                  onFocus={this.handleOnFocus}
+                  value = {this.state.edit? this.state.tipPriceState :cents2Fixed2(this.props.currentCheckout.tipPrice)}
+                  onChange={this.handleTipPayChange}
+                  onBlur={this.handleTipPayUpdate}
                   startAdornment={<InputAdornment position="start">$</InputAdornment>}
                 />
               </FormControl>

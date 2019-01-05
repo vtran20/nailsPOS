@@ -12,7 +12,7 @@ import ServiceCostSummary from './ServiceCostSummary'
 import ServicePayment from './ServicePayment'
 import { connect } from 'react-redux'
 import { changePOSScreen } from '../../../actions'
-import { updateCurrentCheckout, selectCredit, completePayment } from '../../../actions/payments'
+import { updateCurrentPaymentMethod, completePayment } from '../../../actions/payments'
 import { cents2Dollars } from '../../../utils'
 
 const styles = theme => ({
@@ -45,21 +45,32 @@ const styles = theme => ({
 
 class Payment extends React.Component {
 
+  state = {disablePaymentButton : false}
+
   handleClickBack = (screen) => {
     this.props.dispatch(changePOSScreen(screen))
   }
 
   handleSelectPaymentMethod = (data) => {
-    this.props.dispatch(updateCurrentCheckout(data))
+    this.props.dispatch(updateCurrentPaymentMethod(data))
   }
   
   handleCompletePayment = () => {
     this.props.dispatch(completePayment())
   }
 
+  onFocus = () => {
+    console.log ('onFocus')
+    this.setState({disablePaymentButton: true})
+  }
+  onBlur = () => {
+    console.log ('onBlur')
+    this.setState({disablePaymentButton: false})
+  }
   render() {
     const { classes, customer } = this.props
-
+    const { disablePaymentButton } = this.state
+    console.log(this.state.disablePaymentButton)
   return (
     <div>
       <Grid container spacing={24}>
@@ -71,7 +82,7 @@ class Payment extends React.Component {
             </Typography>
             </Grid>
             <Grid item xs={6}>
-                <ServiceCostSummary page="payment"/>
+                <ServiceCostSummary page="payment" onFocus={this.onFocus} onBlur={this.onBlur}/>
             </Grid>
           </Grid>
           <div className={classes.tableContainer}>{<ServicePayment />}</div>
@@ -169,7 +180,6 @@ class Payment extends React.Component {
                 size="small"
                 className={classes.button}
                 fullWidth
-                className={classes.button}
               >
                 <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
                   <path fill="none" d="M0 0h24v24H0z"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
@@ -184,6 +194,7 @@ class Payment extends React.Component {
                 size="small"
                 className={classes.button}
                 fullWidth
+                disabled={this.state.disablePaymentButton}
                 onClick={() => this.handleCompletePayment()}
               >
                 <SvgIcon>

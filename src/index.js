@@ -1,16 +1,11 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { render } from 'react-dom'
-import sampleData from './initialState'
 import storeFactory from './store'
 import { initialData } from './actions'
-import {
-  addCustomerError
-} from './actions/customers'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
 import { red, amber } from '@material-ui/core/colors'
 import App from './pages/App'
-import CheckIn from './pages/CheckIn'
 import Cookies from 'universal-cookie'
 
 const theme = createMuiTheme({

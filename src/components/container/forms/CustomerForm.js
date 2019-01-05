@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { TextField, Button } from '@material-ui/core'
-import { createCustomer, updateCustomer } from '../../../actions/customers'
+import { updateCustomer } from '../../../actions/customers'
 import { addCustomerForm } from '../../../actions/forms'
 
 class CustomerForm extends Component {

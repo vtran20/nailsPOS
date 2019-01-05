@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   Button,
@@ -7,17 +7,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  FormGroup,
-  FormControlLabel,
-  Checkbox
+  FormGroup
 } from '@material-ui/core'
-import { createCustomer } from '../../../actions/customers'
 import { removePOSDialog } from '../../../actions'
-import {
-  addCustomerServiceForm,
-  createNewCustomerServiceForCheckIn,
-  clearCustomerForm
-} from '../../../actions/forms'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import { cents2Dollars, getServiceIdsOfCustomer } from '../../../utils'
@@ -65,7 +57,7 @@ class ServicesButtonDialog extends Component {
   }
 
   render() {
-    const { classes, open, customerId } = this.props
+    const { classes, customerId } = this.props
     const selectedServiceIds = getServiceIdsOfCustomer (this.props.customers[customerId]? this.props.customers[customerId].customerServices: [], this.props.customerServices)
 
     return (
@@ -83,7 +75,6 @@ class ServicesButtonDialog extends Component {
             <FormGroup row>
               {this.props.servicesIds.map(serviceId => {
                 let service = this.props.services[serviceId]
-                let existing = selectedServiceIds.find(x => x === serviceId) 
                 return (
                   <Button
                     key={serviceId}

@@ -30,7 +30,7 @@ import CustomerList from './pos/CustomerList'
 import ServicesButtonDialog from './pos/ServicesButtonDialog'
 import EmployeesButtonDialog from './pos/EmployeesButtonDialog'
 import Payment from './pos/Payment'
-import { selectAddCustomer, removeGlobalError, clearGlobalError, clearGlobalMessage } from '../../actions'
+import { selectAddCustomer, clearGlobalError, clearGlobalMessage } from '../../actions'
 import Messages from '../common/Messages'
 
 const drawerWidth = 240

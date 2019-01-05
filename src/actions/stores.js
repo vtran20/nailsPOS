@@ -1,5 +1,4 @@
 import C from '../constants'
-import fetch from 'isomorphic-fetch'
 
 export const addStore = store => {
   return {

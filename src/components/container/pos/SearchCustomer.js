@@ -2,16 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import ListItem from '@material-ui/core/ListItem'
 import TextField from '@material-ui/core/TextField'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
@@ -19,17 +10,13 @@ import Table from '@material-ui/core/Table'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
-import FolderIcon from '@material-ui/icons/Folder'
-import DeleteIcon from '@material-ui/icons/Delete'
 import { connect } from 'react-redux'
   
 
 import {
-  searchCustomers,
-  clearCustomerSearchs
+  searchCustomers
 } from '../../../actions/customerSearch'
 import {checkInCustomerAtPOS} from '../../../actions/customers'
-import { selectCustomer } from '../../../actions'
 
 const styles = theme => ({
   root: {
@@ -62,7 +49,6 @@ class SearchCustom extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { dense, secondary } = this.state
 
     return (
       <div className={classes.root}>

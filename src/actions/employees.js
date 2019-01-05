@@ -44,6 +44,10 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
     getState().posScreen.customerId &&
     getState().posScreen.screen === 'CUSTOMER_DETAIL'
   ) {
+    if (!getState().customers.byId[getState().posScreen.customerId].customerServices) {
+      dispatch(addGlobalError('Please select services first'))
+      return;
+    }
     const customerId = getState().posScreen.customerId
     const url = customerServiceId
     ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=1`

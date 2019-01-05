@@ -4,6 +4,7 @@ import { handleErrors, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
 import { addGlobalError } from './index'
+import { calculateCurrentPrices } from './payments'
 
 export const addCustomerService = customerService => {
   return {
@@ -83,6 +84,7 @@ export const deleteCustomerService = customerService => (
       }
       dispatch(removeCustomerService(customerService.id))
       dispatch(removeCustomerServiceFromCustomer(customerService))
+      dispatch(calculateCurrentPrices())
     })
     .catch(error => {
       dispatch(addGlobalError(error.message))
