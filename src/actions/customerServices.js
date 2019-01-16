@@ -1,9 +1,9 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
-import { addGlobalError } from './index'
+import { addGlobalError, createErrorLog } from './index'
 import { calculateCurrentPrices } from './payments'
 
 export const addCustomerService = customerService => {
@@ -87,6 +87,6 @@ export const deleteCustomerService = customerService => (
       dispatch(calculateCurrentPrices())
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }

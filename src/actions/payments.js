@@ -1,8 +1,8 @@
 import C from '../constants'
 
-import {changePOSScreen, addGlobalError, addGlobalMessage} from './index'
+import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, handleMessages, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getServiceCost } from '../utils'
 
 export const addCustomerCheckout = data => {
   return {
@@ -177,12 +177,12 @@ export const completePayment = () => (dispatch, getState) => {
     .then(handleErrors)
     .then(response => response.json())
     .then(outputData => {
-      handleMessages(outputData)
+      handleErrorMessages(outputData)
       dispatch(addCustomerCheckout(outputData.payment))
       dispatch(updateCustomer(outputData.customer))
       dispatch(addGlobalMessage('Payment was completed. Thank you!'))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }

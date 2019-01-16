@@ -1,7 +1,7 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
-import { addGlobalError } from './index'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { addGlobalError, createErrorLog } from './index'
 
 export const addAppointment = appointment => {
   return {
@@ -43,14 +43,14 @@ export const createAppointment = appointment => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       if (data) {
         dispatch(addAppointment(data))
       }
       // dispatch(fetchingAppointment(false))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
       // dispatch(fetchingAppointment(false))
     })
 }
@@ -66,14 +66,14 @@ export const loadAppointment = (startDate, endDate) => dispatch => {
      .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       if (data && data.length >= 0) {
         data.map (ele => dispatch(addAppointment(ele)))        
       }
       dispatch(fetchingAppointment(false))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
       dispatch(fetchingAppointment(false))
     })
 }
@@ -98,6 +98,6 @@ export const deleteAppointment = appointmentId => (
       dispatch(removeAppointment(appointmentId))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }

@@ -26,8 +26,23 @@ const consoleMessages = store => next => action => {
   return result
 }
 
+const crashReporter = store => next => action => {
+  try {
+    return next(action)
+  } catch (err) {
+    console.error('Caught an exception!', err)
+    window.Raven.captureException(err, {
+      extra: {
+        action,
+        state: store.getState()
+      }
+    })
+    throw err
+  }
+}
+
 export default (initialState = {}) => {
-  return applyMiddleware(thunk, consoleMessages)(createStore)(
+  return applyMiddleware(thunk, consoleMessages, crashReporter)(createStore)(
     appReducer,
     initialState
   )

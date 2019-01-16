@@ -6,19 +6,15 @@ const DEFAULT_LOCALE = 'en-US'
 export const handleErrors = response => {
   if (!response.ok) {
     console.log(response)
-    throw Error(response.statusText)
+    throw Error(response.statusText + ':' + response.url)
   }
   return response
 }
 
-export const handleMessages = data => {
-  console.log(data)
+export const handleErrorMessages = data => {
   if (data) {
     if (data.errors) {
       throw Error (data.errors[0])
-    } else if (data.infos) {
-      //TODO: add messages to global message.
-      return data
     }
   }
   return data

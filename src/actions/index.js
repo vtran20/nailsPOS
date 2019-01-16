@@ -7,7 +7,7 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleMessages, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getServiceCost } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 
@@ -22,7 +22,7 @@ export const initialData = storeId => (dispatch, getState) => {
     .then(handleErrors)
     .then(response => response.json())
     .then(result => {
-      handleMessages(result)
+      handleErrorMessages(result)
       if (result.stores) result.stores.map(store => dispatch(addStore(store)))
       if (result.services)
         result.services.map(service => dispatch(addService(service)))
@@ -63,7 +63,24 @@ export const initialData = storeId => (dispatch, getState) => {
         }
       }
     })
-    .catch(error => dispatch(addGlobalError(error.message)))
+    .catch(error => dispatch(createErrorLog(error.message)))
+}
+
+export const createErrorLog = (rootCause) => (dispatch, getState) => {
+  dispatch(addGlobalError('Internal System Error. Please try again later.'))
+  if (rootCause && rootCause.indexOf("http") >= 0) {
+    let inputData = {}
+    inputData['rootCause'] = rootCause
+    inputData['data'] = getState()
+
+    fetch(urlAPI + '/errorLog.json?storeId=1', {
+      method: 'POST',
+      body: JSON.stringify(inputData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })    
+  }
 }
 
 export const addGlobalError = message => {

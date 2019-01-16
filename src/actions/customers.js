@@ -1,10 +1,10 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
-import { selectCustomer, addGlobalError } from './index'
+import { selectCustomer, addGlobalError, createErrorLog } from './index'
 
 export const addCustomer = customer => {
   return {
@@ -46,14 +46,14 @@ export const searchCustomers = (phone, email) => dispatch => {
   fetch(queryString)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch({
         type: C.SEARCH_CUSTOMER,
         payload: data
       })
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -68,11 +68,11 @@ export const createCustomer = customer => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch(addCustomer(data))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -100,11 +100,11 @@ export const checkInCustomer = customerId => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch(addCustomer(data))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -118,14 +118,14 @@ export const checkInCustomerAtPOS = customerId => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch(addCustomer(data))
       dispatch(clearCustomerSearchs())
       dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: data.id }))
 
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -141,10 +141,10 @@ export const updateCustomerDB = customer => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch(updateCustomer(data))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }

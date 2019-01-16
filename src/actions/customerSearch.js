@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
-import { addGlobalError } from './index'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
+import { addGlobalError, createErrorLog } from './index'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 
 import C from '../constants'
 
@@ -25,11 +25,11 @@ export const searchCustomers = (value, type) => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(results => {
-      handleMessages(results)
+      handleErrorMessages(results)
       dispatch(changeCustomerSearchResults(results))
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
       dispatch(customerSearchFetching(false))
     })
 }

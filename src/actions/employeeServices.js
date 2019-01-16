@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { handleErrors, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeServiceFromCustomerService } from './customerServices'
-import {addGlobalError} from './index'
+import {createErrorLog} from './index'
 import { calculateCurrentPrices } from './payments'
 
 export const addEmployeeService = employeeService => {
@@ -71,6 +71,6 @@ export const deleteEmployeeService = employeeService => (
       dispatch(calculateCurrentPrices())
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }

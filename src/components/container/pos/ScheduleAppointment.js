@@ -82,9 +82,6 @@ class ScheduleAppointment extends Component {
   render() {
     const { viewModel, schedulerData } = this.state
     const { fetching, appointments, customerForm, classes  } = this.props
-    console.log(DATE_FORMAT)
-    console.log(viewModel)
-    console.log(schedulerData)
 
     let leftCustomHeader = (
       <div>

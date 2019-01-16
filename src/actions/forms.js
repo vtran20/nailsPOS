@@ -1,11 +1,11 @@
 import C from '../constants'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { addCustomer } from './customers'
 import { addAppointment } from './appointments'
 import { addEmployeeService } from './employeeServices'
 import { addCustomerService, updateCustomerService } from './customerServices'
 import { clearCustomerSearchs } from './customerSearch'
-import {resetPOSScreen, changePOSScreen, addGlobalError} from './index'
+import {resetPOSScreen, changePOSScreen, createErrorLog} from './index'
 
 export const addCustomerForm = customer => {
   return {
@@ -54,7 +54,7 @@ export const createNewCustomerServiceForCheckIn = () => (
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       dispatch(addCustomer(data.customer))
       data.customerServices.map(customerService =>
         dispatch(addCustomerService(customerService))
@@ -74,7 +74,7 @@ export const createNewCustomerServiceForCheckIn = () => (
       dispatch(clearCustomerForm())
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -89,13 +89,13 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
-      handleMessages(data)
+      handleErrorMessages(data)
       data.customerServices.map(customerService =>
         dispatch(updateCustomerService(customerService))
       )
     })
     .catch(error => {
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 }
 
@@ -112,7 +112,7 @@ export const makeAppointment = serviceIds => (dispatch, getState) => {
     .then(response => response.json())
     .then(data => {
 
-      handleMessages(data.messages? data.messages : null)
+      handleErrorMessages(data.messages? data.messages : null)
 
       if (data.customer) {
         dispatch(addCustomer(data.customer))
@@ -147,8 +147,7 @@ export const makeAppointment = serviceIds => (dispatch, getState) => {
       dispatch(clearCustomerSearchs())
     })
     .catch(error => {
-      console.log (error.message)
-      dispatch(addGlobalError(error.message))
+      dispatch(createErrorLog(error.message))
     })
 
 }

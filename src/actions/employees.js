@@ -1,8 +1,8 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { addEmployeeService } from './employeeServices'
-import { addGlobalError } from './index'
+import { addGlobalError, createErrorLog } from './index'
 export const addEmployee = employee => {
   return {
     type: C.EMPLOYEE_ADD,
@@ -65,13 +65,13 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
       .then(handleErrors)
       .then(response => response.json())
       .then(employeeServices => {
-        handleMessages(employeeServices)
+        handleErrorMessages(employeeServices)
         employeeServices.map(employeeService =>
           dispatch(addEmployeeService(employeeService))
         )
       })
       .catch(error => {
-        dispatch(addGlobalError(error.message))
+        dispatch(createErrorLog(error.message))
       })
   }
 }
