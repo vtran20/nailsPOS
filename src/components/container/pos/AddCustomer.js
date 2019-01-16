@@ -25,18 +25,24 @@ const styles = theme => ({
 
 class AddCustomer extends React.Component {
 
-handleSubmitCustomerForm = () => {
-  //call back to parent method, this will save information to store.forms
-  if (typeof this.props.onSubmit === 'function') {
-    this.props.onSubmit()
+  handleSubmitCustomerForm = () => {
+    //call back to parent method, this will save information to store.forms
+    if (typeof this.props.onSubmit === 'function') {
+      this.props.onSubmit()
+    }
+    //Create new customer service for for checkin and clear forms after that.
+    this.props.dispatch(createNewCustomerServiceForCheckIn())
   }
-  //Create new customer service for for checkin and clear forms after that.
-  this.props.dispatch(createNewCustomerServiceForCheckIn())
 
-}
+  handleSubmitCustomerFormForAppointment = () => {
+    //call back to parent method and move to select appointment time
+    if (typeof this.props.onSelectCustomer === 'function') {
+      this.props.onSelectCustomer()
+    }    
+  }
 
   render() {
-    const { classes } = this.props
+    const { classes, page } = this.props
 
     return (
       <div className={classes.root}>
@@ -46,7 +52,11 @@ handleSubmitCustomerForm = () => {
               Create New Customer
             </Typography>
             <div className={classes.demo}>
-              <CustomerForm onSubmit={this.handleSubmitCustomerForm}/>
+              <CustomerForm 
+              onSubmit={this.handleSubmitCustomerForm} 
+              onSubmitForAppointment={this.handleSubmitCustomerFormForAppointment}
+              page={page}
+              />
             </div>
           </Grid>
         </Grid>

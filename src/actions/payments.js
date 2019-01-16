@@ -2,7 +2,7 @@ import C from '../constants'
 
 import {changePOSScreen, addGlobalError, addGlobalMessage} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleMessages, urlAPI, getServiceCost } from '../utils'
 
 export const addCustomerCheckout = data => {
   return {
@@ -123,7 +123,7 @@ export const calculateCurrentPrices = () => (dispatch, getState) => {
 export const completePayment = () => (dispatch, getState) => {
   const customerId = getState().posScreen.customerId
   const currentCustomer = getState().customers.byId[customerId]
-  const currentCheckout = getState().payment.currentCheckout
+  const currentCheckout = getState().payments.currentCheckout
   //Validdate data before submit payment
   //Validate payment method
   if (currentCheckout.credit === 'N' && currentCheckout.cash === 'N' && currentCheckout.check === 'N' && currentCheckout.giftcard === 'N') {
@@ -177,12 +177,12 @@ export const completePayment = () => (dispatch, getState) => {
     .then(handleErrors)
     .then(response => response.json())
     .then(outputData => {
+      handleMessages(outputData)
       dispatch(addCustomerCheckout(outputData.payment))
       dispatch(updateCustomer(outputData.customer))
+      dispatch(addGlobalMessage('Payment was completed. Thank you!'))
     })
     .catch(error => {
       dispatch(addGlobalError(error.message))
     })
-
-    dispatch(addGlobalMessage('Payment was completed. Thank you!'))
 }

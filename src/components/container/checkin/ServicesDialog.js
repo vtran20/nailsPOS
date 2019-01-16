@@ -15,7 +15,8 @@ import { createCustomer } from '../../../actions/customers'
 import {
   addCustomerServiceForm,
   createNewCustomerServiceForCheckIn,
-  clearCustomerForm
+  clearCustomerForm,
+  makeAppointment
 } from '../../../actions/forms'
 
 class ServicesDialog extends Component {
@@ -50,10 +51,25 @@ class ServicesDialog extends Component {
     }
   }
 
+  handleMakeAppointment = () => {
+    const servicesIds = Object.keys(this.state).filter(key => this.state[key])
+    this.props.dispatch(makeAppointment(servicesIds))
+    this.onClose()
+
+  }
+
+  handleCloseServices = () => {
+    //call back to parent method
+    if (typeof this.props.onSkipServices === 'function') {
+      this.props.onSkipServices()
+    }
+  }
+
   onClose = () => {
     //reset state
     this.setState(this.baseState)
-    this.props.dispatch(clearCustomerForm())
+    //TODO: let parent clear this form if need
+    //this.props.dispatch(clearCustomerForm())
 
     //call back to parent method
     if (typeof this.props.onClose === 'function') {
@@ -62,7 +78,7 @@ class ServicesDialog extends Component {
   }
 
   render() {
-    const { classes, fullScreen, open } = this.props
+    const { classes, fullScreen, open, page } = this.props
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -95,22 +111,44 @@ class ServicesDialog extends Component {
             </FormGroup>
           </DialogContentText>
         </DialogContent>
+        {page === 'appointment'
+          ? (
         <DialogActions>
-          <Button
-            onClick={this.handleSubmitServices}
-            variant="contained"
-            color="primary"
-          >
-            Save Services
-          </Button>
-          <Button
-            onClick={this.handleSkipServices}
-            variant="contained"
-            color="secondary"
-          >
-            Skip
-          </Button>
+              <Button
+                onClick={() => this.handleMakeAppointment()}
+                variant="contained"
+                color="primary"
+              >
+                Make Appointment
+              </Button>
+              <Button
+                onClick={() => this.onClose()}
+                variant="contained"
+                color="secondary"
+              >
+                Close
+              </Button>
         </DialogActions>
+            )
+          : (
+        <DialogActions>
+              <Button
+                onClick={() => this.handleSubmitServices()}
+                variant="contained"
+                color="primary"
+              >
+                Save Services
+              </Button>
+              <Button
+                onClick={() => this.handleSkipServices()}
+                variant="contained"
+                color="secondary"
+              >
+                Skip
+              </Button>
+        </DialogActions>
+            )
+        }
       </Dialog>
     )
   }

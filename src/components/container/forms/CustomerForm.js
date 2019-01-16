@@ -63,14 +63,26 @@ class CustomerForm extends Component {
     }
   }
 
-  // this.props.onSubmit({
-  //   id: this.state.title.toLocaleLowerCase().replace(/ /g, '-'),
-  //   ...this.state
-  // })
+  handleSelectCustomerForAppointment = () => {
+    this.props.dispatch(
+      addCustomerForm({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        phone: this.state.phone,
+        email: this.state.email,
+        status: 'SCHEDULED'
+      })
+    )
+    //call back to parent method and move to select appointment time
+    if (typeof this.props.onSubmitForAppointment === 'function') {
+      this.props.onSubmitForAppointment()
+    }
+
+  }
 
   render() {
-    const { firstName, lastName, phone, email } = this.state,
-      { customer } = this.props
+    const { firstName, lastName, phone, email } = this.state
+    const { customer, page } = this.props
 
     return (
       <form>
@@ -107,14 +119,28 @@ class CustomerForm extends Component {
         />
         <br />
         <br />
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.handleSubmit}
-          // disabled={!firstName && !lastName}
-        >
-          {customer ? 'Edit' : 'Create'}
-        </Button>
+        {page === 'appointment'
+        ? (
+          <Button
+            variant="contained"
+            color="primary"
+            // className={classes.button}
+            onClick={() => this.handleSelectCustomerForAppointment()}
+          >
+            Continue Appointment
+          </Button>
+          )
+        : (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={this.handleSubmit}
+            // disabled={!firstName && !lastName}
+          >
+            {customer ? 'Edit' : 'Create'}
+          </Button>
+          )
+        }
       </form>
     )
   }

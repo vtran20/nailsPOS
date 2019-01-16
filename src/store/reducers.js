@@ -10,6 +10,7 @@ import stores from './stores'
 import forms from './forms'
 import customerSearch from './customerSearch'
 import payments from './payments'
+import appointments from './appointments'
 import produce from "immer"
 
 import { combineReducers } from 'redux'
@@ -86,6 +87,7 @@ const reducer = combineReducers({
   customerServices,
   employees,
   services,
+  appointments,
   employeeServices,
   fetching,
   errors,

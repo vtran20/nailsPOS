@@ -5,8 +5,9 @@ import { addEmployee } from './employees'
 import { addCustomerCheckout, updateCustomerCheckout, updateCurrentCheckout, clearCurrentCheckout } from './payments'
 import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
+import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleMessages, urlAPI, getServiceCost } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 
@@ -21,6 +22,7 @@ export const initialData = storeId => (dispatch, getState) => {
     .then(handleErrors)
     .then(response => response.json())
     .then(result => {
+      handleMessages(result)
       if (result.stores) result.stores.map(store => dispatch(addStore(store)))
       if (result.services)
         result.services.map(service => dispatch(addService(service)))
@@ -28,6 +30,8 @@ export const initialData = storeId => (dispatch, getState) => {
         result.customers.map(customer => dispatch(addCustomer(customer)))
       if (result.employees)
         result.employees.map(employee => dispatch(addEmployee(employee)))
+      if (result.appointments)
+        result.appointments.map(appointment => dispatch(addAppointment(appointment)))
       if (result.customerServices)
         result.customerServices.map(customerSrevice =>
           dispatch(addCustomerService(customerSrevice))

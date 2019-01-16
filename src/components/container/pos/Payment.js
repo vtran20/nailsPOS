@@ -60,17 +60,13 @@ class Payment extends React.Component {
   }
 
   onFocus = () => {
-    console.log ('onFocus')
     this.setState({disablePaymentButton: true})
   }
   onBlur = () => {
-    console.log ('onBlur')
     this.setState({disablePaymentButton: false})
   }
   render() {
     const { classes, customer } = this.props
-    const { disablePaymentButton } = this.state
-    console.log(this.state.disablePaymentButton)
   return (
     <div>
       <Grid container spacing={24}>
@@ -155,25 +151,11 @@ class Payment extends React.Component {
             </SvgIcon>
             Check
           </Button>
-          <br/>
-          <br/>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            className={classes.button}
-            fullWidth
-            onClick={() => this.handleClickBack({screen: 'CUSTOMER_DETAIL', customerId: this.props.customerId})}
-          >
-            <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
-              <path d="M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"/><path fill="none" d="M0 0h24v24H0z"/>
-            </SvgIcon>
-            Back
-          </Button>
-          <br/>
-          <br/>
           {customer && customer.status === 'COMPLETED'
           ? (
+            <div>
+              <br/>
+              <br/>
               <Button
                 variant="contained"
                 color="primary"
@@ -186,8 +168,27 @@ class Payment extends React.Component {
                 </SvgIcon>
                 Completed
               </Button>
+            </div>
             ) 
             : (
+            <div>
+              <br/>
+              <br/>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                className={classes.button}
+                fullWidth
+                onClick={() => this.handleClickBack({screen: 'CUSTOMER_DETAIL', customerId: this.props.customerId})}
+              >
+                <SvgIcon className={classNames(classes.leftIcon, classes.iconSmall)}>
+                  <path d="M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"/><path fill="none" d="M0 0h24v24H0z"/>
+                </SvgIcon>
+                Back
+              </Button>
+              <br/>
+              <br/>
               <Button
                 variant="contained"
                 color="primary"
@@ -202,6 +203,7 @@ class Payment extends React.Component {
                 </SvgIcon>
                 Confirm
               </Button>
+            </div>
               )}
           <br/>
           <br/>

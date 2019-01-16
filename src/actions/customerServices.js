@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, handleMessages, urlAPI } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
 import { addGlobalError } from './index'

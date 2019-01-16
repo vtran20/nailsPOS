@@ -17,6 +17,7 @@ import {
   searchCustomers
 } from '../../../actions/customerSearch'
 import {checkInCustomerAtPOS} from '../../../actions/customers'
+import {addCustomerForm} from '../../../actions/forms'
 
 const styles = theme => ({
   root: {
@@ -47,8 +48,17 @@ class SearchCustom extends React.Component {
     this.props.dispatch(checkInCustomerAtPOS(customer.id))
   }
 
+  handleSelectCustomerForAppointment = customer => {
+    const updatedCustomer = {...customer, status: 'SCHEDULED'}
+    this.props.dispatch(addCustomerForm(updatedCustomer))
+    //call back to parent method and move to select appointment time
+    if (typeof this.props.onSelectCustomer === 'function') {
+      this.props.onSelectCustomer()
+    }
+  }
+
   render() {
-    const { classes } = this.props
+    const { classes, page } = this.props
 
     return (
       <div className={classes.root}>
@@ -76,7 +86,7 @@ class SearchCustom extends React.Component {
                 onChange={this.handleChange('phone')}
               />
             </div>
-                      <br />
+          <br />
           <br />
           <Paper>
             <Table>
@@ -95,14 +105,28 @@ class SearchCustom extends React.Component {
                         {customer.phone} - {customer.email}
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          className={classes.button}
-                          onClick={() => this.handleSelectCustomer(customer)}
-                        >
-                          Check In
-                        </Button>
+                      {page === 'appointment'
+                        ? (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onClick={() => this.handleSelectCustomerForAppointment(customer)}
+                          >
+                            Select Customer
+                          </Button>
+                          )
+                        : (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onClick={() => this.handleSelectCustomer(customer)}
+                          >
+                            Check In
+                          </Button>
+                          )
+                      }
                       </TableCell>
                     </TableRow>
                   ))

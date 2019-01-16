@@ -2,7 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, handleMessages, urlAPI } from '../utils'
 import { addGlobalError } from './index'
 
 export const addService = service => {
@@ -54,6 +54,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
       .then(handleErrors)
       .then(response => response.json())
       .then(customerService => {
+          handleMessages(customerService)
           dispatch(addCustomerService(customerService))
           dispatch(calculateCurrentPrices())
         }

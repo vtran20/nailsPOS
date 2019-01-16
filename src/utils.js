@@ -5,12 +5,23 @@ const DEFAULT_LOCALE = 'en-US'
 
 export const handleErrors = response => {
   if (!response.ok) {
-    console.log(JSON.stringify(response))
     console.log(response)
-    console.log(response.statusText)
     throw Error(response.statusText)
   }
   return response
+}
+
+export const handleMessages = data => {
+  console.log(data)
+  if (data) {
+    if (data.errors) {
+      throw Error (data.errors[0])
+    } else if (data.infos) {
+      //TODO: add messages to global message.
+      return data
+    }
+  }
+  return data
 }
 
 export const cents2Dollars = (cents, locale, currency) => {
@@ -93,3 +104,36 @@ export const getEmployeeIdsOfCustomer = (customerServiceIds, customerServices, e
     }
   return employeeIds
 }
+
+//Return array of employees
+export const getEmployeesArray = (employeeIds, employees)  => {
+  let employeesArray = []
+    if (employeeIds && employees) {
+      employeeIds.map(employeeId => {
+        let employee = employees[employeeId]
+        if (employee) {
+          employeesArray = [...employeesArray, employee]
+        }
+      })
+    }
+  return employeesArray
+}
+
+//Return array of appointment
+export const getAppointmentsArray = (appointmentIds, appointments)  => {
+  let appointmentsArray = []
+    if (appointmentIds && appointments) {
+      appointmentIds.map(appointmentId => {
+        let appointment = appointments[appointmentId]
+        if (appointment) {
+          appointmentsArray = [...appointmentsArray, appointment]
+        }
+      })
+    }
+  return appointmentsArray
+}
+
+//This method is used for sorting appointments order by startDate.
+export const compareAppointment = (a, b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)
+
+

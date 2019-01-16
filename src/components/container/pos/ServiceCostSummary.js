@@ -62,7 +62,6 @@ class ServiceCostSummary extends React.Component {
   handleTipPayUpdate = ({ target: { value } }) => {
     this.props.dispatch(updateTipPay({tipPrice : dollars2Cents(this.state.tipPriceState)}))
     this.setState({edit: false, tipPriceState: 0})   
-    console.log(this.props)
     if (typeof this.props.onBlur === 'function') {      
       this.props.onBlur()
     }
@@ -73,7 +72,6 @@ class ServiceCostSummary extends React.Component {
   }
 
   handleOnFocus = (e) => {
-    console.log(this.props)
     e.target.select()
     this.setState({edit: true, tipPriceState: cents2Fixed2(this.props.currentCheckout.tipPrice)}) 
     if (typeof this.props.onFocus === 'function') {

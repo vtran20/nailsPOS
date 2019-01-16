@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, handleMessages, urlAPI } from '../utils'
 import { addEmployeeService } from './employeeServices'
 import { addGlobalError } from './index'
 export const addEmployee = employee => {
@@ -65,6 +65,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
       .then(handleErrors)
       .then(response => response.json())
       .then(employeeServices => {
+        handleMessages(employeeServices)
         employeeServices.map(employeeService =>
           dispatch(addEmployeeService(employeeService))
         )

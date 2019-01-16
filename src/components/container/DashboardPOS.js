@@ -29,9 +29,14 @@ import EmployeeList from './pos/EmployeeList'
 import CustomerList from './pos/CustomerList'
 import ServicesButtonDialog from './pos/ServicesButtonDialog'
 import EmployeesButtonDialog from './pos/EmployeesButtonDialog'
+import ScheduleDialog from './pos/ScheduleDialog'
 import Payment from './pos/Payment'
+import Menu from './pos/Menu'
+import CustomerSearchDialog from './pos/CustomerSearchDialog'
 import { selectAddCustomer, clearGlobalError, clearGlobalMessage } from '../../actions'
 import Messages from '../common/Messages'
+import { clearCustomerForm } from '../../actions/forms'
+import { clearCustomerSearchs } from '../../actions/customerSearch'
 
 const drawerWidth = 240
 
@@ -126,7 +131,9 @@ const styles = theme => ({
 
 class DashboardPOS extends React.Component {
   state = {
-    open: true
+    scheduleOpen: false,
+    customerSearch: false,
+    menuOpen: false
   }
 
  
@@ -134,12 +141,30 @@ class DashboardPOS extends React.Component {
     this.props.dispatch(selectAddCustomer(data))
   }
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true })
+  handleScheduleOpen = () => {
+    this.setState({ scheduleOpen: true})
   }
 
-  handleDrawerClose = () => {
-    this.setState({ open: false })
+  handleScheduleClose = () => {
+    this.setState({ scheduleOpen: false})
+  }
+
+  handleCustomerSearchOpen = () => {
+    this.setState({ customerSearch: true })
+  }
+
+  handleCustomerSearchDialogClose = () => {
+    this.setState({ customerSearch: false })
+    // Clear customer search result if any
+    this.props.dispatch(clearCustomerSearchs())   
+  }
+
+  handleMenuOpen = () => {
+    this.setState({ menuOpen: true })
+  }
+
+  handleMenuClose = () => {
+    this.setState({ menuOpen: false })
   }
 
   handleCloseError = (event, reason) => {
@@ -168,20 +193,27 @@ class DashboardPOS extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
+        <Menu 
+        open={this.state.menuOpen} 
+        closeMenu={this.handleMenuClose}
+        onViewSchedule={this.handleScheduleOpen}
+        />
         <ServicesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
         <EmployeesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
+        <ScheduleDialog open={this.state.scheduleOpen} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
+        <CustomerSearchDialog open={this.state.customerSearch} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}
         >
           <Toolbar
-            disableGutters={!this.state.open}
+            disableGutters={!false}
             className={classes.toolbar}
           >
             <IconButton
               color="inherit"
               aria-label="Other functions"
-              onClick={this.handleDrawerOpen}
+              onClick={this.handleMenuOpen}
               className={classNames(classes.menuButton)}
             >
               <MenuIcon />
@@ -232,6 +264,7 @@ class DashboardPOS extends React.Component {
               color="secondary"
               size="small"
               className={classes.button}
+              onClick={() => this.handleCustomerSearchOpen()}
             >
               <AddIcon
                 className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -248,12 +281,9 @@ class DashboardPOS extends React.Component {
         <Drawer
           variant="permanent"
           classes={{
-            paper: classNames(
-              classes.drawerPaper,
-              !this.state.open && classes.drawerPaperClose
-            )
+            paper: classNames(classes.drawerPaper)
           }}
-          open={this.state.open}
+          open={true}
         >
           <div className={classes.appBarSpacer} />
           <Divider />
@@ -277,7 +307,7 @@ class DashboardPOS extends React.Component {
                   }}
                   open={true}
                   onClose={this.handleCloseError}
-                  autoHideDuration={6000}
+                  // autoHideDuration={6000}
                 >
                   <Messages
                       onClose={this.handleCloseError}
@@ -297,6 +327,7 @@ class DashboardPOS extends React.Component {
                   }}
                   open={true}
                   onClose={this.handleCloseMessage}
+                  autoHideDuration={6000}
                >
                   <Messages
                       onClose={this.handleCloseMessage}
@@ -312,11 +343,10 @@ class DashboardPOS extends React.Component {
           variant="permanent"
           classes={{
             paper: classNames(
-              classes.drawerPaper,
-              !this.state.open && classes.drawerPaperClose
+              classes.drawerPaper
             )
           }}
-          open={this.state.open}
+          open={true}
         >
           <div className={classes.appBarSpacer} />
 

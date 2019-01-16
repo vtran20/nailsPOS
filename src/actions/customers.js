@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, handleMessages, urlAPI } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
@@ -46,6 +46,7 @@ export const searchCustomers = (phone, email) => dispatch => {
   fetch(queryString)
     .then(response => response.json())
     .then(data => {
+      handleMessages(data)
       dispatch({
         type: C.SEARCH_CUSTOMER,
         payload: data
@@ -67,6 +68,7 @@ export const createCustomer = customer => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
+      handleMessages(data)
       dispatch(addCustomer(data))
     })
     .catch(error => {
@@ -98,6 +100,7 @@ export const checkInCustomer = customerId => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
+      handleMessages(data)
       dispatch(addCustomer(data))
     })
     .catch(error => {
@@ -115,6 +118,7 @@ export const checkInCustomerAtPOS = customerId => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
+      handleMessages(data)
       dispatch(addCustomer(data))
       dispatch(clearCustomerSearchs())
       dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: data.id }))
@@ -137,6 +141,7 @@ export const updateCustomerDB = customer => dispatch => {
     .then(handleErrors)
     .then(response => response.json())
     .then(data => {
+      handleMessages(data)
       dispatch(updateCustomer(data))
     })
     .catch(error => {

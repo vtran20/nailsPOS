@@ -9,7 +9,6 @@ import { selectCustomer } from '../../../actions'
 
 class CustomerList extends Component {
   handleClick = data => {
-    console.log(data)
     this.props.dispatch(selectCustomer(data))
   }
   render() {
