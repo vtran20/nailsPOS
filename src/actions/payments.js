@@ -2,7 +2,8 @@ import C from '../constants'
 
 import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, handleErrorMessages, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { getServiceCost } from '../selectors'
 
 export const addCustomerCheckout = data => {
   return {
@@ -109,11 +110,7 @@ export const updateCurrentPaymentMethod = data => (dispatch, getState) => {
 
 export const calculateCurrentPrices = () => (dispatch, getState) => {
 
-  const servicePrice = getServiceCost(
-    getState().customers.byId[getState().posScreen.customerId], 
-    getState().customerServices.byId, 
-    getState().employeeServices.byId
-  )
+  const servicePrice = getServiceCost(getState())
   let  temp = getState().payments.currentCheckout
   const totalPrice = (temp.tipPrice? temp.tipPrice : 0) + servicePrice
   const currentCheckout = Object.assign ({}, temp, {servicePrice: servicePrice, totalPrice: totalPrice})

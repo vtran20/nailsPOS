@@ -33,10 +33,10 @@ import ScheduleDialog from './pos/ScheduleDialog'
 import Payment from './pos/Payment'
 import Menu from './pos/Menu'
 import CustomerSearchDialog from './pos/CustomerSearchDialog'
-import { selectAddCustomer, clearGlobalError, clearGlobalMessage } from '../../actions'
+import { selectAddCustomer, clearGlobalError, clearGlobalMessage, updatePOSScreen} from '../../actions'
 import Messages from '../common/Messages'
-import { clearCustomerForm } from '../../actions/forms'
 import { clearCustomerSearchs } from '../../actions/customerSearch'
+import { getStore } from '../../selectors'
 
 const drawerWidth = 240
 
@@ -130,41 +130,35 @@ const styles = theme => ({
 })
 
 class DashboardPOS extends React.Component {
-  state = {
-    scheduleOpen: false,
-    customerSearch: false,
-    menuOpen: false
-  }
-
  
   handleAddCustomer = (data) => {
     this.props.dispatch(selectAddCustomer(data))
   }
 
   handleScheduleOpen = () => {
-    this.setState({ scheduleOpen: true})
+    this.props.dispatch(updatePOSScreen({ scheduleOpenDialog: true}))
   }
 
   handleScheduleClose = () => {
-    this.setState({ scheduleOpen: false})
+    this.props.dispatch(updatePOSScreen({ scheduleOpenDialog: false}))
   }
 
   handleCustomerSearchOpen = () => {
-    this.setState({ customerSearch: true })
+    this.props.dispatch(updatePOSScreen({ customerSearchDialog: true }))
   }
 
   handleCustomerSearchDialogClose = () => {
-    this.setState({ customerSearch: false })
+    this.props.dispatch(updatePOSScreen({ customerSearchDialog: false }))
     // Clear customer search result if any
     this.props.dispatch(clearCustomerSearchs())   
   }
 
   handleMenuOpen = () => {
-    this.setState({ menuOpen: true })
+    this.props.dispatch(updatePOSScreen({ menuOpenDialog: true }))
   }
 
   handleMenuClose = () => {
-    this.setState({ menuOpen: false })
+    this.props.dispatch(updatePOSScreen({ menuOpenDialog: false }))
   }
 
   handleCloseError = (event, reason) => {
@@ -189,19 +183,19 @@ class DashboardPOS extends React.Component {
     }
   }
   render() {
-    const { classes } = this.props
+    const { classes, screen, store, errors, messages } = this.props
     return (
       <div className={classes.root}>
         <CssBaseline />
         <Menu 
-        open={this.state.menuOpen} 
+        open={screen.menuOpenDialog} 
         closeMenu={this.handleMenuClose}
         onViewSchedule={this.handleScheduleOpen}
         />
-        <ServicesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
-        <EmployeesButtonDialog customerId={this.props.screen? this.props.screen.customerId : 0}/>
-        <ScheduleDialog open={this.state.scheduleOpen} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
-        <CustomerSearchDialog open={this.state.customerSearch} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
+        <ServicesButtonDialog customerId={screen? screen.customerId : 0}/>
+        <EmployeesButtonDialog customerId={screen? screen.customerId : 0}/>
+        <ScheduleDialog open={screen.scheduleOpenDialog} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
+        <CustomerSearchDialog open={screen.customerSearchDialog} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}
@@ -225,7 +219,7 @@ class DashboardPOS extends React.Component {
               noWrap
               className={classes.title}
             >
-              {this.props.store? this.props.store.name : ''}
+              {store? store.name : ''}
             </Typography>
             <Button
               variant="contained"
@@ -295,10 +289,10 @@ class DashboardPOS extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {this.props.screen? this.renderSwitch(this.props.screen.screen) : ''}
+          {screen? this.renderSwitch(screen.screen) : ''}
 
           {/*Error messages*/}
-            {this.props.errors.map((error, index) => 
+            {errors.map((error, index) => 
               <Snackbar
                   key={index}
                   anchorOrigin={{
@@ -318,7 +312,7 @@ class DashboardPOS extends React.Component {
             )}
 
             {/*message*/}
-            {this.props.messages.map((message, index) => 
+            {messages.map((message, index) => 
               <Snackbar
                   key={index}
                   anchorOrigin={{
@@ -366,8 +360,8 @@ DashboardPOS.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  screen: state.posScreen,
-  store: state.stores.byId[state.stores.currentStoreId],
+  screen: state.posScreen? state.posScreen : {},
+  store: getStore(state),
   errors: state.errors,
   messages: state.messages
 })

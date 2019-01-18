@@ -6,6 +6,8 @@ import Avatar from '@material-ui/core/Avatar'
 import ImageIcon from '@material-ui/icons/Image'
 import { connect } from 'react-redux'
 import { addServiceToCustomer } from '../../../actions/services'
+import { getServices } from '../../../selectors'
+
 
 class ServiceList extends Component {
   handleAddServiceToCustomer = serviceId => {
@@ -14,13 +16,13 @@ class ServiceList extends Component {
   }
 
   render() {
+    const {services} = this.props
     return (
       <div>
         <ListSubheader>Services</ListSubheader>
-        {this.props.servicesIds.map(serviceId => {
-          const service = this.props.services[serviceId]
+        {services.map(service => {
           return (
-            <ListItem button key={serviceId} onClick={() => this.handleAddServiceToCustomer(serviceId)}>
+            <ListItem button key={service.id} onClick={() => this.handleAddServiceToCustomer(service.id)}>
               <Avatar>
                 <ImageIcon />
               </Avatar>
@@ -33,7 +35,6 @@ class ServiceList extends Component {
   }
 }
 const mapStateToProps = state => ({
-  servicesIds: state.services.allIds,
-  services: state.services.byId
+  services: getServices(state)
 })
 export default connect(mapStateToProps)(ServiceList)

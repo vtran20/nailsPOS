@@ -12,8 +12,9 @@ import {
 import { removePOSDialog } from '../../../actions'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
-import { cents2Dollars, getServiceIdsOfCustomer } from '../../../utils'
+import { cents2Dollars } from '../../../utils'
 import { addServiceToCustomer } from '../../../actions/services'
+import { getServiceIdsOfCustomer, getServices } from '../../../selectors'
 
 
 const styles = theme => ({
@@ -57,8 +58,7 @@ class ServicesButtonDialog extends Component {
   }
 
   render() {
-    const { classes, customerId } = this.props
-    const selectedServiceIds = getServiceIdsOfCustomer (this.props.customers[customerId]? this.props.customers[customerId].customerServices: [], this.props.customerServices)
+    const { classes, services, selectedServiceIds } = this.props
 
     return (
       <Dialog
@@ -73,17 +73,16 @@ class ServicesButtonDialog extends Component {
         <DialogContent>
           <DialogContentText>
             <FormGroup row>
-              {this.props.servicesIds.map(serviceId => {
-                let service = this.props.services[serviceId]
+              {services.map(service => {
                 return (
                   <Button
-                    key={serviceId}
-                    variant={selectedServiceIds.find(x => x === serviceId)? 'outlined' : 'contained'}
+                    key={service.id}
+                    variant={selectedServiceIds.find(x => x === service.id)? 'outlined' : 'contained'}
                     color="secondary"
                     size="small"
                     className={classes.button}
                     onClick={() =>
-                        this.handleAddServiceToCustomer(serviceId)
+                        this.handleAddServiceToCustomer(service.id)
                       }
                   >
                   <SvgIcon>
@@ -110,10 +109,8 @@ class ServicesButtonDialog extends Component {
   }
 }
 const mapStateToProps = state => ({
-  servicesIds: state.services.allIds,
-  customers: state.customers.byId,
-  services: state.services.byId,
-  customerServices: state.customerServices.byId,
+  services: getServices(state),
+  selectedServiceIds : getServiceIdsOfCustomer(state),
   openAddServiceDialog : (state.posScreen && state.posScreen.openAddServiceDialog)? true : false
 })
 

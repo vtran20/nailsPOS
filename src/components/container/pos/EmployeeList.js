@@ -6,6 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 import ImageIcon from '@material-ui/icons/Image'
 import { connect } from 'react-redux'
 import { addEmployeeToCustomer } from '../../../actions/employees'
+import { getEmployees } from '../../../selectors'
 
 class EmployeeList extends Component {
   handleAddEmployeeToCustomer = employeeId => {
@@ -13,16 +14,16 @@ class EmployeeList extends Component {
     this.props.dispatch(addEmployeeToCustomer(employeeId))
   }
   render() {
+    const {employees} = this.props
     return (
       <div>
         <ListSubheader>Employees</ListSubheader>
-        {this.props.employeeIds.map(employeeId => {
-          const employee = this.props.employees[employeeId]
+        {employees.map(employee => {
           return (
             <ListItem
               button
-              key={employeeId}
-              onClick={() => this.handleAddEmployeeToCustomer(employeeId)}
+              key={employee.id}
+              onClick={() => this.handleAddEmployeeToCustomer(employee.id)}
             >
               <Avatar>
                 <ImageIcon />
@@ -38,7 +39,6 @@ class EmployeeList extends Component {
   }
 }
 const mapStateToProps = state => ({
-  employeeIds: state.employees.allIds,
-  employees: state.employees.byId
+  employees: getEmployees (state)
 })
 export default connect(mapStateToProps)(EmployeeList)

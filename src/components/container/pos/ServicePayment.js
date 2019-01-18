@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { deleteEmployeeService } from '../../../actions/employeeServices'
 import { deleteCustomerService } from '../../../actions/customerServices'
 import { cents2Dollars } from '../../../utils'
+import { getCustomerServicesOfCustomer } from '../../../selectors'
 
 const styles = theme => ({
   root: {
@@ -46,20 +47,16 @@ class ServicePayment extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
-    const customerServiceIds = this.props.customers[this.props.customerId]
-      .customerServices
+    const { classes, customerServices, employeeServices, employees, services } = this.props
+
     return (
       <div>
-        {(customerServiceIds && customerServiceIds.length > 0)
-          ? customerServiceIds.map(customerServiceId => {
-              const customerService = this.props.customerServices[
-                customerServiceId
-              ]
+        {customerServices
+          ? customerServices.map(customerService => {
               const employeeServiceIds = customerService.employeeServices
-              const service = this.props.services[customerService.serviceId]
+              const service = services[customerService.serviceId]
               return (
-                <Paper className={classes.root} key={customerServiceId}>
+                <Paper className={classes.root} key={customerService.id}>
                   <Table className={classes.table}>
                     <TableHead>
                       <TableRow>
@@ -70,12 +67,8 @@ class ServicePayment extends React.Component {
                     {employeeServiceIds && employeeServiceIds.length > 0 ? (
                       <TableBody>
                         {employeeServiceIds.map(employeServiceId => {
-                          const employeeService = this.props.employeeServices[
-                            employeServiceId
-                          ]
-                          const employee = this.props.employees[
-                            employeeService.employeeId
-                          ]
+                          const employeeService = employeeServices[employeServiceId]
+                          const employee = employees[employeeService.employeeId]
                           return (
                             <TableRow key={employeeService.id}>
                               <TableCell component="th" scope="row">
@@ -104,12 +97,10 @@ ServicePayment.propTypes = {
   classes: PropTypes.object.isRequired
 }
 const mapStateToProps = state => ({
-  customers: state.customers.byId,
   employees: state.employees.byId,
-  customerId: state.posScreen.customerId,
   services: state.services.byId,
-  customerServices: state.customerServices.byId,
-  employeeServices: state.employeeServices.byId
+  employeeServices: state.employeeServices.byId,
+  customerServices : getCustomerServicesOfCustomer(state)
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(ServicePayment))

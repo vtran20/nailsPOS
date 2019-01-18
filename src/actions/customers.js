@@ -4,7 +4,7 @@ import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
-import { selectCustomer, addGlobalError, createErrorLog } from './index'
+import { selectCustomer, createErrorLog } from './index'
 
 export const addCustomer = customer => {
   return {

@@ -58,7 +58,7 @@ class SearchCustom extends React.Component {
   }
 
   render() {
-    const { classes, page } = this.props
+    const { classes, page, customerResults, fetching, notFound } = this.props
 
     return (
       <div className={classes.root}>
@@ -91,14 +91,14 @@ class SearchCustom extends React.Component {
           <Paper>
             <Table>
               <TableBody>
-                {this.props.notFound ? (
+                {notFound ? (
                   <TableRow>
                     <TableCell component="th" scope="row">
                       Cannot find your account
                     </TableCell>
                   </TableRow>
                 ) : (
-                  this.props.customerResults.map(customer => (
+                  customerResults.map(customer => (
                     <TableRow key={customer.id}>
                       <TableCell component="th" scope="row">
                         {customer.firstName} {customer.lastName} -{' '}
@@ -147,8 +147,6 @@ SearchCustom.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  customersIds: state.customers.allIds,
-  customers: state.customers.byId,
   customerResults: state.customerSearch.customerResults,
   fetching: state.customerSearch.fetching,
   notFound: state.customerSearch.notFound

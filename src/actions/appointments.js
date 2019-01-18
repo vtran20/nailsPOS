@@ -1,7 +1,7 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
-import { addGlobalError, createErrorLog } from './index'
+import { createErrorLog } from './index'
 
 export const addAppointment = appointment => {
   return {

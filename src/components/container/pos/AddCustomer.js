@@ -69,9 +69,9 @@ AddCustomer.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-const mapStateToProps = state => ({
-  customersIds: state.customers.allIds,
-  customers: state.customers.byId
-})
-export default connect(mapStateToProps)(withStyles(styles)(AddCustomer))
+// const mapStateToProps = state => ({
+//   customersIds: state.customers.allIds,
+//   customers: state.customers.byId
+// })
+export default connect()(withStyles(styles)(AddCustomer))
 

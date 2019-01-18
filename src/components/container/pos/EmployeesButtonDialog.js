@@ -12,8 +12,8 @@ import {
 import { removePOSDialog } from '../../../actions'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
-import { getEmployeeIdsOfCustomer } from '../../../utils'
 import { addEmployeeToCustomer } from '../../../actions/employees'
+import { getEmployees, getEmployeeIdsOfCustomer } from '../../../selectors'
 
 
 const styles = theme => ({
@@ -39,7 +39,6 @@ const styles = theme => ({
   }
 })
 
-
 class EmployeesButtonDialog extends Component {
 
   handleAddServiceToCustomer = (employeeId, customerServiceId) => {
@@ -50,17 +49,11 @@ class EmployeesButtonDialog extends Component {
   onClose = () => {
     this.props.dispatch(removePOSDialog('openAddEmployeeDialog'))
     this.props.dispatch(removePOSDialog('customerServiceId'))
-
-    //call back to parent method
-    // if (typeof this.props.onClose === 'function') {
-    //   this.props.onClose()
-    // }
   }
 
   render() {
-    const { classes, customerId } = this.props
-    const selectedEmployeeIds = getEmployeeIdsOfCustomer (this.props.customers[customerId]? this.props.customers[customerId].customerServices: [], this.props.customerServices, this.props.employeeServices)
-    const customerServiceId = this.props.posScreen? this.props.posScreen.customerServiceId : null
+    const { classes, employees, posScreen, selectedEmployeeIds } = this.props
+    const customerServiceId = posScreen? posScreen.customerServiceId : null
     return (
       <Dialog
         fullScreen
@@ -74,17 +67,16 @@ class EmployeesButtonDialog extends Component {
         <DialogContent>
           <DialogContentText>
             <FormGroup row>
-              {this.props.employeesIds.map(employeeId => {
-                let employee = this.props.employees[employeeId]
+              {employees.map(employee => {
                 return (
                   <Button
-                    key={employeeId}
-                    variant={selectedEmployeeIds.find(x => x === employeeId)? 'outlined' : 'contained'}
+                    key={employee.id}
+                    variant={selectedEmployeeIds.find(x => x === employee.id)? 'outlined' : 'contained'}
                     color="secondary"
                     size="small"
                     className={classes.button}
                     onClick={() =>
-                        this.handleAddServiceToCustomer(employeeId, customerServiceId)
+                        this.handleAddServiceToCustomer(employee.id, customerServiceId)
                       }
                   >
                   <SvgIcon>
@@ -111,11 +103,8 @@ class EmployeesButtonDialog extends Component {
   }
 }
 const mapStateToProps = state => ({
-  employeesIds: state.employees.allIds,
-  customers: state.customers.byId,
-  employees: state.employees.byId,
-  customerServices: state.customerServices.byId,
-  employeeServices: state.employeeServices.byId,
+  employees: getEmployees (state),
+  selectedEmployeeIds: getEmployeeIdsOfCustomer(state),
   openAddEmployeeDialog : (state.posScreen && state.posScreen.openAddEmployeeDialog)? true : false,
   posScreen : state.posScreen
 })

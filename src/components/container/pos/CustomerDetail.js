@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { updateCustomerDB } from '../../../actions/customers'
 import { handleOpenDialog } from '../../../actions'
 import { handlePayment } from '../../../actions/payments'
+import { getCurrentCustomer } from '../../../selectors'
 
 const styles = theme => ({
   root: {
@@ -52,11 +53,10 @@ class CustomerDetail extends React.Component {
   }
 
   renderCustomerDetailButtons() {
-    const { classes } = this.props
+    const { classes, currentCustomer } = this.props
 
-    if (this.props.customerId && this.props.customers[this.props.customerId]) {
-      const customer = this.props.customers[this.props.customerId]
-      switch (customer.status) {
+    if (currentCustomer) {
+      switch (currentCustomer.status) {
         case 'SCHEDULED':
           return (
                 <Button
@@ -64,7 +64,7 @@ class CustomerDetail extends React.Component {
                 color="primary"
                 size="small"
                 className={classes.button}
-                onClick={() => this.handleStartCustomerService(this.props.customerId)}
+                onClick={() => this.handleStartCustomerService(currentCustomer.id)}
               >
                 <SvgIcon>
                   <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
@@ -113,7 +113,7 @@ class CustomerDetail extends React.Component {
                 color="primary"
                 size="small"
                 className={classes.button}
-                onClick={() => this.handlePayment({screen: 'PAYMENT_CUSTOMER', customerId: this.props.customerId})}
+                onClick={() => this.handlePayment({screen: 'PAYMENT_CUSTOMER', customerId: currentCustomer.id})}
               >
                 <SvgIcon>
                   <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
@@ -131,10 +131,10 @@ class CustomerDetail extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, currentCustomer } = this.props
     return (
       <div>
-        {this.props.customerId && this.props.customers[this.props.customerId]? (
+        {currentCustomer? (
           <div>
             <Grid container spacing={8}>
               <Grid item xs={7} sm container>
@@ -144,15 +144,15 @@ class CustomerDetail extends React.Component {
                       Customer
                     </Typography>
                     <Typography color="textSecondary">
-                      {this.props.customers[this.props.customerId].firstName +
+                      {currentCustomer.firstName +
                         ' ' +
-                        this.props.customers[this.props.customerId].lastName}
+                        currentCustomer.lastName}
                     </Typography>
                     <Typography color="textSecondary">
-                      {this.props.customers[this.props.customerId].phone}
+                      {currentCustomer.phone}
                     </Typography>
                     <Typography color="textSecondary">
-                      {this.props.customers[this.props.customerId].email}
+                      {currentCustomer.email}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -192,9 +192,7 @@ CustomerDetail.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.byId,
-  customerId: state.posScreen.customerId,
-  customerServices: state.customerServices.byId
+  currentCustomer: getCurrentCustomer(state)
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(CustomerDetail))

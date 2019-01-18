@@ -8,6 +8,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import { connect } from 'react-redux'
 import { updateTipPay } from '../../../actions/payments'
 import { cents2Dollars, dollars2Cents, cents2Fixed2 } from '../../../utils'
+import { getCurrentCustomer } from '../../../selectors'
 
 const styles = theme => ({
   root: {
@@ -80,10 +81,10 @@ class ServiceCostSummary extends React.Component {
   }
 
   render() {
-    const { classes, page } = this.props
+    const { classes, page, customer, currentCheckout } = this.props
     return (
       <div>
-        {this.props.customerId && this.props.customers[this.props.customerId]? (
+        {customer? (
           <Grid item xs={12} 
             container
             alignItems="flex-end"
@@ -105,19 +106,19 @@ class ServiceCostSummary extends React.Component {
             </Grid>
             <Grid item xs={6}>
               <Typography align="right" variant="body2">
-                {cents2Dollars(this.props.currentCheckout.servicePrice)}
+                {cents2Dollars(currentCheckout.servicePrice)}
               </Typography>
               <Typography align="right" variant="body2">
                 $0
               </Typography>
-              {page === 'payment' && this.props.customerId
+              {page === 'payment' && customer
               ?
               <FormControl className={classes.input}>
                 <Input
                   className={classes.margin}
                   id="adornment-amount"
                   onFocus={this.handleOnFocus}
-                  value = {this.state.edit? this.state.tipPriceState :cents2Fixed2(this.props.currentCheckout.tipPrice)}
+                  value = {this.state.edit? this.state.tipPriceState :cents2Fixed2(currentCheckout.tipPrice)}
                   onChange={this.handleTipPayChange}
                   onBlur={this.handleTipPayUpdate}
                   startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -125,12 +126,12 @@ class ServiceCostSummary extends React.Component {
               </FormControl>
               : 
               <Typography align="right" variant="body2" className={classes.tipLabel}>
-                {cents2Dollars(this.props.currentCheckout.tipPrice)}
+                {cents2Dollars(currentCheckout.tipPrice)}
               </Typography>
               }
               <Divider />
               <Typography align="right" variant="subtitle1">
-                {cents2Dollars(this.props.currentCheckout.totalPrice)}
+                {cents2Dollars(currentCheckout.totalPrice)}
               </Typography>
             </Grid>
           </Grid>         
@@ -147,10 +148,7 @@ ServiceCostSummary.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.byId,
-  customerId: state.posScreen.customerId,
-  customerServices: state.customerServices.byId,
-  employeeServices: state.employeeServices.byId,
+  customer: getCurrentCustomer(state),
   currentCheckout : state.payments.currentCheckout
 })
 

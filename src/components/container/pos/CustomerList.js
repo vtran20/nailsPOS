@@ -6,43 +6,43 @@ import Avatar from '@material-ui/core/Avatar'
 import ImageIcon from '@material-ui/icons/Image'
 import { connect } from 'react-redux'
 import { selectCustomer } from '../../../actions'
+import { getCustomers, getCurrentCustomer } from '../../../selectors'
 
 class CustomerList extends Component {
   handleClick = data => {
     this.props.dispatch(selectCustomer(data))
   }
   render() {
-
-    const { status, title } = this.props
-    
+    const { status, title, currentCustomer, customers } = this.props
     return (
       <div>
         <ListSubheader>{title}</ListSubheader>
         {/*if we don't pass status: return all customer except SCHEDULED and COMPLETED. If we pass status, only return customer for that status */}
-        {this.props.customersIds
-          .filter(cId => {
+        {customers
+          .filter(customer => {
             return status
-              ? this.props.customers[cId].status === status
+              ? customer.status === status 
                 ? true
                 : false
-              : this.props.customers[cId].status !== 'SCHEDULED' &&
-                this.props.customers[cId].status !== 'COMPLETED'
+              : customer.status !== 'SCHEDULED' && 
+                customer.status !== 'COMPLETED' 
               ? true
               : false
           })
-          .map(customerId => {
-            const customer = this.props.customers[customerId]
+          .map(customer => {
             return (
               <ListItem
                 button
-                key={customerId}
+                key={customer.id}
                 onClick={() =>
                   this.handleClick({
                     screen: customer.status === 'COMPLETED' ? 'PAYMENT_CUSTOMER' : 'CUSTOMER_DETAIL',
-                    customerId: customerId
+                    customerId: customer.id
                   })
                 }
-                selected={customerId === this.props.currentCustomerId ? true : false}
+                selected={currentCustomer
+                  ? currentCustomer.id === customer.id ? true : false 
+                  : false}
               >
                 <Avatar>
                   <ImageIcon />
@@ -58,8 +58,7 @@ class CustomerList extends Component {
   }
 }
 const mapStateToProps = state => ({
-  customersIds: state.customers.allIds,
-  customers: state.customers.byId,
-  currentCustomerId: state.posScreen && state.posScreen.customerId? state.posScreen.customerId : null
+  currentCustomer: getCurrentCustomer(state),
+  customers: getCustomers(state)
 })
 export default connect(mapStateToProps)(CustomerList)

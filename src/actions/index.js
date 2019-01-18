@@ -7,9 +7,10 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleErrorMessages, urlAPI, getServiceCost } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
+import { getServiceCost } from '../selectors'
 
 const cookies = new Cookies()
 export const initialData = storeId => (dispatch, getState) => {
@@ -67,8 +68,8 @@ export const initialData = storeId => (dispatch, getState) => {
 }
 
 export const createErrorLog = (rootCause) => (dispatch, getState) => {
-  dispatch(addGlobalError('Internal System Error. Please try again later.'))
   if (rootCause && rootCause.indexOf("http") >= 0) {
+    dispatch(addGlobalError('Internal System Error. Please try again later.'))
     let inputData = {}
     inputData['rootCause'] = rootCause
     inputData['data'] = getState()
@@ -80,6 +81,8 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
         'Content-Type': 'application/json'
       }
     })    
+  } else {
+    dispatch(addGlobalError(rootCause))
   }
 }
 
@@ -189,7 +192,7 @@ export const selectCustomer = data => (dispatch, getState) => {
   if (newCheckout) {
       dispatch(updateCurrentCheckout(newCheckout))
   } else {
-    const servicePrice = getServiceCost(getState().customers.byId[getState().posScreen.customerId], getState().customerServices.byId, getState().employeeServices.byId)
+    const servicePrice = getServiceCost(getState())
     const totalPrice = servicePrice
     dispatch(updateCurrentCheckout({
       servicePrice: servicePrice,

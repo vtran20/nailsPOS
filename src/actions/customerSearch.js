@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { addGlobalError, createErrorLog } from './index'
+import { createErrorLog } from './index'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 
 import C from '../constants'

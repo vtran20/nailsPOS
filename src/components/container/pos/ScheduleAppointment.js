@@ -1,26 +1,22 @@
 import React, { Component } from 'react'
-import { PropTypes } from 'prop-types'
 import { connect } from 'react-redux'
-import classNames from 'classnames'
 import Scheduler, {
   SchedulerData,
   ViewTypes,
   DATE_FORMAT,
-  config,
-  DemoData
+  config
 } from 'react-big-scheduler'
 import moment from 'moment'
 import withDragDropContext from './withDnDContext'
 import { withStyles } from '@material-ui/core/styles'
 import 'react-big-scheduler/lib/css/style.css'
 
-import { getEmployeesArray, getAppointmentsArray, compareAppointment } from '../../../utils'
-import { createAppointment, deleteAppointment, loadAppointment } from '../../../actions/appointments'
+import { compareAppointment } from '../../../utils'
+import { deleteAppointment, loadAppointment } from '../../../actions/appointments'
 import { updateCustomerForm } from '../../../actions/forms'
 import apptStyle from '../../../assets/css/appointment.css'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { handleOpenDialog } from '../../../actions'
 import ServicesDialog from '../checkin/ServicesDialog'
+import { getEmployees, getAppointments } from '../../../selectors'
 
 
 const styles = theme => ({
@@ -80,16 +76,16 @@ class ScheduleAppointment extends Component {
   }
 
   render() {
-    const { viewModel, schedulerData } = this.state
-    const { fetching, appointments, customerForm, classes  } = this.props
+    const { viewModel } = this.state
+    const { appointments, customerForm } = this.props
 
-    let leftCustomHeader = (
-      <div>
-        <span style={{ fontWeight: 'bold', color: 'white' }}>
-          Put your content here
-        </span>
-      </div>
-    )
+    // let leftCustomHeader = (
+    //   <div>
+    //     <span style={{ fontWeight: 'bold', color: 'white' }}>
+    //       Put your content here
+    //     </span>
+    //   </div>
+    // )
     let rightCustomHeader = (
       <div>
         <span style={{ fontWeight: 'bold', color: 'white' }}>{customerForm? `Customer Appointment: ${customerForm.firstName + ' ' + customerForm.lastName }`:''}</span>
@@ -249,8 +245,8 @@ class ScheduleAppointment extends Component {
 }
 
 const mapStateToProps = state => ({
-  resources: getEmployeesArray(state.employees.allIds, state.employees.byId),
-  appointments: getAppointmentsArray(state.appointments.allIds, state.appointments.byId),
+  resources: getEmployees(state),
+  appointments: getAppointments(state),
   customerForm: state.forms && state.forms.customerForm? state.forms.customerForm : null
 })
 

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   Button,
@@ -11,11 +11,9 @@ import {
   FormControlLabel,
   Checkbox
 } from '@material-ui/core'
-import { createCustomer } from '../../../actions/customers'
 import {
   addCustomerServiceForm,
   createNewCustomerServiceForCheckIn,
-  clearCustomerForm,
   makeAppointment
 } from '../../../actions/forms'
 
@@ -78,7 +76,7 @@ class ServicesDialog extends Component {
   }
 
   render() {
-    const { classes, fullScreen, open, page } = this.props
+    const { fullScreen, open, page } = this.props
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -160,4 +158,3 @@ const mapStateToProps = state => ({
   customerServices: state.customerServices.byId
 })
 export default connect(mapStateToProps)(ServicesDialog)
-// export default ServicesDialog
