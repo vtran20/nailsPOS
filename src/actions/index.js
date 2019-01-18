@@ -17,6 +17,8 @@ export const initialData = storeId => (dispatch, getState) => {
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
 
+  
+
   fetch(urlAPI + '/initialData.json?storeId=' + storeId, {
     credentials: 'same-origin'
   })

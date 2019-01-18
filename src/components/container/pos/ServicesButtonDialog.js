@@ -7,8 +7,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  FormGroup
+  FormGroup,
+  Toolbar,
+  IconButton,
+  Typography  
 } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close';
 import { removePOSDialog } from '../../../actions'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
@@ -37,7 +41,11 @@ const styles = theme => ({
   },
   iconSmall: {
     fontSize: 20
+  },
+  dialogBody: {
+    padding: `0 ${theme.spacing.unit * 3}px`
   }
+
 })
 
 
@@ -68,42 +76,37 @@ class ServicesButtonDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {'Please add services'}
+          <Toolbar>
+            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Select Services
+            </Typography>
+          </Toolbar>
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <FormGroup row>
-              {services.map(service => {
-                return (
-                  <Button
-                    key={service.id}
-                    variant={selectedServiceIds.find(x => x === service.id)? 'outlined' : 'contained'}
-                    color="secondary"
-                    size="small"
-                    className={classes.button}
-                    onClick={() =>
-                        this.handleAddServiceToCustomer(service.id)
-                      }
-                  >
-                  <SvgIcon>
-                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
-                  </SvgIcon>
-                    {service.name + ' - ' + cents2Dollars(service.price)}
-                  </Button>
-                )
-              })}
-            </FormGroup>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={this.onClose}
-            variant="contained"
-            color="secondary"
-          >
-            Close
-          </Button>
-        </DialogActions>
+        <div className={classes.dialogBody}>
+          {services.map(service => {
+            return (
+              <Button
+                key={service.id}
+                variant={selectedServiceIds.find(x => x === service.id)? 'outlined' : 'contained'}
+                color="secondary"
+                size="small"
+                className={classes.button}
+                onClick={() =>
+                    this.handleAddServiceToCustomer(service.id)
+                  }
+              >
+              <SvgIcon>
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
+              </SvgIcon>
+                {service.name + ' - ' + cents2Dollars(service.price)}
+              </Button>
+            )
+          })}
+
+        </div>
       </Dialog>
     )
   }

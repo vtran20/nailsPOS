@@ -18,7 +18,7 @@ import CustomerForm from './forms/CustomerForm'
 import ServicesDialog from './checkin/ServicesDialog'
 import FindYourAccount from './checkin/FindYourAccount'
 import ScheduledAppointment from './checkin/ScheduledAppointment'
-import SelectStore from '../common/SelectStore'
+import SelectStoreDialog from '../common/SelectStoreDialog'
 
 const styles = theme => ({
   appBar: {

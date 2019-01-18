@@ -8,8 +8,13 @@ import {
   DialogActions,
   FormGroup,
   Grid,
-  Paper
+  Paper,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography
 } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import AddCustomer from './AddCustomer'
@@ -48,6 +53,15 @@ const styles = theme => ({
     // alignItems: 'center',
     // padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
     padding: `0 ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+  },
+  appBar: {
+    position: 'relative',
+  },
+  flex: {
+    flex: 1,
+  },
+  dialogBody: {
+    padding: `0 ${theme.spacing.unit * 3}px`
   }
 })
 
@@ -77,30 +91,31 @@ class CustomerSearchDialog extends Component {
         onClose={this.onClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {'Schedule Appointments'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-              <Grid container spacing={24}>
-                <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <SearchCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer}/>
-                  </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <AddCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer}/>
-                  </Paper>
-                </Grid>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Schedule Appointments
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <div className={classes.dialogBody}>
+            <Grid container spacing={24}>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <SearchCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer}/>
+                </Paper>
               </Grid>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.onClose()} variant="contained" color="secondary">
-            Close
-          </Button>
-        </DialogActions>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <AddCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer}/>
+                </Paper>
+              </Grid>
+            </Grid>
+        </div>
       </Dialog>
       </div>
     )

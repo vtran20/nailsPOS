@@ -8,8 +8,14 @@ import {
   DialogActions,
   FormGroup,
   Grid,
-  Paper
+  Paper,
+  Tooltip,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography
 } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close';
 import ScheduleAppointment from './ScheduleAppointment'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
@@ -51,7 +57,12 @@ const styles = theme => ({
     // alignItems: 'center',
     // padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
     padding: `0 ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+  },
+  dialogBody: {
+    //padding: `0 ${theme.spacing.unit * 3}px`,
+     color: 'white'
   }
+
 })
 
 class ScheduleDialog extends Component {
@@ -83,18 +94,18 @@ class ScheduleDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {'Schedule Appointments'}
+          <Toolbar>
+            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Schedule Appointments
+            </Typography>
+          </Toolbar>
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-              <ScheduleAppointment onOpenSelectCustomerDialog={this.handleOpenSelectCustomerDialog}/>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.onClose()} variant="contained" color="secondary">
-            Close
-          </Button>
-        </DialogActions>
+        <div className={classes.dialogBody}>
+          <ScheduleAppointment onOpenSelectCustomerDialog={this.handleOpenSelectCustomerDialog}/>
+        </div>
       </Dialog>
       </div>
     )

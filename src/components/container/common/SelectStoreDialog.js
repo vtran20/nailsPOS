@@ -35,7 +35,7 @@ const styles = theme => ({
   }
 })
 
-class SelectStore extends Component {
+class SelectStoreDialog extends Component {
   state = {
     selectedStore: true
   }
@@ -79,11 +79,11 @@ class SelectStore extends Component {
     )
   }
 }
-//  export default withStyles(styles)(SelectStore)
+//  export default withStyles(styles)(SelectStoreDialog)
 const mapStateToProps = state => ({
   allIds: state.stores.allIds,
   stores: state.stores.byId,
   currentStoreId: state.stores.currentStoreId
 })
 
-export default connect(mapStateToProps)(withStyles(styles)(SelectStore))
+export default connect(mapStateToProps)(withStyles(styles)(SelectStoreDialog))

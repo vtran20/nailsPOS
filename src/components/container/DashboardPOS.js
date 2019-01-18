@@ -45,7 +45,7 @@ const styles = theme => ({
     display: 'flex'
   },
   toolbar: {
-    paddingRight: 24 // keep right padding when drawer closed
+    //paddingRight: 24 // keep right padding when drawer closed
   },
   toolbarIcon: {
     display: 'flex',
@@ -183,19 +183,19 @@ class DashboardPOS extends React.Component {
     }
   }
   render() {
-    const { classes, screen, store, errors, messages } = this.props
+    const { classes, screen, customerId, store, errors, messages, scheduleOpenDialog, menuOpenDialog, customerSearchDialog } = this.props
     return (
       <div className={classes.root}>
         <CssBaseline />
         <Menu 
-        open={screen.menuOpenDialog} 
+        open={menuOpenDialog} 
         closeMenu={this.handleMenuClose}
         onViewSchedule={this.handleScheduleOpen}
         />
-        <ServicesButtonDialog customerId={screen? screen.customerId : 0}/>
-        <EmployeesButtonDialog customerId={screen? screen.customerId : 0}/>
-        <ScheduleDialog open={screen.scheduleOpenDialog} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
-        <CustomerSearchDialog open={screen.customerSearchDialog} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
+        <ServicesButtonDialog customerId={customerId}/>
+        <EmployeesButtonDialog customerId={customerId}/>
+        <ScheduleDialog open={scheduleOpenDialog} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
+        <CustomerSearchDialog open={customerSearchDialog} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}
@@ -289,7 +289,7 @@ class DashboardPOS extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {screen? this.renderSwitch(screen.screen) : ''}
+          {screen? this.renderSwitch(screen) : ''}
 
           {/*Error messages*/}
             {errors.map((error, index) => 
@@ -360,7 +360,11 @@ DashboardPOS.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  screen: state.posScreen? state.posScreen : {},
+  screen: state.posScreen && state.posScreen.screen? state.posScreen.screen : null,
+  customerId : state.posScreen && state.posScreen.customerId? state.posScreen.customerId : 0,
+  scheduleOpenDialog : state.posScreen && state.posScreen.scheduleOpenDialog? state.posScreen.scheduleOpenDialog : false,
+  menuOpenDialog : state.posScreen && state.posScreen.menuOpenDialog? state.posScreen.menuOpenDialog : false,
+  customerSearchDialog : state.posScreen && state.posScreen.customerSearchDialog? state.posScreen.customerSearchDialog : false,
   store: getStore(state),
   errors: state.errors,
   messages: state.messages
