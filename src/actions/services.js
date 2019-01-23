@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
-import { createErrorLog } from './index'
+import { createErrorLog, addGlobalMessages } from './index'
 
 export const addService = service => {
   return {
@@ -16,6 +16,18 @@ export const updateService = service => {
   return {
     type: C.SERVICE_UPDATE,
     payload: service
+  }
+}
+
+export const editService = service => {
+  return {
+    type: C.SERVICE_EDIT,
+    payload: service
+  }
+}
+export const editServiceClear = () => {
+  return {
+    type: C.SERVICE_EDIT_CLEAR
   }
 }
 
@@ -64,3 +76,75 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
       })
   }
 }
+
+export const createService = service => (dispatch, getState) => {
+  fetch(urlAPI + '/services.json?storeId=1', {
+    method: 'POST',
+    body: JSON.stringify(service),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(handleErrors)
+  .then(response => response.json())
+  .then(data => {
+    handleErrorMessages(data)
+    dispatch(addService(data.service))
+    if (data.messages) {
+      dispatch(addGlobalMessages(data.messages.infos))
+    }
+  })
+  .catch(error => {
+    dispatch(createErrorLog(error.message))
+  })
+}
+
+export const updatingService = service => (dispatch, getState) => {
+  fetch(urlAPI + `/services/${service.id}.json?storeId=1`, {
+    method: 'PUT',
+    body: JSON.stringify(service),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(handleErrors)
+  .then(response => response.json())
+  .then(data => {
+    handleErrorMessages(data)
+    dispatch(updateService(data.service))
+    if (data.messages) {
+      dispatch(addGlobalMessages(data.messages.infos))
+    }
+  })
+  .catch(error => {
+    dispatch(createErrorLog(error.message))
+  })
+}
+
+//Delete mean delete from database and remove from store as well
+export const deleteService = serviceId => (
+  dispatch,
+  getState
+) => {
+  fetch(
+    urlAPI +
+      `/services/${serviceId}.json`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(data => {
+      handleErrorMessages(data)
+      dispatch(removeService(serviceId))
+      dispatch(addGlobalMessages(data.infos))
+    })
+    .catch(error => {
+      dispatch(createErrorLog(error.message))
+    })
+}
+

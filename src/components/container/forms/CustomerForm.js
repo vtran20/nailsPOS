@@ -25,7 +25,7 @@ class CustomerForm extends Component {
       [name]: value
     })
 
-  handleSubmit = () => {
+  handleCheckInNewCustomer = () => {
     if (this.props.customer) {
       this.props.dispatch(
         updateCustomer(
@@ -77,8 +77,128 @@ class CustomerForm extends Component {
     if (typeof this.props.onSubmitForAppointment === 'function') {
       this.props.onSubmitForAppointment()
     }
-
   }
+
+  // renderButton = (page) => {
+  //   if  (page ==='appointment') {
+  //       return 
+  //        ( <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSelectCustomerForAppointment()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //         )
+  //   }
+  //   else if (page === 'posCheckIn') {
+  //       return 
+  //       (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //       )
+  //   }
+  //   else if (page === 'selfCheckIn') {
+  //       return 
+  //       (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSelectCustomerForSelfCheckIn()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //       )
+  //   }
+  // }
+
+  // renderButton = (page) => {
+  //   switch (page) {
+  //     case 'appointment':
+  //       return 
+  //       (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSelectCustomerForAppointment()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //       )
+  //     case 'posCheckIn':
+  //       return 
+  //       (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //       )
+  //     case 'selfCheckIn':
+  //       return 
+  //       (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           // className={classes.button}
+  //           onClick={() => this.handleSelectCustomerForSelfCheckIn()}
+  //         >
+  //           Continue Appointment
+  //         </Button>
+  //       )
+  //     default:
+  //       return ''
+  //   }
+  // }
+
+       renderButton = (page) => {
+        if (page === 'appointment') {
+          return (
+            <Button
+              variant="contained"
+              color="primary"
+              // className={classes.button}
+              onClick={() => this.handleSelectCustomerForAppointment()}
+            >
+              Continue Appointment
+            </Button>
+          )
+        } else if (page === 'posCheckIn') {
+          return (
+            <Button
+              variant="contained"
+              color="primary"
+              // className={classes.button}
+              onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
+            >
+              Continue Appointment
+            </Button>
+          )
+        } else if (page === 'selfCheckIn') {
+          return (
+            <Button
+              variant="contained"
+              color="primary"
+              // className={classes.button}
+              onClick={() => this.handleSelectCustomerForSelfCheckIn()}
+            >
+              Continue Appointment
+            </Button>
+          )
+        }
+      }
 
   render() {
     const { firstName, lastName, phone, email } = this.state
@@ -92,6 +212,7 @@ class CustomerForm extends Component {
           onChange={this.handleChange('firstName')}
           margin="normal"
           fullWidth
+          autoFocus
         />
 
         <TextField
@@ -119,28 +240,7 @@ class CustomerForm extends Component {
         />
         <br />
         <br />
-        {page === 'appointment'
-        ? (
-          <Button
-            variant="contained"
-            color="primary"
-            // className={classes.button}
-            onClick={() => this.handleSelectCustomerForAppointment()}
-          >
-            Continue Appointment
-          </Button>
-          )
-        : (
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={this.handleSubmit}
-            // disabled={!firstName && !lastName}
-          >
-            {customer ? 'Edit' : 'Create'}
-          </Button>
-          )
-        }
+        {this.renderButton(page)}
       </form>
     )
   }

@@ -163,7 +163,7 @@ class ServiceTables extends React.Component {
                         })}
                       </TableBody>
                     ) : (
-                      ' '
+                      ''
                     )}
                   </Table>
                 </Paper>

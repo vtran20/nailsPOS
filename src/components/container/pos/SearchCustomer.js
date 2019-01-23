@@ -69,21 +69,21 @@ class SearchCustom extends React.Component {
             </Typography>
             <div className={classes.demo}>
               <TextField
-                // autoFocus
-                margin="dense"
-                id="email"
-                label="Email Address"
-                type="email"
-                fullWidth
-                onChange={this.handleChange('email')}
-              />
-              <TextField
+                autoFocus
                 margin="dense"
                 id="phone"
                 label="Phone Number"
                 type="phone"
                 fullWidth
                 onChange={this.handleChange('phone')}
+              />
+              <TextField
+                margin="dense"
+                id="email"
+                label="Email Address"
+                type="email"
+                fullWidth
+                onChange={this.handleChange('email')}
               />
             </div>
           <br />

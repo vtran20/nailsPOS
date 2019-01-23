@@ -122,3 +122,31 @@ export const getServiceCost = createSelector(
       }
     return total    
 })
+
+
+
+//////////////////////////////////Don't use selector library////////////////////////////////////////////
+export const getCustomerId = (phone, email, state) => {
+  const byId = state.customers.byId
+  const allIds = state.customers.allIds
+  const customerId = null
+  allIds.map(id => {
+    if (byId[id]) {
+      if (byId[id].email && email && byId[id].email.trim() === email.trim()) {
+        customerId = id
+      }
+      if (byId[id].phone && phone && byId[id].phone.trim() === phone.trim()) {
+        customerId = id
+      }
+    }
+    return
+  })
+  return customerId
+}
+
+
+
+
+
+
+

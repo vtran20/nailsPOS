@@ -41,6 +41,13 @@ class AddCustomer extends React.Component {
     }    
   }
 
+  handleSubmitCustomerFormForPOSCheckIn = () => {
+    //call back to parent method and move to select appointment time
+    if (typeof this.props.onSelectCustomer === 'function') {
+      this.props.onSelectCustomer()
+    }    
+  }
+
   render() {
     const { classes, page } = this.props
 
@@ -55,6 +62,7 @@ class AddCustomer extends React.Component {
               <CustomerForm 
               onSubmit={this.handleSubmitCustomerForm} 
               onSubmitForAppointment={this.handleSubmitCustomerFormForAppointment}
+              onSubmitForPOSCheckIn={this.handleSubmitCustomerFormForPOSCheckIn}
               page={page}
               />
             </div>

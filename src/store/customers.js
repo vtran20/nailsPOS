@@ -8,43 +8,13 @@ export const byId = (state = {}, action) => {
     case C.CUSTOMER_ADD:
       return produce(state, draft => {
         draft[action.payload.id]= action.payload
-        // existing = state[action.payload.id] ? true : false
-        // if (existing) {
-        //   return state
-        // } else {
-        //   return {
-        //     ...state,
-        //     [action.payload.id]: action.payload
-        //   }
-        // }
-        //return draft
+        return draft
       })
-      //return state
     case C.CUSTOMER_UPDATE:
       return produce(state, draft => {
         draft[action.payload.id]= {...action.payload, customerServices: state[action.payload.id].customerServices}
-        // existing = state[action.payload.id] ? true : false
-        // if (existing) {
-        //   return state
-        // } else {
-        //   return {
-        //     ...state,
-        //     [action.payload.id]: action.payload
-        //   }
-        // }
-        //return draft
+        return draft
       })
-      // existing = state[action.payload.id] ? true : false
-      // if (!existing) {
-      //   return state
-      // } else {
-      //   return {
-      //     ...state,
-      //     [action.payload.id]: {...state[action.payload.id]},
-      //     [action.payload.id]: {...action.payload, customerServices: state[action.payload.id].customerServices}
-      //   }
-      // }      
-      //return state
     case C.CUSTOMER_REMOVE:
       return Object.keys(state).reduce(
         (result, key) =>

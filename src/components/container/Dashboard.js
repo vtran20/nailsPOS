@@ -102,7 +102,7 @@ class Dashboard extends React.Component {
 
     return (
       <Fragment>
-        <form autoComplete="off">
+        <form>
           {/* Hero unit */}
           <div className={classes.heroUnit}>
             <div className={classes.heroContent}>

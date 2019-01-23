@@ -30,11 +30,13 @@ import CustomerList from './pos/CustomerList'
 import ServicesButtonDialog from './pos/ServicesButtonDialog'
 import EmployeesButtonDialog from './pos/EmployeesButtonDialog'
 import ScheduleDialog from './pos/ScheduleDialog'
+import ServicesDialog from './pos/services/ServicesDialog'
+import EmployeesDialog from './pos/employees/EmployeesDialog'
 import Payment from './pos/Payment'
 import Menu from './pos/Menu'
 import CustomerSearchDialog from './pos/CustomerSearchDialog'
 import { selectAddCustomer, clearGlobalError, clearGlobalMessage, updatePOSScreen} from '../../actions'
-import Messages from '../common/Messages'
+import Messages from './common/Messages'
 import { clearCustomerSearchs } from '../../actions/customerSearch'
 import { getStore } from '../../selectors'
 
@@ -86,7 +88,10 @@ const styles = theme => ({
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
-    })
+    }),
+    height: 600,
+    overflowY: 'auto'
+
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -103,7 +108,7 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    height: '100vh',
+    height: '94vh',
     overflow: 'auto'
   },
   chartContainer: {
@@ -183,7 +188,7 @@ class DashboardPOS extends React.Component {
     }
   }
   render() {
-    const { classes, screen, customerId, store, errors, messages, scheduleOpenDialog, menuOpenDialog, customerSearchDialog } = this.props
+    const { classes, screen, customerId, store, errors, messages, scheduleOpenDialog, menuOpenDialog, customerSearchDialog, servicesDialog, employeesDialog } = this.props
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -196,6 +201,8 @@ class DashboardPOS extends React.Component {
         <EmployeesButtonDialog customerId={customerId}/>
         <ScheduleDialog open={scheduleOpenDialog} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
         <CustomerSearchDialog open={customerSearchDialog} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
+        <ServicesDialog open={servicesDialog}/>
+        <EmployeesDialog open={employeesDialog}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}
@@ -265,11 +272,15 @@ class DashboardPOS extends React.Component {
               />
               Appointment
             </Button>
+            {
+              /*
             <IconButton color="inherit">
               <Badge badgeContent={6} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+              */
+            }
           </Toolbar>
         </AppBar>
         <Drawer
@@ -330,8 +341,9 @@ class DashboardPOS extends React.Component {
                     />
               </Snackbar>
             )}
-
         </main>
+
+{/*
         <Hidden mdDown>
         <Drawer
           variant="permanent"
@@ -350,6 +362,7 @@ class DashboardPOS extends React.Component {
           <List>{<EmployeeList />}</List>
         </Drawer>
         </Hidden>
+*/}
       </div>
     )
   }
@@ -365,6 +378,8 @@ const mapStateToProps = state => ({
   scheduleOpenDialog : state.posScreen && state.posScreen.scheduleOpenDialog? state.posScreen.scheduleOpenDialog : false,
   menuOpenDialog : state.posScreen && state.posScreen.menuOpenDialog? state.posScreen.menuOpenDialog : false,
   customerSearchDialog : state.posScreen && state.posScreen.customerSearchDialog? state.posScreen.customerSearchDialog : false,
+  servicesDialog : state.posScreen && state.posScreen.servicesDialog? state.posScreen.servicesDialog : false,
+  employeesDialog : state.posScreen && state.posScreen.employeesDialog? state.posScreen.employeesDialog : false,
   store: getStore(state),
   errors: state.errors,
   messages: state.messages

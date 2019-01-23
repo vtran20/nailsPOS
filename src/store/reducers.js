@@ -12,6 +12,7 @@ import customerSearch from './customerSearch'
 import payments from './payments'
 import appointments from './appointments'
 import produce from "immer"
+import { reducer as formReducer } from 'redux-form'
 
 import { combineReducers } from 'redux'
 
@@ -95,7 +96,8 @@ const reducer = combineReducers({
   customerSearch,
   forms,
   posScreen,
-  payments
+  payments,
+  form: formReducer
 })
 
 export const appReducer = (state, action) => {

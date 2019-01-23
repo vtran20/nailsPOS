@@ -113,6 +113,11 @@ export const addGlobalMessage = message => {
     payload: message
   }
 }
+export const addGlobalMessages = messages => (dispatch) => {
+  return messages
+  ? messages.map (message => dispatch(addGlobalMessage(message)))
+  : null
+}
 
 export const removeGlobalMessage = index => {
   return {

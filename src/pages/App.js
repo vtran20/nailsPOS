@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { CssBaseline } from '@material-ui/core'
 import DashboardPOS from '../components/container/DashboardPOS'
+import Footer from '../components/layouts/Footer'
 
 export default class extends Component {
   render() {
@@ -9,7 +10,7 @@ export default class extends Component {
         <CssBaseline />
         {/*<Header />*/}
         <DashboardPOS />
-        {/*<Footer />*/}
+        <Footer />
       </Fragment>
     )
   }

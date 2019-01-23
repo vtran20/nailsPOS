@@ -21,6 +21,8 @@ import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import AddCustomer from './AddCustomer'
 import SearchCustomer from './SearchCustomer'
+import { connect } from 'react-redux'
+import { updatePOSScreen } from '../../../actions'
 
 
 
@@ -72,6 +74,16 @@ class Menu extends Component {
     if (typeof this.props.onViewSchedule === 'function') {
       this.props.onViewSchedule()
     }
+    this.onClose()
+  }
+
+  handleNewServices = () => {
+    this.props.dispatch(updatePOSScreen({ servicesDialog: true}))
+    this.onClose()
+  }
+
+  handleNewEmployees = () => {
+    this.props.dispatch(updatePOSScreen({ employeesDialog: true}))
     this.onClose()
   }
 
@@ -133,7 +145,7 @@ class Menu extends Component {
               // className={'flex-col-scroll'}
               // style={{ backgroundColor: 'lightblue' }}
             >
-            <Tooltip disableFocusListener title="View Appointments">
+            <Tooltip disableFocusListener title="Add Services">
               <Button
                 variant="contained"
                 color="primary"
@@ -141,15 +153,46 @@ class Menu extends Component {
                 fullWidth
                 className={classes.button}
                 onClick={() =>
-                  this.handleViewSchedule()
+                  this.handleNewServices()
                 }
               >
                 <SvgIcon className={classes.svgIcon}>
-                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                  <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/><path d="M0 0h24v24H0z" fill="none"/>
                 </SvgIcon>
-                AAAAAAAAAAAAAAAA
+                Services
               </Button>
               </Tooltip>  
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              // className={'flex-col-scroll'}
+              // style={{ backgroundColor: 'lightblue' }}
+            >
+            <Tooltip disableFocusListener title="Add Employees">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                fullWidth
+                className={classes.button}
+                onClick={() =>
+                  this.handleNewEmployees()
+                }
+              >
+                <SvgIcon className={classes.svgIcon}>
+                  <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/><path d="M0 0h24v24H0z" fill="none"/>
+                </SvgIcon>
+                Employees
+              </Button>
+              </Tooltip>  
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              // className={'flex-col-scroll'}
+              // style={{ backgroundColor: 'lightblue' }}
+            >
             </Grid>
             <Grid
               item
@@ -169,31 +212,7 @@ class Menu extends Component {
                 }
               >
                 <SvgIcon className={classes.svgIcon}>
-                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-                </SvgIcon>
-                AAAAAAAAAAAAAAAA
-              </Button>
-              </Tooltip>  
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              // className={'flex-col-scroll'}
-              // style={{ backgroundColor: 'lightblue' }}
-            >
-            <Tooltip disableFocusListener title="View Appointments">
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                fullWidth
-                className={classes.button}
-                onClick={() =>
-                  this.handleViewSchedule()
-                }
-              >
-                <SvgIcon className={classes.svgIcon}>
-                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                  <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/><path d="M0 0h24v24H0z" fill="none"/>
                 </SvgIcon>
                 AAAAAAAAAAAAAAAA
               </Button>
@@ -206,4 +225,4 @@ class Menu extends Component {
     )
   }
 }
-export default withStyles(styles)(Menu)
+export default connect()(withStyles(styles)(Menu))

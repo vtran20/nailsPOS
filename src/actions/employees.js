@@ -2,7 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { addEmployeeService } from './employeeServices'
-import { addGlobalError, createErrorLog } from './index'
+import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
 export const addEmployee = employee => {
   return {
     type: C.EMPLOYEE_ADD,
@@ -14,6 +14,18 @@ export const updateEmployee = employee => {
   return {
     type: C.EMPLOYEE_UPDATE,
     payload: employee
+  }
+}
+
+export const editEmployee = employee => {
+  return {
+    type: C.EMPLOYEE_EDIT,
+    payload: employee
+  }
+}
+export const editEmployeeClear = () => {
+  return {
+    type: C.EMPLOYEE_EDIT_CLEAR
   }
 }
 
@@ -75,3 +87,75 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
       })
   }
 }
+
+export const createEmployee = employee => (dispatch, getState) => {
+  fetch(urlAPI + '/employees.json?storeId=1', {
+    method: 'POST',
+    body: JSON.stringify(employee),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(handleErrors)
+  .then(response => response.json())
+  .then(data => {
+    handleErrorMessages(data)
+    dispatch(addEmployee(data.employee))
+    if (data.messages) {
+      dispatch(addGlobalMessages(data.messages.infos))
+    }
+  })
+  .catch(error => {
+    dispatch(createErrorLog(error.message))
+  })
+}
+
+export const updatingEmployee = employee => (dispatch, getState) => {
+  fetch(urlAPI + `/employees/${employee.id}.json?storeId=1`, {
+    method: 'PUT',
+    body: JSON.stringify(employee),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(handleErrors)
+  .then(response => response.json())
+  .then(data => {
+    handleErrorMessages(data)
+    dispatch(updateEmployee(data.employee))
+    if (data.messages) {
+      dispatch(addGlobalMessages(data.messages.infos))
+    }
+  })
+  .catch(error => {
+    dispatch(createErrorLog(error.message))
+  })
+}
+
+//Delete mean delete from database and remove from store as well
+export const deleteEmployee = employeeId => (
+  dispatch,
+  getState
+) => {
+  fetch(
+    urlAPI +
+      `/employees/${employeeId}.json`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+    .then(handleErrors)
+    .then(response => response.json())
+    .then(data => {
+      handleErrorMessages(data)
+      dispatch(removeEmployee(employeeId))
+      dispatch(addGlobalMessages(data.infos))
+    })
+    .catch(error => {
+      dispatch(createErrorLog(error.message))
+    })
+}
+

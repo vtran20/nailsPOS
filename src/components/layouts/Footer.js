@@ -5,9 +5,6 @@ class Footer extends Component {
   render() {
     return (
       <footer>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
         <Typography
           variant="subtitle1"
           align="center"

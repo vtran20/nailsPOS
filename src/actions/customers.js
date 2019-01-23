@@ -4,7 +4,7 @@ import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
-import { selectCustomer, createErrorLog } from './index'
+import { selectCustomer, createErrorLog, addGlobalError, addGlobalMessage } from './index'
 
 export const addCustomer = customer => {
   return {
@@ -108,25 +108,29 @@ export const checkInCustomer = customerId => dispatch => {
     })
 }
 
-export const checkInCustomerAtPOS = customerId => dispatch => {
-  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=1`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(handleErrors)
-    .then(response => response.json())
-    .then(data => {
-      handleErrorMessages(data)
-      dispatch(addCustomer(data))
-      dispatch(clearCustomerSearchs())
-      dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: data.id }))
-
+export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
+  if (getState().customers.byId[customerId]) {
+    dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: customerId }))
+    dispatch(addGlobalMessage('This customer checked in today.'))
+  } else {
+    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=1`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(handleErrors)
+      .then(response => response.json())
+      .then(data => {
+        handleErrorMessages(data)
+        dispatch(addCustomer(data))
+        dispatch(clearCustomerSearchs())
+        dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: data.id }))
     })
     .catch(error => {
       dispatch(createErrorLog(error.message))
     })
+  }
 }
 
 
