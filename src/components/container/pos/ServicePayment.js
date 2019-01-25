@@ -7,11 +7,16 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Input from '@material-ui/core/Input'
 import { connect } from 'react-redux'
-import { deleteEmployeeService } from '../../../actions/employeeServices'
+import { deleteEmployeeService, updateEmployeeServiceInfo } from '../../../actions/employeeServices'
 import { deleteCustomerService } from '../../../actions/customerServices'
-import { cents2Dollars } from '../../../utils'
-import { getCustomerServicesOfCustomer } from '../../../selectors'
+import { cents2Dollars, cents2Fixed2, dollars2Cents } from '../../../utils'
+
+import { getCustomerServicesOfCustomer, getEmployeeIdsOfCustomer } from '../../../selectors'
 
 const styles = theme => ({
   root: {
@@ -46,9 +51,12 @@ class ServicePayment extends React.Component {
     this.props.dispatch(deleteCustomerService(customerService))
   }
 
-  render() {
-    const { classes, customerServices, employeeServices, employees, services } = this.props
+  handleTipPriceChange = (employeeServiceId) => ({ target: { value } }) => {
+    this.props.dispatch(updateEmployeeServiceInfo({id: employeeServiceId, tipPrice:dollars2Cents(value)}))
+  }
 
+  render() {
+    const { classes, customerServices, employeeServices, employees, services, employeeList } = this.props
     return (
       <div>
         {customerServices
@@ -61,6 +69,7 @@ class ServicePayment extends React.Component {
                     <TableHead>
                       <TableRow>
                         <TableCell>{service.name}</TableCell>
+                        <TableCell>{''}</TableCell>
                         <TableCell align="right">{cents2Dollars(service.price)}</TableCell>
                       </TableRow>
                     </TableHead>
@@ -73,6 +82,23 @@ class ServicePayment extends React.Component {
                             <TableRow key={employeeService.id}>
                               <TableCell component="th" scope="row">
                                 {employee.firstName + ' ' + employee.lastName}
+                              </TableCell>
+                              <TableCell>
+                                {employeeList.length > 1
+                                  ? (
+                                      <FormControl className={classes.input}>
+                                        <InputLabel htmlFor="adornment-amount">Tip</InputLabel>
+                                        <Input
+                                          id={'service-tip_'+employeeService.id}
+                                          onFocus={e => e.target.select()}
+                                          defaultValue = {cents2Fixed2(employeeService.tipPrice)}
+                                          onChange={this.handleTipPriceChange(employeeService.id)}
+                                          startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                        />
+                                      </FormControl>
+                                    )
+                                  : ('')
+                                }
                               </TableCell>
                               <TableCell align="right">
                               {cents2Dollars(employeeService.servicePrice)}
@@ -100,7 +126,8 @@ const mapStateToProps = state => ({
   employees: state.employees.byId,
   services: state.services.byId,
   employeeServices: state.employeeServices.byId,
-  customerServices : getCustomerServicesOfCustomer(state)
+  customerServices : getCustomerServicesOfCustomer(state),
+  employeeList : getEmployeeIdsOfCustomer(state)
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(ServicePayment))

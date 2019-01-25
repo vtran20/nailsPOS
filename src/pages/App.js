@@ -2,16 +2,28 @@ import React, { Component, Fragment } from 'react'
 import { CssBaseline } from '@material-ui/core'
 import DashboardPOS from '../components/container/DashboardPOS'
 import Footer from '../components/layouts/Footer'
+import { connect } from 'react-redux'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
-export default class extends Component {
+class App extends Component {
   render() {
     return (
       <Fragment>
         <CssBaseline />
         {/*<Header />*/}
-        <DashboardPOS />
+        {this.props.fetching ? (
+          <CircularProgress disableShrink />
+        ) : (
+          <DashboardPOS />
+        )}        
         <Footer />
       </Fragment>
     )
   }
 }
+
+const mapStateToProps = state => ({
+  fetching: state.fetching
+})
+
+export default connect(mapStateToProps)(App)

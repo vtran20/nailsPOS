@@ -10,9 +10,16 @@ import {
   Select,
   MenuItem,
   DialogContent,
-  DialogContentText
+  DialogContentText,
+  OutlinedInput,
+  Toolbar,
+  IconButton,
+  Typography
+
 } from '@material-ui/core'
-import { initialData } from '../../actions'
+import CloseIcon from '@material-ui/icons/Close';
+import { selectStore } from '../../../actions'
+import { updatePOSScreen } from '../../../actions'
 
 const styles = theme => ({
   root: {
@@ -36,43 +43,52 @@ const styles = theme => ({
 })
 
 class SelectStoreDialog extends Component {
-  state = {
-    selectedStore: true
-  }
   handleChange = event => {
-    this.props.dispatch(initialData(event.target.value))
+    this.props.dispatch(selectStore(event.target.value))
+  }
+  onClose = () => {
+    //call back to parent method
+    this.props.dispatch(updatePOSScreen({ selectStoreDialog: false}))
   }
 
   render() {
-    const { classes, fullScreen } = this.props
+    const { classes, fullScreen, open } = this.props
     return (
       <Dialog
         fullScreen={fullScreen}
-        open={!this.props.currentStoreId}
+        open={open}
         //onClose={this.handleCloseCheckIn}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {'Please select store'}
+          <Toolbar>
+            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Please select store
+            </Typography>
+          </Toolbar>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="select-store">Select Store</InputLabel>
-              <Select onChange={this.handleChange}>
-                <MenuItem value="">
-                  <em>Select Store</em>
+          <FormControl className={classes.formControl}>
+            <Select 
+            onChange={this.handleChange} 
+            value={this.props.currentStoreId}
+             inputProps={{
+                  name: 'storeId',
+                  id: 'storeId',
+            }}
+            >
+              {this.props.allIds.map(sId => (
+                <MenuItem key={sId} value={sId}>
+                  {this.props.stores[sId].name +
+                    ' - ' +
+                    this.props.stores[sId].address_1}
                 </MenuItem>
-                {this.props.allIds.map(sId => (
-                  <MenuItem key={sId} value={sId}>
-                    {this.props.stores[sId].name +
-                      ' - ' +
-                      this.props.stores[sId].address_1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </DialogContentText>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions />
       </Dialog>

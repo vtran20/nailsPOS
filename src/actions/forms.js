@@ -6,6 +6,7 @@ import { addEmployeeService } from './employeeServices'
 import { addCustomerService, updateCustomerService } from './customerServices'
 import { clearCustomerSearchs } from './customerSearch'
 import {resetPOSScreen, changePOSScreen, createErrorLog} from './index'
+import { getCurrentStoreId } from '../selectors'
 
 export const addCustomerForm = customer => {
   return {
@@ -44,7 +45,7 @@ export const createNewCustomerServiceForCheckIn = () => (
   dispatch,
   getState
 ) => {
-  fetch(urlAPI + '/customers/customerServices.json?storeId=1', {
+  fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: {
@@ -79,7 +80,7 @@ export const createNewCustomerServiceForCheckIn = () => (
 }
 
 export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
-  fetch(urlAPI + '/customers/customerServices.json?appointment=Y&storeId=1', {
+  fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: {
@@ -101,7 +102,7 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
 
 export const makeAppointment = serviceIds => (dispatch, getState) => {
   dispatch(updateCustomerForm({services: serviceIds}))
-  fetch(urlAPI + '/customers/makeAppointment.json?storeId=1', {
+  fetch(urlAPI + `/customers/makeAppointment.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: {

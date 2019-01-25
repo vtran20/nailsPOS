@@ -3,6 +3,8 @@ import fetch from 'isomorphic-fetch'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { addEmployeeService } from './employeeServices'
 import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
+import { getCurrentStoreId } from '../selectors'
+
 export const addEmployee = employee => {
   return {
     type: C.EMPLOYEE_ADD,
@@ -62,8 +64,8 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
     }
     const customerId = getState().posScreen.customerId
     const url = customerServiceId
-    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=1`
-    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=1`
+    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=${getCurrentStoreId(getState())}`
+    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}`
     fetch(
       url,
       {
@@ -89,7 +91,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
 }
 
 export const createEmployee = employee => (dispatch, getState) => {
-  fetch(urlAPI + '/employees.json?storeId=1', {
+  fetch(urlAPI + `/employees.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(employee),
     headers: {
@@ -111,7 +113,7 @@ export const createEmployee = employee => (dispatch, getState) => {
 }
 
 export const updatingEmployee = employee => (dispatch, getState) => {
-  fetch(urlAPI + `/employees/${employee.id}.json?storeId=1`, {
+  fetch(urlAPI + `/employees/${employee.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(employee),
     headers: {
@@ -139,7 +141,7 @@ export const deleteEmployee = employeeId => (
 ) => {
   fetch(
     urlAPI +
-      `/employees/${employeeId}.json`,
+      `/employees/${employeeId}.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: {

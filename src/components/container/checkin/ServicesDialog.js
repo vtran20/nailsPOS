@@ -26,6 +26,7 @@ class ServicesDialog extends Component {
     this.baseState = { ...this.baseState, [name]: '' }
   }
 
+  //////////////////////Start Self CheckIn////////////////////////
   handleSubmitServices = () => {
     //call back to parent method
     this.props.dispatch(addCustomerServiceForm(this.state))
@@ -48,19 +49,14 @@ class ServicesDialog extends Component {
       this.props.onSkipServices()
     }
   }
+  //////////////////////End Self CheckIn////////////////////////
 
+  ///////////////////////Start for POS///////////////////////
   handleMakeAppointment = () => {
     const servicesIds = Object.keys(this.state).filter(key => this.state[key])
     this.props.dispatch(makeAppointment(servicesIds))
     this.onClose()
 
-  }
-
-  handleCloseServices = () => {
-    //call back to parent method
-    if (typeof this.props.onSkipServices === 'function') {
-      this.props.onSkipServices()
-    }
   }
 
   onClose = () => {
@@ -75,6 +71,14 @@ class ServicesDialog extends Component {
     }
   }
 
+  // handleCloseServices = () => {
+  //   //call back to parent method
+  //   if (typeof this.props.onSkipServices === 'function') {
+  //     this.props.onSkipServices()
+  //   }
+  // }
+  ///////////////////////End for POS///////////////////////
+
   render() {
     const { fullScreen, open, page } = this.props
     return (
@@ -88,26 +92,24 @@ class ServicesDialog extends Component {
           {'Please select your services'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <FormGroup row>
-              {this.props.servicesIds.map(serviceId => {
-                let service = this.props.services[serviceId]
-                return (
-                  <FormControlLabel
-                    key={serviceId}
-                    control={
-                      <Checkbox
-                        checked={this.state[serviceId]}
-                        onChange={this.handleSelectServices(serviceId)}
-                        value={serviceId}
-                      />
-                    }
-                    label={service.name}
-                  />
-                )
-              })}
-            </FormGroup>
-          </DialogContentText>
+          <FormGroup row>
+            {this.props.servicesIds.map(serviceId => {
+              let service = this.props.services[serviceId]
+              return (
+                <FormControlLabel
+                  key={serviceId}
+                  control={
+                    <Checkbox
+                      checked={this.state.serviceId}
+                      onChange={this.handleSelectServices(serviceId)}
+                      value={`${serviceId}`}
+                    />
+                  }
+                  label={service.name}
+                />
+              )
+            })}
+          </FormGroup>
         </DialogContent>
         {page === 'appointment'
           ? (

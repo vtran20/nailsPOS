@@ -5,6 +5,7 @@ import {
   clearCustomerSearchs
 } from './customerSearch'
 import { selectCustomer, createErrorLog, addGlobalError, addGlobalMessage } from './index'
+import { getCurrentStoreId } from '../selectors'
 
 export const addCustomer = customer => {
   return {
@@ -34,8 +35,8 @@ export const fetchCustomerBegin = () => {
   }
 }
 
-export const searchCustomers = (phone, email) => dispatch => {
-  let queryString = urlAPI + '/searchNailCustomer.json?'
+export const searchCustomers = (phone, email) => (dispatch, getState) => {
+  let queryString = urlAPI + `/searchNailCustomer.json?storeId=${getCurrentStoreId(getState())}`
   if (phone) {
     queryString = queryString + 'phone=' + phone + '&'
   }
@@ -57,8 +58,8 @@ export const searchCustomers = (phone, email) => dispatch => {
     })
 }
 
-export const createCustomer = customer => dispatch => {
-  fetch(urlAPI + '/customers.json?storeId=1', {
+export const createCustomer = customer => (dispatch, getState) => {
+  fetch(urlAPI + `/customers.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: {
@@ -90,8 +91,8 @@ export const updateCustomerService = services => {
   }
 }
 
-export const checkInCustomer = customerId => dispatch => {
-  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=1`, {
+export const checkInCustomer = customerId => (dispatch, getState) => {
+  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -113,7 +114,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
     dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: customerId }))
     dispatch(addGlobalMessage('This customer checked in today.'))
   } else {
-    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=1`, {
+    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -134,8 +135,8 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
 }
 
 
-export const updateCustomerDB = customer => dispatch => {
-  fetch(urlAPI + `/customers/${customer.id}.json?storeId=1`, {
+export const updateCustomerDB = customer => (dispatch, getState) => {
+  fetch(urlAPI + `/customers/${customer.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(customer),
     headers: {

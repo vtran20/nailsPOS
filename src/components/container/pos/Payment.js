@@ -77,6 +77,12 @@ class Payment extends React.Component {
             <Typography variant="subtitle1" gutterBottom>
               Customer: {customer.firstName + ' ' + customer.lastName}
             </Typography>
+              <Typography color="textSecondary">
+                {customer.phone}
+              </Typography>
+              <Typography color="textSecondary">
+                {customer.email}
+              </Typography>
             </Grid>
             <Grid item xs={6}>
                 <ServiceCostSummary page="payment" onFocus={this.onFocus} onBlur={this.onBlur}/>

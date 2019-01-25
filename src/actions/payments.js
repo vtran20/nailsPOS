@@ -3,7 +3,7 @@ import C from '../constants'
 import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
-import { getServiceCost } from '../selectors'
+import { getServiceCost, getCurrentStoreId, getEmployeeIdsOfCustomer, checkingTotalTip } from '../selectors'
 
 export const addCustomerCheckout = data => {
   return {
@@ -152,6 +152,8 @@ export const completePayment = () => (dispatch, getState) => {
   inputData['customer'] = currentCustomer
   inputData['customerServices'] = []
   inputData['employeeServices'] = []
+  const employeeIds = getEmployeeIdsOfCustomer(getState())
+  inputData['employeeIds'] = employeeIds
   getState().customers.byId[customerId].customerServices.map (csId => {
     const customerService = getState().customerServices.byId[csId]
     inputData['customerServices'].push(customerService)
@@ -161,10 +163,17 @@ export const completePayment = () => (dispatch, getState) => {
       })
     } else {
       dispatch(addGlobalError('Missing assign employee to services'))
+      return;
     }
   })
 
-  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=1`, {
+  //Checking tip is correct only when having many employee serve the same customer.
+  if(!checkingTotalTip(getState()) && employeeIds.length > 1) {
+    dispatch(addGlobalError(`Tips of the employees don't match with total tip.`))
+    return;
+  }
+
+  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(inputData),
     headers: {

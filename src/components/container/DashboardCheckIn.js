@@ -240,7 +240,7 @@ class DashboardCheckIn extends React.Component {
             </Button>
             {/*Select store if need*/}
 
-            {this.props.fetching ? '' : <SelectStore />}
+            {this.props.fetching ? '' : <SelectStoreDialog />}
 
             {/*Are you new customer dialog */}
             <Dialog

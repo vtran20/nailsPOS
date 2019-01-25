@@ -32,6 +32,7 @@ import EmployeesButtonDialog from './pos/EmployeesButtonDialog'
 import ScheduleDialog from './pos/ScheduleDialog'
 import ServicesDialog from './pos/services/ServicesDialog'
 import EmployeesDialog from './pos/employees/EmployeesDialog'
+import SelectStoreDialog from './common/SelectStoreDialog'
 import Payment from './pos/Payment'
 import Menu from './pos/Menu'
 import CustomerSearchDialog from './pos/CustomerSearchDialog'
@@ -188,7 +189,11 @@ class DashboardPOS extends React.Component {
     }
   }
   render() {
-    const { classes, screen, customerId, store, errors, messages, scheduleOpenDialog, menuOpenDialog, customerSearchDialog, servicesDialog, employeesDialog } = this.props
+    const { classes, screen, customerId, store, errors, messages, scheduleOpenDialog, menuOpenDialog, customerSearchDialog, 
+      servicesDialog, 
+      employeesDialog, 
+      selectStoreDialog, 
+    } = this.props
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -197,12 +202,14 @@ class DashboardPOS extends React.Component {
         closeMenu={this.handleMenuClose}
         onViewSchedule={this.handleScheduleOpen}
         />
+
         <ServicesButtonDialog customerId={customerId}/>
         <EmployeesButtonDialog customerId={customerId}/>
         <ScheduleDialog open={scheduleOpenDialog} onCloseScheduleDialog={this.handleScheduleClose} onOpenSelectCustomerDialog={this.handleCustomerSearchOpen}/>
         <CustomerSearchDialog open={customerSearchDialog} onCloseCustomerSearchDialog={this.handleCustomerSearchDialogClose} onOpenScheduleDialog={this.handleScheduleOpen}/>
         <ServicesDialog open={servicesDialog}/>
         <EmployeesDialog open={employeesDialog}/>
+        <SelectStoreDialog open={selectStoreDialog}/>
         <AppBar
           position="absolute"
           className={classNames(classes.appBar, classes.appBarShift)}
@@ -380,6 +387,7 @@ const mapStateToProps = state => ({
   customerSearchDialog : state.posScreen && state.posScreen.customerSearchDialog? state.posScreen.customerSearchDialog : false,
   servicesDialog : state.posScreen && state.posScreen.servicesDialog? state.posScreen.servicesDialog : false,
   employeesDialog : state.posScreen && state.posScreen.employeesDialog? state.posScreen.employeesDialog : false,
+  selectStoreDialog : state.posScreen && state.posScreen.selectStoreDialog? state.posScreen.selectStoreDialog : false,
   store: getStore(state),
   errors: state.errors,
   messages: state.messages

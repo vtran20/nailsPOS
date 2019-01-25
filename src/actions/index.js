@@ -10,16 +10,22 @@ import { addStore, selectStoreId } from './stores'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
-import { getServiceCost } from '../selectors'
+import { getServiceCost, getCurrentStoreId } from '../selectors'
 
 const cookies = new Cookies()
+
+export const selectStore = storeId => (dispatch, getState) => {
+  const storeIdParam = parseInt(storeId)
+  const storeIdState = parseInt(getState().stores.currentStoreId)
+  if (storeIdParam && (storeIdParam !== storeIdState)) {
+    dispatch(initialData(storeId))
+  }
+}
 export const initialData = storeId => (dispatch, getState) => {
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
 
-  
-
-  fetch(urlAPI + '/initialData.json?storeId=' + storeId, {
+  fetch(urlAPI + `/initialData.json?storeId=${storeId}`, {
     credentials: 'same-origin'
   })
     .then(handleErrors)
@@ -63,6 +69,8 @@ export const initialData = storeId => (dispatch, getState) => {
           cookies.set('STORE_ID_COOKIE', defaultStoreId, {
             expires: expiryDate
           })
+        } else if (getState().stores.allIds && getState().stores.allIds.length > 1) {
+          dispatch(updatePOSScreen({ selectStoreDialog: true}))
         }
       }
     })
@@ -76,7 +84,7 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
     inputData['rootCause'] = rootCause
     inputData['data'] = getState()
 
-    fetch(urlAPI + '/errorLog.json?storeId=1', {
+    fetch(urlAPI + `/errorLog.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(inputData),
       headers: {
@@ -174,13 +182,6 @@ export const removePOSDialog = data => {
 export const resetPOSScreen = () => {
   return {
     type: C.POS_SCREEN_CLEAR
-  }
-}
-
-export const selectStore = storeId => {
-  return {
-    type: C.CURRENT_STORE,
-    payload: storeId
   }
 }
 

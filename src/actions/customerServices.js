@@ -5,6 +5,7 @@ import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
 import { createErrorLog } from './index'
 import { calculateCurrentPrices } from './payments'
+import { getCurrentStoreId } from '../selectors'
 
 export const addCustomerService = customerService => {
   return {
@@ -57,7 +58,7 @@ export const deleteCustomerService = customerService => (
     urlAPI +
       `/customers/${customerService.customerId}/customerServices/${
         customerService.id
-      }.json`,
+      }.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: {

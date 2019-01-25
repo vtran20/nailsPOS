@@ -4,6 +4,7 @@ import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { createErrorLog, addGlobalMessages } from './index'
+import { getCurrentStoreId } from '../selectors'
 
 export const addService = service => {
   return {
@@ -54,7 +55,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
     const customerId = getState().posScreen.customerId
 
     fetch(
-      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}.json?storeId=1`,
+      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}`,
       {
         method: 'POST',
         body: { customerId: customerId, serviceId: serviceId },
@@ -78,7 +79,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
 }
 
 export const createService = service => (dispatch, getState) => {
-  fetch(urlAPI + '/services.json?storeId=1', {
+  fetch(urlAPI + `/services.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(service),
     headers: {
@@ -100,7 +101,7 @@ export const createService = service => (dispatch, getState) => {
 }
 
 export const updatingService = service => (dispatch, getState) => {
-  fetch(urlAPI + `/services/${service.id}.json?storeId=1`, {
+  fetch(urlAPI + `/services/${service.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(service),
     headers: {

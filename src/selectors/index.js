@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect'
+import Cookies from 'universal-cookie'
+
 
 const getStoresById = (state) => state.stores.byId
 // const getStoresAllIds = (state) => state.stores.allIds
@@ -16,12 +18,24 @@ const getCustomerServicesById = (state) => state.customerServices.byId
 const getEmployeeServicesById = (state) => state.employeeServices.byId
 // const getEmployeeServicesAllIds = (state) => state.employeeServices.allIds
 const getPOSScreen = (state) => state.posScreen
+const getCurrentCheckout = (state) => state.payments.currentCheckout
 
 //Get current customer
 export const getStore = createSelector(
   [ getStoresById, getStores ],
   (byId, stores) => stores && stores.currentStoreId? byId[stores.currentStoreId] : {}
 )
+
+export const getCurrentStoreId = createSelector(
+  [ getStores ],
+  (stores) =>  {
+    if (stores && stores.currentStoreId) {
+      return stores.currentStoreId
+    } else {
+      const cookies = new Cookies()
+      return cookies.get('STORE_ID_COOKIE')
+    }
+})
 
 //Get all current customers
 export const getCustomers = createSelector(
@@ -81,7 +95,12 @@ export const getEmployeeIdsOfCustomer = createSelector(
 	  		if (customerServiceById[customerServiceId] && customerServiceById[customerServiceId].employeeServices) {
   				customerServiceById[customerServiceId].employeeServices.map (employeeServiceId => {
   					if (employeeServiceById[employeeServiceId] && employeeServiceById[employeeServiceId].employeeId) {
-  						employeeIds = [...employeeIds, employeeServiceById[employeeServiceId].employeeId]
+              //Only add employeeId if not existing in employeeIds
+              if(employeeIds.find(x => x === employeeServiceById[employeeServiceId].employeeId)) {
+                //do nothing
+              } else {
+                employeeIds = [...employeeIds, employeeServiceById[employeeServiceId].employeeId]
+              }
   					}
             return
   				})
@@ -92,6 +111,28 @@ export const getEmployeeIdsOfCustomer = createSelector(
   	return employeeIds
 })
 
+
+//Checking total tip on employees equal global tip
+export const checkingTotalTip = createSelector(
+  [ getCustomersById, getPOSScreen, getCustomerServicesById, getEmployeeServicesById, getCurrentCheckout ],
+  (byId, posScreen, customerServices, employeeServices, currentCheckout) => {
+    const customer = posScreen && posScreen.customerId && byId[posScreen.customerId]? byId[posScreen.customerId] : {}
+      let totalTip = 0
+      if (customer && customer.customerServices) {
+        customer.customerServices.map(csId => {
+          if (customerServices[csId].employeeServices) {
+            customerServices[csId].employeeServices.map (esId => {
+              const employeeService = employeeServices[esId]
+              if (employeeService && employeeService.tipPrice > 0) {
+                totalTip = totalTip + employeeService.tipPrice
+              }
+            })
+          }
+        })
+      }
+      const globalTotalTip = currentCheckout && currentCheckout.tipPrice? currentCheckout.tipPrice : 0
+    return totalTip === globalTotalTip
+})
 
 //Get cost for services only
 export const getServiceCost = createSelector(

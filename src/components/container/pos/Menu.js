@@ -87,6 +87,11 @@ class Menu extends Component {
     this.onClose()
   }
 
+  handleOpenSelectStore = () => {
+    this.props.dispatch(updatePOSScreen({ selectStoreDialog: true}))
+    this.onClose()
+  }
+
   render() {
 
     const { 
@@ -200,7 +205,7 @@ class Menu extends Component {
               // className={'flex-col-scroll'}
               // style={{ backgroundColor: 'lightblue' }}
             >
-            <Tooltip disableFocusListener title="View Appointments">
+            <Tooltip disableFocusListener title="Select Store">
               <Button
                 variant="contained"
                 color="primary"
@@ -208,13 +213,13 @@ class Menu extends Component {
                 fullWidth
                 className={classes.button}
                 onClick={() =>
-                  this.handleViewSchedule()
+                  this.handleOpenSelectStore()
                 }
               >
                 <SvgIcon className={classes.svgIcon}>
                   <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/><path d="M0 0h24v24H0z" fill="none"/>
                 </SvgIcon>
-                AAAAAAAAAAAAAAAA
+                Select Store
               </Button>
               </Tooltip>  
             </Grid>

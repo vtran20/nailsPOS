@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch'
 import { createErrorLog } from './index'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { getCurrentStoreId } from '../selectors'
+
 
 import C from '../constants'
 
@@ -18,10 +20,10 @@ export const clearCustomerSearchs = () => ({
   type: C.CUSTOMER_SEARCH_CLEAR
 })
 
-export const searchCustomers = (value, type) => dispatch => {
+export const searchCustomers = (value, type) => (dispatch, getState) => {
   dispatch(customerSearchFetching(true))
 
-  fetch(urlAPI + '/searchNailCustomer.json?' + type + '=' + value)
+  fetch(urlAPI + `/searchNailCustomer.json?${type}=${value}&storeId=${getCurrentStoreId(getState())}`)
     .then(handleErrors)
     .then(response => response.json())
     .then(results => {

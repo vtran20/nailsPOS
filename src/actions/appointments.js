@@ -2,6 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { createErrorLog } from './index'
+import { getCurrentStoreId } from '../selectors'
 
 export const addAppointment = appointment => {
   return {
@@ -31,9 +32,9 @@ export const fetchingAppointment = fetching => {
   }
 }
 
-export const createAppointment = appointment => dispatch => {
+export const createAppointment = appointment => (dispatch, getState) => {
   // dispatch(fetchingAppointment(true))
-  fetch(urlAPI + '/appointments.json?storeId=1', {
+  fetch(urlAPI + `/appointments.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(appointment),
     headers: {
@@ -55,9 +56,9 @@ export const createAppointment = appointment => dispatch => {
     })
 }
 
-export const loadAppointment = (startDate, endDate) => dispatch => {
+export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
   dispatch(fetchingAppointment(true))
- fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=1`, {
+ fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -85,7 +86,7 @@ export const deleteAppointment = appointmentId => (
 ) => {
   fetch(
     urlAPI +
-      `/appointments/${appointmentId}.json`,
+      `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: {
