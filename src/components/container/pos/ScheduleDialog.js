@@ -19,7 +19,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import ScheduleAppointment from './ScheduleAppointment'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
-import AddCustomer from './AddCustomer'
 import SearchCustomer from './SearchCustomer'
 import { connect } from 'react-redux'
 import { clearCustomerForm } from '../../../actions/forms'

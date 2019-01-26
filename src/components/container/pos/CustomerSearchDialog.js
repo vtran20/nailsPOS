@@ -62,7 +62,11 @@ const styles = theme => ({
   },
   dialogBody: {
     padding: `0 ${theme.spacing.unit * 3}px`
+  },
+  title: {
+    margin: `${theme.spacing.unit * 2}px 0 ${theme.spacing.unit * 2}px`
   }
+
 })
 
 class CustomerSearchDialog extends Component {
@@ -111,7 +115,7 @@ class CustomerSearchDialog extends Component {
               </Grid>
               <Grid item xs={6}>
                 <Paper className={classes.paper}>
-                  <AddCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer}/>
+                  <AddCustomer className={classes.title} page='appointment' onSelectCustomer={this.handleSelectCustomer} phone='required'/>
                 </Paper>
               </Grid>
             </Grid>

@@ -21,6 +21,18 @@ export const updateCustomer = customer => {
   }
 }
 
+export const editCustomer = customer => {
+  return {
+    type: C.CUSTOMER_EDIT,
+    payload: customer
+  }
+}
+export const editCustomerClear = () => {
+  return {
+    type: C.CUSTOMER_EDIT_CLEAR
+  }
+}
+
 export const removeCustomer = customerId => {
   return {
     type: C.CUSTOMER_REMOVE,

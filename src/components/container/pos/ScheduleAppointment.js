@@ -91,8 +91,10 @@ class ScheduleAppointment extends Component {
         <span style={{ fontWeight: 'bold', color: 'white' }}>{customerForm? `Customer Appointment: ${customerForm.firstName + ' ' + customerForm.lastName }`:''}</span>
       </div>
     )
-    this.state.viewModel.setEvents(appointments? appointments: [])
-
+    this.state.viewModel.setEvents(appointments? appointments.sort(compareAppointment): [])
+    // this.setState({
+    //     viewModel: this.state.viewModel
+    // })
     return (
       <div>
           <ServicesDialog
@@ -128,25 +130,38 @@ class ScheduleAppointment extends Component {
   prevClick = schedulerData => {
     schedulerData.prev()
     this.props.dispatch (loadAppointment(schedulerData.startDate, schedulerData.endDate))    
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
   nextClick = schedulerData => {
     schedulerData.next()
     this.props.dispatch (loadAppointment(schedulerData.startDate, schedulerData.endDate))    
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
   onViewChange = (schedulerData, view) => {
+    console.log (view.viewType)
     schedulerData.setViewType(
       view.viewType,
       view.showAgenda,
       view.isEventPerspective
     )
     this.props.dispatch (loadAppointment(schedulerData.startDate, schedulerData.endDate))    
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
   onSelectDate = (schedulerData, date) => {
     this.props.dispatch (loadAppointment(date.format(DATE_FORMAT), date.format(DATE_FORMAT)))    
     schedulerData.setDate(date)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
   eventClicked = (schedulerData, event) => {
@@ -164,6 +179,9 @@ class ScheduleAppointment extends Component {
         if (item.id >= newFreshId) newFreshId = item.id + 1
       })
       this.props.dispatch (deleteAppointment(event.id))
+      this.setState({
+        viewModel: schedulerData
+      })
     }    
   }
 

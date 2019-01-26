@@ -11,10 +11,11 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
 import { connect } from 'react-redux'
+import {TextMaskCustom, renderTextField, renderPhoneTextField} from '../pos/employees/EmployeesDialog'
   
 
 import {
-  searchCustomers
+  searchCustomers, clearCustomerSearchs
 } from '../../../actions/customerSearch'
 import {checkInCustomerAtPOS} from '../../../actions/customers'
 import {addCustomerForm} from '../../../actions/forms'
@@ -29,18 +30,24 @@ const styles = theme => ({
     padding: `0 ${theme.spacing.unit * 4}px ${theme.spacing.unit * 2}px ${theme.spacing.unit * 4}px`
   },
   title: {
-    margin: `${theme.spacing.unit * 4}px 0 ${theme.spacing.unit * 2}px`
+    margin: `0 0 ${theme.spacing.unit * 2}px`
   }
 })
 
 class SearchCustom extends React.Component {
-  state = {
-    dense: false,
-    secondary: false
-  }
+
   handleChange = name => event => {
-    if (event.target.value && event.target.value.length >= 3) {
-      this.props.dispatch(searchCustomers(event.target.value, name))
+    if (event.target.value) {      
+      let value = event.target.value
+      if (name === 'phone') {
+          value = event.target.value.replace(/\D+/g, '') //remove special characters if it is phone
+      }
+      
+      if (value.length >= 3) {
+        this.props.dispatch(searchCustomers(value, name))
+      } else if (value.length === 0) {
+        this.props.dispatch(clearCustomerSearchs())
+      }
     }
   }
 
@@ -76,6 +83,12 @@ class SearchCustom extends React.Component {
                 type="phone"
                 fullWidth
                 onChange={this.handleChange('phone')}
+                InputProps={{
+                  inputComponent: TextMaskCustom
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}                    
               />
               <TextField
                 margin="dense"
@@ -84,6 +97,9 @@ class SearchCustom extends React.Component {
                 type="email"
                 fullWidth
                 onChange={this.handleChange('email')}
+                InputLabelProps={{
+                  shrink: true,
+                }}                    
               />
             </div>
           <br />

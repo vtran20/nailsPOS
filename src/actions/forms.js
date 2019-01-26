@@ -2,6 +2,7 @@ import C from '../constants'
 import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
 import { addCustomer } from './customers'
 import { addAppointment } from './appointments'
+import { clearCurrentCheckout } from './payments'
 import { addEmployeeService } from './employeeServices'
 import { addCustomerService, updateCustomerService } from './customerServices'
 import { clearCustomerSearchs } from './customerSearch'
@@ -56,6 +57,7 @@ export const createNewCustomerServiceForCheckIn = () => (
     .then(response => response.json())
     .then(data => {
       handleErrorMessages(data)
+      dispatch(clearCurrentCheckout())
       dispatch(addCustomer(data.customer))
       data.customerServices.map(customerService =>
         dispatch(addCustomerService(customerService))

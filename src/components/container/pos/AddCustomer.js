@@ -19,7 +19,7 @@ const styles = theme => ({
     padding: `0 ${theme.spacing.unit * 4}px ${theme.spacing.unit * 2}px ${theme.spacing.unit * 4}px`
   },
   title: {
-    margin: `${theme.spacing.unit * 4}px 0 ${theme.spacing.unit * 2}px`
+    margin: `0 0 ${theme.spacing.unit * 2}px`
   }
 })
 
@@ -49,21 +49,22 @@ class AddCustomer extends React.Component {
   }
 
   render() {
-    const { classes, page } = this.props
+    const { classes, page, phone, email } = this.props
 
     return (
       <div className={classes.root}>
         <Grid container spacing={16}>
           <Grid item xs={12}>
             <Typography variant="h6" className={classes.title}>
-              Create New Customer
+              New Customer
             </Typography>
             <div className={classes.demo}>
               <CustomerForm 
               onSubmit={this.handleSubmitCustomerForm} 
-              onSubmitForAppointment={this.handleSubmitCustomerFormForAppointment}
-              onSubmitForPOSCheckIn={this.handleSubmitCustomerFormForPOSCheckIn}
+              onSelectCustomer={this.handleSubmitCustomerFormForAppointment}
               page={page}
+              phone={phone}
+              email={email}
               />
             </div>
           </Grid>

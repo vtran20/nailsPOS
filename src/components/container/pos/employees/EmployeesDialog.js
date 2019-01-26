@@ -88,6 +88,13 @@ const validate = values => {
     }
   })
 
+  const phoneNumber = values.phone? values.phone.replace(/\D+/g, '') : undefined
+  if (phoneNumber) {
+    if (!/^(0|[1-9][0-9]{9})$/i.test(phoneNumber)) {
+      errors.phone = 'Invalid phone number, must be 10 digits'
+    }
+  }
+
   if (values.email) {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
       errors.email = 'Invalid email address'
@@ -97,13 +104,13 @@ const validate = values => {
   return errors
 }
 
-const TextMaskCustom = (props) => {
+export const TextMaskCustom = (props) => {
   const { inputRef, ...other } = props;
 
   return (
     <MaskedInput
       {...other}
-      ref={inputRef}
+      // ref={inputRef}
       mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
       placeholderChar={'\u2000'}
       showMask
@@ -111,7 +118,7 @@ const TextMaskCustom = (props) => {
   );
 }
 
-const renderTextField = ({
+export const renderTextField = ({
   label,
   input,
   meta: { touched, invalid, error },
@@ -133,7 +140,7 @@ const renderTextField = ({
   />
 )
 
-const renderPhoneTextField = ({
+export const renderPhoneTextField = ({
   label,
   input,
   meta: { touched, invalid, error },
@@ -169,21 +176,18 @@ const renderInput = field =>   // Define stateless component to render input and
 
 class EmployeesDialog extends Component {
 
-  // handleChange = name => ({ target: { value } }) => {
-  // }
-  
   handleSubmit = (values) => {
     if (this.props.initialValues.id) {
       const data = {
         id: this.props.initialValues.id,
         firstName: this.props.formData.firstName,
         lastName: this.props.formData.lastName,
-        phone: this.props.formData.phone,
+        phone: this.props.formData.phone.replace(/\D+/g, ''),
         email: this.props.formData.email
       }
       this.props.dispatch(updatingEmployee(data))
     } else {
-      const data = {...this.props.formData}
+      const data = {...this.props.formData, phone: this.props.formData.phone.replace(/\D+/g, '')}
       this.props.dispatch(createEmployee(data))
     }
   }
@@ -213,7 +217,7 @@ class EmployeesDialog extends Component {
     
   }
   render() {
-    const { classes, open, employees, name, minutes, isNewEmployee, pristine, submitting, formData, handleSubmit, reset, valid } = this.props
+    const { classes, open, employees, name, isNewEmployee, pristine, submitting, formData, handleSubmit, reset, valid } = this.props
     return (
       <div>
       <Dialog
@@ -344,7 +348,6 @@ const mapStateToProps = state => ({
   employees: getEmployees(state),
   isNewEmployee : state.employees.edit.id? false : true,
   name: state.employees.edit.name,
-  minutes: state.employees.edit.minutes,
   initialValues: state.employees.edit? {...state.employees.edit} : null,
   formData : state.form.employeeForm && state.form.employeeForm.values? state.form.employeeForm.values : {},
   employeeForm : state.form.employeeForm

@@ -143,5 +143,4 @@ export default combineReducers({
   fetching,
   errors,
   edit
-  // form:formEmployeeReducer
 })

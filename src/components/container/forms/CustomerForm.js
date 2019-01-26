@@ -1,253 +1,178 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TextField, Button } from '@material-ui/core'
+import { TextField, Button, Paper } from '@material-ui/core'
 import { updateCustomer } from '../../../actions/customers'
 import { addCustomerForm } from '../../../actions/forms'
+import { Field, reduxForm } from 'redux-form'
+import {TextMaskCustom, renderTextField, renderPhoneTextField} from '../pos/employees/EmployeesDialog'
+import { withStyles } from '@material-ui/core/styles'
+import {required} from '../../../utils'
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth: 700
+  },
+  button: {
+    margin: `0 ${theme.spacing.unit}px 0 0`
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit
+  },
+  iconSmall: {
+    fontSize: 20
+  },
+  title: {
+    margin: `${theme.spacing.unit * 2}px 0 0`
+  },
+  paper: {
+    marginTop: theme.spacing.unit,
+    display: 'flex',
+    flexDirection: 'column',
+    // alignItems: 'center',
+    // padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`
+    padding: `0 ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    height: 550,
+    overflowY: 'auto'
+
+  },
+  appBar: {
+    position: 'relative',
+  },
+  flex: {
+    flex: 1,
+  },
+  dialogBody: {
+    padding: `0 ${theme.spacing.unit * 3}px`
+  }
+})
+
+const validate = values => {
+  const errors = {}
+  const requiredFields = [
+    'firstName',
+    'lastName',
+    // 'phone'
+  ]
+  requiredFields.forEach(field => {
+    if (!values[field]) {
+      errors[field] = 'Required'
+    }
+  })
+
+  const phoneNumber = values.phone? values.phone.replace(/\D+/g, '') : undefined
+  if (phoneNumber) {
+    if (!/^(0|[1-9][0-9]{9})$/i.test(phoneNumber)) {
+      errors.phone = 'Invalid phone number, must be 10 digits'
+    }
+  }
+
+  if (values.email) {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = 'Invalid email address'
+    }
+  }
+
+  return errors
+}
 
 class CustomerForm extends Component {
-  state = this.getInitState()
 
-  getInitState() {
-    const { customer } = this.props
+    handleSubmit = (values) => {
+      console.log ({...values, phone: values.phone.replace(/\D+/g, '')})
+      this.props.dispatch(addCustomerForm({...values, phone: values.phone.replace(/\D+/g, '')}))
 
-    return customer
-      ? customer
-      : {
-          firstName: '',
-          lastName: '',
-          phone: '',
-          email: ''
+      if (this.props.page === 'posCheckIn') {
+        //call back to parent method
+        if (typeof this.props.onSubmit === 'function') {
+          console.log('onSubmit:'+ typeof this.props.onSubmit)
+          this.props.onSubmit()
         }
-  }
-
-  handleChange = name => ({ target: { value } }) =>
-    this.setState({
-      [name]: value
-    })
-
-  handleCheckInNewCustomer = () => {
-    if (this.props.customer) {
-      this.props.dispatch(
-        updateCustomer(
-          this.props.customer.id,
-          this.state.firstName,
-          this.state.lastName,
-          this.state.phone,
-          this.state.email
-        )
-      )
-    } else {
-      //find if customers were scheduled appointment today or already serviced.
-      const custId = this.props.allIds.filter(
-        customerId =>
-          this.props.customers[customerId].email === this.state.email ||
-          this.props.customers[customerId].phone === this.state.phone
-      )
-      if (custId && custId.length > 0) {
-        //this customer was scheduled appointment. Just display services and finish check in.
-        this.props.dispatch(addCustomerForm(this.props.customers[custId[0]]))
-      } else {
-        this.props.dispatch(
-          addCustomerForm({
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            phone: this.state.phone,
-            email: this.state.email
-          })
-        )
-      }
-    }
-    //call back to parent method
-    if (typeof this.props.onSubmit === 'function') {
-      this.props.onSubmit()
-    }
-  }
-
-  handleSelectCustomerForAppointment = () => {
-    this.props.dispatch(
-      addCustomerForm({
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        phone: this.state.phone,
-        email: this.state.email,
-        status: 'SCHEDULED'
-      })
-    )
-    //call back to parent method and move to select appointment time
-    if (typeof this.props.onSubmitForAppointment === 'function') {
-      this.props.onSubmitForAppointment()
-    }
-  }
-
-  // renderButton = (page) => {
-  //   if  (page ==='appointment') {
-  //       return 
-  //        ( <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSelectCustomerForAppointment()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //         )
-  //   }
-  //   else if (page === 'posCheckIn') {
-  //       return 
-  //       (
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //       )
-  //   }
-  //   else if (page === 'selfCheckIn') {
-  //       return 
-  //       (
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSelectCustomerForSelfCheckIn()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //       )
-  //   }
-  // }
-
-  // renderButton = (page) => {
-  //   switch (page) {
-  //     case 'appointment':
-  //       return 
-  //       (
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSelectCustomerForAppointment()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //       )
-  //     case 'posCheckIn':
-  //       return 
-  //       (
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //       )
-  //     case 'selfCheckIn':
-  //       return 
-  //       (
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           // className={classes.button}
-  //           onClick={() => this.handleSelectCustomerForSelfCheckIn()}
-  //         >
-  //           Continue Appointment
-  //         </Button>
-  //       )
-  //     default:
-  //       return ''
-  //   }
-  // }
-
-       renderButton = (page) => {
-        if (page === 'appointment') {
-          return (
-            <Button
-              variant="contained"
-              color="primary"
-              // className={classes.button}
-              onClick={() => this.handleSelectCustomerForAppointment()}
-            >
-              Continue Appointment
-            </Button>
-          )
-        } else if (page === 'posCheckIn') {
-          return (
-            <Button
-              variant="contained"
-              color="primary"
-              // className={classes.button}
-              onClick={() => this.handleSubmitCustomerFormForPOSCheckIn()}
-            >
-              Continue Appointment
-            </Button>
-          )
-        } else if (page === 'selfCheckIn') {
-          return (
-            <Button
-              variant="contained"
-              color="primary"
-              // className={classes.button}
-              onClick={() => this.handleSelectCustomerForSelfCheckIn()}
-            >
-              Continue Appointment
-            </Button>
-          )
+      } else if (this.props.page === 'appointment') {
+        //call back to parent method and move to select appointment time
+        if (typeof this.props.onSelectCustomer === 'function') {
+          console.log('onSelectCustomer:'+ typeof this.props.onSelectCustomer)
+          this.props.onSelectCustomer()
         }
       }
+      return
+  }
 
   render() {
-    const { firstName, lastName, phone, email } = this.state
-    const { customer, page } = this.props
-
+    const { classes, customer, page, pristine, submitting, formData, handleSubmit, reset, valid, phone, email } = this.props
     return (
-      <form>
-        <TextField
-          label="First Name"
-          value={firstName}
-          onChange={this.handleChange('firstName')}
-          margin="normal"
-          fullWidth
-          autoFocus
-        />
-
-        <TextField
-          label="Last Name"
-          value={lastName}
-          onChange={this.handleChange('lastName')}
-          margin="normal"
-          fullWidth
-        />
-
-        <TextField
-          label="Phone"
-          value={phone}
-          onChange={this.handleChange('phone')}
-          margin="normal"
-          fullWidth
-        />
-
-        <TextField
-          label="Email"
-          value={email}
-          onChange={this.handleChange('email')}
-          margin="normal"
-          fullWidth
-        />
-        <br />
-        <br />
-        {this.renderButton(page)}
-      </form>
+            <form onSubmit={handleSubmit(val => this.handleSubmit(val))}>
+            <div>
+              <Field 
+              name="firstName" 
+              component={renderTextField}
+              label="First Name"
+              />
+            </div>
+            <div>
+              <Field 
+              name="lastName" 
+              component={renderTextField}
+              label="Last Name"
+              />
+            </div>
+            <div>
+              <Field 
+              name="phone" 
+              component={renderPhoneTextField}
+              label="Phone"
+              validate={phone? required : undefined}
+              />
+            </div>
+            <div>
+              <Field 
+              name="email" 
+              component={renderTextField}
+              label="Email"
+              validate={email? required : undefined}
+              />
+            </div>
+              <br />
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                type="submit"
+                disabled={!valid || pristine || submitting}
+              >
+                Add
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                type="button"
+                disabled={pristine || submitting} onClick={reset}
+              >
+                Reset
+              </Button>
+            </form>
     )
   }
 }
 const mapStateToProps = state => ({
   allIds: state.customers.allIds,
-  customers: state.customers.byId
+  customers: state.customers.byId,
+  formData : state.form.customerForm && state.form.customerForm.values? state.form.customerForm.values : {},
 })
 
-export default connect(mapStateToProps)(CustomerForm)
+// Decorate with redux-form
+CustomerForm = reduxForm({
+  form: 'customerForm',
+  enableReinitialize : true,
+  validate
+})(CustomerForm)
+
+export default connect(mapStateToProps)(withStyles(styles)(CustomerForm))

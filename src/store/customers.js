@@ -124,9 +124,24 @@ export const errors = (state = [], action) => {
   }
 }
 
+export const edit = (state = {}, action) => {
+  switch (action.type) {
+    case C.CUSTOMER_EDIT:
+      return produce(state, draft => {       
+        draft = {...action.payload}
+        return draft
+      })
+    case C.CUSTOMER_EDIT_CLEAR:
+      return {}
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   byId,
   allIds,
   fetching,
-  errors
+  errors,
+  edit
 })
