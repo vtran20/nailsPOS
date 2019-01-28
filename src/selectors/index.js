@@ -164,7 +164,11 @@ export const getServiceCost = createSelector(
     return total    
 })
 
-
+//Get current customer
+export const getHours = createSelector(
+  [ getStoresById, getStores ],
+  (byId, stores) => ({'Sun':'12-18', 'Mon':'10-20', 'Tue':'11-20', 'Wed':'12-20', 'Thu':'13-20', 'Fri':'14-20','Sat':'15-21'})
+)
 
 //////////////////////////////////Don't use selector library////////////////////////////////////////////
 export const getCustomerId = (phone, email, state) => {

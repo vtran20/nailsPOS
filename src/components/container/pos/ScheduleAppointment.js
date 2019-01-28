@@ -11,12 +11,12 @@ import withDragDropContext from './withDnDContext'
 import { withStyles } from '@material-ui/core/styles'
 import 'react-big-scheduler/lib/css/style.css'
 
-import { compareAppointment } from '../../../utils'
+import { compareAppointment, updateHours } from '../../../utils'
 import { deleteAppointment, loadAppointment } from '../../../actions/appointments'
 import { updateCustomerForm } from '../../../actions/forms'
 import apptStyle from '../../../assets/css/appointment.css'
 import ServicesDialog from '../checkin/ServicesDialog'
-import { getEmployees, getAppointments } from '../../../selectors'
+import { getEmployees, getAppointments, getHours } from '../../../selectors'
 
 
 const styles = theme => ({
@@ -39,8 +39,8 @@ class ScheduleAppointment extends Component {
       eventItemHeight: 28,
       eventItemLineHeight: 30,
       dayStartFrom:8,
-      dayStopTo: 17,
-      nonWorkingTimeHeadColor: '',
+      dayStopTo: 22,
+      nonWorkingTimeHeadColor: '', //#8B0000 : dark red
       nonWorkingTimeHeadBgColor: '',
       nonWorkingTimeBodyBgColor: '',
       startResizable: false,
@@ -48,7 +48,19 @@ class ScheduleAppointment extends Component {
       movable: false,
       views: [{viewName: 'Day', viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false},
         {viewName: 'Week', viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false},]
+      //hours: {'Sun':'12-18', 'Mon':'10-20', 'Tue':'11-20', 'Wed':'12-20', 'Thu':'13-20', 'Fri':'14-20','Sat':'15-21'}
     }
+
+    //TODO: set dayStart and dayEnd
+    // Idea: set hours to config, when click next, prev, select date, we set dayStartFrom and dayStopTo so that it can rebuild the appointment.
+    //
+    // const currentDate = moment();
+    // const hoursArr = updateHours (currentDate, this.props.hours)
+    // if (hoursArr && hoursArr.length >= 2) {
+    //     schedulerData.config.dayStartFrom=hoursArr[0]
+    //     schedulerData.config.dayStopTo=hoursArr[1]
+    // }
+
     //2. create the view model, put it in the props obj
     let schedulerData = new SchedulerData(
       new moment().format(DATE_FORMAT),
@@ -78,7 +90,7 @@ class ScheduleAppointment extends Component {
   render() {
     const { viewModel } = this.state
     const { appointments, customerForm } = this.props
-
+    //console.log(viewModel)
     // let leftCustomHeader = (
     //   <div>
     //     <span style={{ fontWeight: 'bold', color: 'white' }}>
@@ -92,9 +104,7 @@ class ScheduleAppointment extends Component {
       </div>
     )
     this.state.viewModel.setEvents(appointments? appointments.sort(compareAppointment): [])
-    // this.setState({
-    //     viewModel: this.state.viewModel
-    // })
+
     return (
       <div>
           <ServicesDialog
@@ -129,7 +139,7 @@ class ScheduleAppointment extends Component {
 
   prevClick = schedulerData => {
     schedulerData.prev()
-    this.props.dispatch (loadAppointment(schedulerData.startDate, schedulerData.endDate))    
+    this.props.dispatch (loadAppointment(schedulerData.startDate, schedulerData.endDate))
     this.setState({
       viewModel: schedulerData
     })
@@ -265,6 +275,7 @@ class ScheduleAppointment extends Component {
 const mapStateToProps = state => ({
   resources: getEmployees(state),
   appointments: getAppointments(state),
+  hours : getHours(state),
   customerForm: state.forms && state.forms.customerForm? state.forms.customerForm : null
 })
 

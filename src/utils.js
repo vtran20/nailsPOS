@@ -47,6 +47,12 @@ export const dollars2Cents = (dollars) => {
   }  
 }
 
+export const updateHours = (currentDate, hours) => {
+  const dayOfWeek = currentDate.format('ddd')
+  const dayTime = hours && hours[dayOfWeek]? hours[dayOfWeek] : undefined
+  const hoursArr = dayTime? dayTime.split('-') : undefined
+  return hoursArr
+}
 // export const getTotalPrice = (servicePrice, tipPrice, taxPrice )  => {
 //   let total = 0
 //   if (servicePrice) total += servicePrice
