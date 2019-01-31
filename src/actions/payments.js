@@ -2,8 +2,10 @@ import C from '../constants'
 
 import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
 import { getServiceCost, getCurrentStoreId, getEmployeeIdsOfCustomer, checkingTotalTip } from '../selectors'
+import moment from 'moment'
+
 
 export const addCustomerCheckout = data => {
   return {
@@ -173,7 +175,7 @@ export const completePayment = () => (dispatch, getState) => {
     return;
   }
 
-  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(inputData),
     headers: {

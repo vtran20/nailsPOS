@@ -1,11 +1,12 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
 import { selectCustomer, createErrorLog, addGlobalError, addGlobalMessage } from './index'
 import { getCurrentStoreId } from '../selectors'
+import moment from 'moment'
 
 export const addCustomer = customer => {
   return {
@@ -46,6 +47,12 @@ export const fetchCustomerBegin = () => {
     payload: true
   }
 }
+export const fetchCustomerComplete = () => {
+  return {
+    type: C.CUSTOMER_FETCHING,
+    payload: false
+  }
+}
 
 export const searchCustomers = (phone, email) => (dispatch, getState) => {
   let queryString = urlAPI + `/searchNailCustomer.json?storeId=${getCurrentStoreId(getState())}`
@@ -71,7 +78,7 @@ export const searchCustomers = (phone, email) => (dispatch, getState) => {
 }
 
 export const createCustomer = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: {
@@ -104,7 +111,7 @@ export const updateCustomerService = services => {
 }
 
 export const checkInCustomer = customerId => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -126,7 +133,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
     dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: customerId }))
     dispatch(addGlobalMessage('This customer checked in today.'))
   } else {
-    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}`, {
+    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -148,7 +155,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
 
 
 export const updateCustomerDB = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/${customer.id}.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/${customer.id}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     body: JSON.stringify(customer),
     headers: {

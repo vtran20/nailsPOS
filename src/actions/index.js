@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { addCustomer } from './customers'
+import { addCustomer, fetchCustomerBegin, fetchCustomerComplete } from './customers'
 import { addService } from './services'
 import { addEmployee } from './employees'
 import { addCustomerCheckout, updateCustomerCheckout, updateCurrentCheckout, clearCurrentCheckout } from './payments'
@@ -7,10 +7,11 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 import { getServiceCost, getCurrentStoreId } from '../selectors'
+import moment from 'moment'
 
 const cookies = new Cookies()
 
@@ -25,7 +26,7 @@ export const initialData = storeId => (dispatch, getState) => {
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
 
-  fetch(urlAPI + `/initialData.json?storeId=${storeId}`, {
+  fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
     credentials: 'same-origin'
   })
     .then(handleErrors)
@@ -73,8 +74,49 @@ export const initialData = storeId => (dispatch, getState) => {
           dispatch(updatePOSScreen({ selectStoreDialog: true}))
         }
       }
+      //update the load time
+      dispatch(updateMoment(new moment().format()))
     })
     .catch(error => dispatch(createErrorLog(error.message)))
+}
+
+export const reloadData = () => (dispatch, getState) => {
+  const storeId = parseInt(getState().stores.currentStoreId)
+  const currentDay = new moment(getState().moment);
+  const nextDay = new moment();
+  const diff = currentDay.diff(nextDay, 'days')
+  if (diff < 0) {
+    //initial refresh data again next day
+    initialData(storeId)
+  } else {
+    dispatch(fetchCustomerBegin())
+    const startDate = getState().moment
+    const endDate = moment().endOf('day').format()
+    fetch(urlAPI + `/reload.json?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
+      credentials: 'same-origin'
+    })
+      .then(handleErrors)
+      .then(response => response.json())
+      .then(result => {
+        handleErrorMessages(result)
+        if (result.customers)
+          result.customers.map(customer => dispatch(addCustomer(customer)))
+        if (result.appointments)
+          result.appointments.map(appointment => dispatch(addAppointment(appointment)))
+        if (result.customerServices)
+          result.customerServices.map(customerSrevice =>
+            dispatch(addCustomerService(customerSrevice))
+          )
+        if (result.employeeServices)
+          result.employeeServices.map(employeeSrevice =>
+            dispatch(addEmployeeService(employeeSrevice))
+          )
+        dispatch(fetchCustomerComplete())
+        //update the load time
+        dispatch(updateMoment(new moment().format()))
+      })
+      .catch(error => dispatch(createErrorLog(error.message)))
+  }
 }
 
 export const createErrorLog = (rootCause) => (dispatch, getState) => {
@@ -182,6 +224,12 @@ export const removePOSDialog = data => {
 export const resetPOSScreen = () => {
   return {
     type: C.POS_SCREEN_CLEAR
+  }
+}
+export const updateMoment = (moment) => {
+  return {
+    type: C.MOMENT_UPDATE,
+    payload: moment
   }
 }
 

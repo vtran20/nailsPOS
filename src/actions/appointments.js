@@ -1,8 +1,9 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
 import { createErrorLog } from './index'
 import { getCurrentStoreId } from '../selectors'
+import moment from 'moment'
 
 export const addAppointment = appointment => {
   return {
@@ -86,7 +87,7 @@ export const deleteAppointment = appointmentId => (
 ) => {
   fetch(
     urlAPI +
-      `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}`,
+      `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
     {
       method: 'DELETE',
       headers: {

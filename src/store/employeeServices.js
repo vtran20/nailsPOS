@@ -5,9 +5,14 @@ import produce from "immer"
 export const byId = (state = {}, action) => {
   switch (action.type) {
     case C.EMPLOYEE_SERVICE_ADD:
-      return produce(state, draft => {
-        draft[action.payload.id] = {...action.payload}
-      })
+      if (!state[action.payload.id]) {
+        return produce(state, draft => {
+          draft[action.payload.id]= action.payload
+          return draft
+        })
+      } else {
+        return state
+      }
     case C.EMPLOYEE_SERVICE_UPDATE:
       return produce(state, draft => {
         draft[action.payload.id] = {...action.payload}

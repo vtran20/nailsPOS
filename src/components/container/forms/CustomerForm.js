@@ -86,9 +86,8 @@ const validate = values => {
 class CustomerForm extends Component {
 
     handleSubmit = (values) => {
-      console.log ({...values, phone: values.phone.replace(/\D+/g, '')})
-      this.props.dispatch(addCustomerForm({...values, phone: values.phone.replace(/\D+/g, '')}))
-
+      this.props.dispatch(addCustomerForm({...values, phone: values.phone? values.phone.replace(/\D+/g, '') : undefined}))
+      console.log(this.props.page)
       if (this.props.page === 'posCheckIn') {
         //call back to parent method
         if (typeof this.props.onSubmit === 'function') {

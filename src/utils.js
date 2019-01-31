@@ -1,7 +1,15 @@
+import moment from 'moment'
+
 export const urlAPI = 'http://localhost/nails'
 
 const DEFAULT_CURRENCY = 'USD'
 const DEFAULT_LOCALE = 'en-US'
+const POS_DATETIME_FORMAT = `YYYY-MM-DDTHH:mm:ssZ`
+
+export const getCurrentDateTime = () => moment().format(POS_DATETIME_FORMAT)
+export const getStartEndCurrentDate = () => {
+  return `startDate=${moment().startOf('day').format()}&endDate=${moment().endOf('day').format()}`
+}
 
 export const handleErrors = response => {
   if (!response.ok) {
@@ -53,14 +61,6 @@ export const updateHours = (currentDate, hours) => {
   const hoursArr = dayTime? dayTime.split('-') : undefined
   return hoursArr
 }
-// export const getTotalPrice = (servicePrice, tipPrice, taxPrice )  => {
-//   let total = 0
-//   if (servicePrice) total += servicePrice
-//   if (tipPrice) total += tipPrice
-//   if (taxPrice) total += tipPrice
-//   return total
-// }
-
 
 //This method is used for sorting appointments order by startDate.
 export const compareAppointment = (a, b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)

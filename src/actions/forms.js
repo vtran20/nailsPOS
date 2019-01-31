@@ -1,5 +1,5 @@
 import C from '../constants'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
 import { addCustomer } from './customers'
 import { addAppointment } from './appointments'
 import { clearCurrentCheckout } from './payments'
@@ -8,6 +8,7 @@ import { addCustomerService, updateCustomerService } from './customerServices'
 import { clearCustomerSearchs } from './customerSearch'
 import {resetPOSScreen, changePOSScreen, createErrorLog} from './index'
 import { getCurrentStoreId } from '../selectors'
+import moment from 'moment'
 
 export const addCustomerForm = customer => {
   return {
@@ -46,7 +47,7 @@ export const createNewCustomerServiceForCheckIn = () => (
   dispatch,
   getState
 ) => {
-  fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: {
@@ -82,7 +83,7 @@ export const createNewCustomerServiceForCheckIn = () => (
 }
 
 export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: {

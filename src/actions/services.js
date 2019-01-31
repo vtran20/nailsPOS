@@ -2,9 +2,11 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
 import { createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
+import moment from 'moment'
+
 
 export const addService = service => {
   return {
@@ -55,7 +57,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
     const customerId = getState().posScreen.customerId
 
     fetch(
-      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}`,
+      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
       {
         method: 'POST',
         body: { customerId: customerId, serviceId: serviceId },

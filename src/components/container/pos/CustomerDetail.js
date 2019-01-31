@@ -125,7 +125,20 @@ class CustomerDetail extends React.Component {
         case 'COMPLETED':
           return ''
         default:
-          return ''
+          return (
+                <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.button}
+                onClick={() => this.handleStartCustomerService(currentCustomer.id)}
+              >
+                <SvgIcon>
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </SvgIcon>
+                Check In
+              </Button>
+            )
       }
     }
   }

@@ -179,7 +179,7 @@ class DashboardPOS extends React.Component {
       case 'CUSTOMER_DETAIL':
         return (<CustomerDetail />)
       case 'ADD_CUSTOMER':
-        return (<AddCustomer/>)
+        return (<AddCustomer page='posCheckIn'/>)
       case 'SEARCH_CUSTOMER':
         return (<SearchCustomer/>)
       case 'PAYMENT_CUSTOMER':

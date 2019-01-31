@@ -6,10 +6,14 @@ export const byId = (state = {}, action) => {
   let existing
   switch (action.type) {
     case C.CUSTOMER_ADD:
-      return produce(state, draft => {
-        draft[action.payload.id]= action.payload
-        return draft
-      })
+      if (!state[action.payload.id]) {
+        return produce(state, draft => {
+          draft[action.payload.id]= action.payload
+          return draft
+        })
+      } else {
+        return state
+      }
     case C.CUSTOMER_UPDATE:
       return produce(state, draft => {
         draft[action.payload.id]= {...action.payload, customerServices: state[action.payload.id].customerServices}

@@ -81,6 +81,15 @@ export const messages = (state = [], action) => {
   }
 }
 
+export const moment = (state = null, action) => {
+  switch (action.type) {
+    case C.MOMENT_UPDATE:
+      return action.payload
+    default:
+      return state
+  }
+}
+
 //https://stackoverflow.com/questions/35622588/how-to-reset-the-state-of-a-redux-store
 const reducer = combineReducers({
   stores,
@@ -97,7 +106,8 @@ const reducer = combineReducers({
   forms,
   posScreen,
   payments,
-  form: formReducer
+  form: formReducer,
+  moment
 })
 
 export const appReducer = (state, action) => {

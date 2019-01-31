@@ -1,9 +1,10 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate } from '../utils'
 import { addEmployeeService } from './employeeServices'
 import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
+import moment from 'moment'
 
 export const addEmployee = employee => {
   return {
@@ -64,8 +65,8 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
     }
     const customerId = getState().posScreen.customerId
     const url = customerServiceId
-    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=${getCurrentStoreId(getState())}`
-    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}`
+    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
+    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
     fetch(
       url,
       {

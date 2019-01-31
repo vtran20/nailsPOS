@@ -1,18 +1,27 @@
 import C from '../constants'
 import { combineReducers } from 'redux'
+import produce from "immer"
 
 export const byId = (state = {}, action) => {
   let existing
   switch (action.type) {
     case C.CUSTOMER_SERVICE_ADD:
-      existing = state[action.payload.id] ? true : false
-      if (existing) {
-        return state
+      // existing = state[action.payload.id] ? true : false
+      // if (existing) {
+      //   return state
+      // } else {
+      //   return {
+      //     ...state,
+      //     [action.payload.id]: action.payload
+      //   }
+      // }
+      if (!state[action.payload.id]) {
+        return produce(state, draft => {
+          draft[action.payload.id]= action.payload
+          return draft
+        })
       } else {
-        return {
-          ...state,
-          [action.payload.id]: action.payload
-        }
+        return state
       }
     case C.CUSTOMER_SERVICE_UPDATE:
       existing = state[action.payload.id] ? true : false
