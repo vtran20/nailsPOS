@@ -1,5 +1,5 @@
 import C from '../constants'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
 import { addCustomer } from './customers'
 import { addAppointment } from './appointments'
 import { clearCurrentCheckout } from './payments'
@@ -50,9 +50,7 @@ export const createNewCustomerServiceForCheckIn = () => (
   fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -86,9 +84,7 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
   fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -108,9 +104,7 @@ export const makeAppointment = serviceIds => (dispatch, getState) => {
   fetch(urlAPI + `/customers/makeAppointment.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())

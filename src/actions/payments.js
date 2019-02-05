@@ -2,7 +2,7 @@ import C from '../constants'
 
 import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
 import { getServiceCost, getCurrentStoreId, getEmployeeIdsOfCustomer, checkingTotalTip } from '../selectors'
 import moment from 'moment'
 
@@ -178,9 +178,7 @@ export const completePayment = () => (dispatch, getState) => {
   fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(inputData),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())

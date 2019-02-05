@@ -26,7 +26,7 @@ import { withStyles } from '@material-ui/core/styles'
 import {editEmployee, editEmployeeClear, createEmployee, updatingEmployee, deleteEmployee} from '../../../../actions/employees'
 import { connect } from 'react-redux'
 import { getEmployees } from '../../../../selectors'
-import { cents2Fixed2, dollars2Cents } from '../../../../utils'
+import { cents2Fixed2, dollars2Cents, TextMaskCustom, renderTextField, renderPhoneTextField } from '../../../../utils'
 import { updatePOSScreen } from '../../../../actions'
 
 
@@ -104,75 +104,6 @@ const validate = values => {
   return errors
 }
 
-export const TextMaskCustom = (props) => {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      // ref={inputRef}
-      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={'\u2000'}
-      showMask
-    />
-  );
-}
-
-export const renderTextField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    // placeholder={label}
-    variant="outlined"
-    margin="normal"
-    error={touched && invalid}
-    helperText={touched && error}
-    fullWidth
-    InputLabelProps={{
-      shrink: true,
-    }}    
-    {...input}
-    {...custom}
-  />
-)
-
-export const renderPhoneTextField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    // placeholder={label}
-    variant="outlined"
-    margin="normal"
-    error={touched && invalid}
-    helperText={touched && error}
-    fullWidth
-    InputLabelProps={{
-      shrink: true,
-    }}
-    InputProps={{
-      inputComponent: TextMaskCustom,
-    }}
-    {...input}
-    {...custom}
-  />
-)
-
-
-const renderInput = field =>   // Define stateless component to render input and errors
-  <div>
-    <input {...field.input} type={field.type}/> 
-    {field.meta.touched &&
-     field.meta.error &&
-     <span className="error">{field.meta.error}</span>}
-  </div>
 
 class EmployeesDialog extends Component {
 

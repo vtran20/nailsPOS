@@ -11,9 +11,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
 import { connect } from 'react-redux'
-import {TextMaskCustom, renderTextField, renderPhoneTextField} from '../pos/employees/EmployeesDialog'
-  
-
+import {TextMaskCustom} from '../../../utils'
 import {
   searchCustomers, clearCustomerSearchs
 } from '../../../actions/customerSearch'

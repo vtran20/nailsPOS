@@ -57,19 +57,23 @@ class Messages extends Component {
       message,
       onClose,
       variant,
+      excludeAction,
       ...other
     } = this.props
     const Icon = variantIcon[variant]
+    console.log (excludeAction)
     return (
-      <SnackbarContent className={classNames(classes[variant])}
+      <SnackbarContent className={classNames(classes[variant], className)}
         aria-describedby="client-snackbar"
         message={
           <span id="client-snackbar" className={classes.message}>
             <Icon className={classNames(classes.icon, classes.iconVariant)} />
             {message}
           </span>
-        }
-        action={[
+        }        
+        action={excludeAction
+          ? ''
+          : [
           <IconButton
             key="close"
             aria-label="Close"

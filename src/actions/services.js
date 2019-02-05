@@ -2,7 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
 import { createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
@@ -61,9 +61,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
       {
         method: 'POST',
         body: { customerId: customerId, serviceId: serviceId },
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: getHeader('POST')
       }
     )
       .then(handleErrors)
@@ -84,9 +82,7 @@ export const createService = service => (dispatch, getState) => {
   fetch(urlAPI + `/services.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(service),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -106,9 +102,7 @@ export const updatingService = service => (dispatch, getState) => {
   fetch(urlAPI + `/services/${service.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(service),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('PUT')
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -134,9 +128,7 @@ export const deleteService = serviceId => (
       `/services/${serviceId}.json`,
     {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('DELETE')
     }
   )
     .then(handleErrors)

@@ -1,5 +1,13 @@
+import React, { Component } from 'react'
 import moment from 'moment'
-
+import {
+  TextField,
+  InputAdornment,
+  FormControlLabel,
+  Checkbox
+} from '@material-ui/core'
+import MaskedInput from 'react-text-mask'
+import Cookies from 'universal-cookie'
 export const urlAPI = 'http://localhost/nails'
 
 const DEFAULT_CURRENCY = 'USD'
@@ -13,7 +21,6 @@ export const getStartEndCurrentDate = () => {
 
 export const handleErrors = response => {
   if (!response.ok) {
-    console.log(response)
     throw Error(response.statusText + ':' + response.url)
   }
   return response
@@ -21,6 +28,7 @@ export const handleErrors = response => {
 
 export const handleErrorMessages = data => {
   if (data) {
+    console.log(data.errors)
     if (data.errors) {
       throw Error (data.errors[0])
     }
@@ -95,3 +103,98 @@ export const phoneNumber = value =>
     ? 'Invalid phone number, must be 10 digits'
     : undefined
 
+//Form fields
+export const TextMaskCustom = (props) => {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      // ref={inputRef}
+      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+export const renderTextField = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}) => (
+  <TextField
+    label={label}
+    // placeholder={label}
+    variant="outlined"
+    margin="normal"
+    error={touched && invalid}
+    helperText={touched && error}
+    fullWidth
+    InputLabelProps={{
+      shrink: true,
+    }}    
+    {...input}
+    {...custom}
+  />
+)
+
+export const renderPhoneTextField = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}) => (
+  <TextField
+    label={label}
+    // placeholder={label}
+    variant="outlined"
+    margin="normal"
+    error={touched && invalid}
+    helperText={touched && error}
+    fullWidth
+    InputLabelProps={{
+      shrink: true,
+    }}
+    InputProps={{
+      inputComponent: TextMaskCustom,
+    }}
+    {...input}
+    {...custom}
+  />
+)
+
+
+export const renderInput = field =>   // Define stateless component to render input and errors
+  <div>
+    <input {...field.input} type={field.type}/> 
+    {field.meta.touched &&
+     field.meta.error &&
+     <span className="error">{field.meta.error}</span>}
+  </div>
+
+export const renderCheckbox = ({ input, label }) => (
+  <div>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={input.value ? true : false}
+          onChange={input.onChange}
+        />
+      }
+      label={label}
+    />
+  </div>
+)
+
+const cookies = new Cookies()
+export const getHeader = method => {
+  if ('GET' === method || 'POST' === method || 'PUT' === method || 'DELETE' === method) {
+      const secureCookie = cookies.get('USER_SESSION_SECURE_COOKIE')
+    return {
+      'Content-Type': 'application/json',
+      'app-id': secureCookie
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
@@ -81,9 +81,7 @@ export const createCustomer = customer => (dispatch, getState) => {
   fetch(urlAPI + `/customers.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -113,9 +111,7 @@ export const updateCustomerService = services => {
 export const checkInCustomer = customerId => (dispatch, getState) => {
   fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('PUT')
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -135,9 +131,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
   } else {
     fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('PUT')
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -158,9 +152,7 @@ export const updateCustomerDB = customer => (dispatch, getState) => {
   fetch(urlAPI + `/customers/${customer.id}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     body: JSON.stringify(customer),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('PUT')
   })
     .then(handleErrors)
     .then(response => response.json())

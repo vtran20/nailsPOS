@@ -4,9 +4,8 @@ import { TextField, Button, Paper } from '@material-ui/core'
 import { updateCustomer } from '../../../actions/customers'
 import { addCustomerForm } from '../../../actions/forms'
 import { Field, reduxForm } from 'redux-form'
-import {TextMaskCustom, renderTextField, renderPhoneTextField} from '../pos/employees/EmployeesDialog'
 import { withStyles } from '@material-ui/core/styles'
-import {required} from '../../../utils'
+import {required, TextMaskCustom, renderTextField, renderPhoneTextField} from '../../../utils'
 
 const styles = theme => ({
   root: {

@@ -7,13 +7,62 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 import { getServiceCost, getCurrentStoreId } from '../selectors'
 import moment from 'moment'
 
 const cookies = new Cookies()
+
+export const login = (loginForm) => (dispatch, getState) => {
+  if (loginForm) {
+    dispatch(fetchCustomerBegin())
+    fetch(urlAPI + `/login.json?storeId=${getCurrentStoreId(getState())}`, {
+      method: 'POST',
+      body: JSON.stringify(loginForm),
+      headers: getHeader('POST')
+    })
+      .then(handleErrors)
+      .then(response => response.json())
+      .then(result => {
+        handleErrorMessages(result.messages)
+        dispatch(fetchCustomerComplete())
+        if (result.isLoggedIn && result.isLoggedIn === 'Y') {
+          dispatch(isLoggedIn(true))
+          if (result.USER_SESSION_SECURE_COOKIE) {
+            let maxAge  = -1
+            if (loginForm.rememberMe) {
+              maxAge  = new Date(Date.now() + 30*24*60*60)
+            }
+            cookies.set('USER_SESSION_SECURE_COOKIE', result.USER_SESSION_SECURE_COOKIE, {
+              maxAge : maxAge 
+            })
+          }
+        }
+      })
+      .catch(error => {
+        dispatch(fetchCustomerComplete())
+        dispatch(createErrorLog(error.message))
+      })
+  }
+}
+
+export const logout = () => (dispatch) => {
+    fetch(urlAPI + `/logout.json`, {
+      method: 'GET',
+      headers: getHeader('GET')
+    })
+      .then(handleErrors)
+      .then(response => {
+        dispatch(isLoggedIn(false))
+        cookies.remove('USER_SESSION_SECURE_COOKIE');
+      })
+      .catch(error => {
+        dispatch(createErrorLog(error.message))
+      })
+
+}
 
 export const selectStore = storeId => (dispatch, getState) => {
   const storeIdParam = parseInt(storeId)
@@ -23,9 +72,10 @@ export const selectStore = storeId => (dispatch, getState) => {
   }
 }
 export const initialData = storeId => (dispatch, getState) => {
+  const loginStatus = getState().isLoggedIn
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
-
+  dispatch(isLoggedIn(loginStatus))
   fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
     credentials: 'same-origin'
   })
@@ -58,17 +108,17 @@ export const initialData = storeId => (dispatch, getState) => {
       //select store
       if (storeId) {
         dispatch(selectStoreId(storeId))
-        const expiryDate = new Date(Date.now() + 31556952000)
+        const maxAge  = new Date(Date.now() + 30*24*60*60)
         cookies.set('STORE_ID_COOKIE', storeId, {
-          expires: expiryDate
+          maxAge : maxAge 
         })
       } else {
         if (getState().stores.allIds && getState().stores.allIds.length === 1) {
           const defaultStoreId = getState().stores.allIds[0]
           dispatch(selectStoreId(defaultStoreId))
-          const expiryDate = new Date(Date.now() + 31556952000)
+          const maxAge  = new Date(Date.now() + 30*24*60*60)
           cookies.set('STORE_ID_COOKIE', defaultStoreId, {
-            expires: expiryDate
+            maxAge : maxAge 
           })
         } else if (getState().stores.allIds && getState().stores.allIds.length > 1) {
           dispatch(updatePOSScreen({ selectStoreDialog: true}))
@@ -115,7 +165,10 @@ export const reloadData = () => (dispatch, getState) => {
         //update the load time
         dispatch(updateMoment(new moment().format()))
       })
-      .catch(error => dispatch(createErrorLog(error.message)))
+      .catch(error => {
+        dispatch(fetchCustomerComplete())
+        dispatch(createErrorLog(error.message))
+      })
   }
 }
 
@@ -129,9 +182,7 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
     fetch(urlAPI + `/errorLog.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(inputData),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('POST')
     })    
   } else {
     dispatch(addGlobalError(rootCause))
@@ -230,6 +281,13 @@ export const updateMoment = (moment) => {
   return {
     type: C.MOMENT_UPDATE,
     payload: moment
+  }
+}
+
+export const isLoggedIn = (flag) => {
+  return {
+    type: C.LOGIN_UPDATE,
+    payload: flag
   }
 }
 

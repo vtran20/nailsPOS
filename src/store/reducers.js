@@ -90,6 +90,15 @@ export const moment = (state = null, action) => {
   }
 }
 
+export const isLoggedIn = (state = false, action) => {
+  switch (action.type) {
+    case C.LOGIN_UPDATE:
+      return action.payload
+    default:
+      return state
+  }
+}
+
 //https://stackoverflow.com/questions/35622588/how-to-reset-the-state-of-a-redux-store
 const reducer = combineReducers({
   stores,
@@ -107,7 +116,8 @@ const reducer = combineReducers({
   posScreen,
   payments,
   form: formReducer,
-  moment
+  moment,
+  isLoggedIn,
 })
 
 export const appReducer = (state, action) => {

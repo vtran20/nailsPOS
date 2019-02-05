@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
 import { createErrorLog } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
@@ -38,9 +38,7 @@ export const createAppointment = appointment => (dispatch, getState) => {
   fetch(urlAPI + `/appointments.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(appointment),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -61,9 +59,7 @@ export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
   dispatch(fetchingAppointment(true))
  fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('GET')
   })
      .then(handleErrors)
     .then(response => response.json())
@@ -90,9 +86,7 @@ export const deleteAppointment = appointmentId => (
       `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
     {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('DELETE')
     }
   )
     .then(handleErrors)

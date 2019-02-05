@@ -6,7 +6,6 @@ import { initialData } from './actions'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
 import { red, amber } from '@material-ui/core/colors'
 import App from './pages/App'
-import Cookies from 'universal-cookie'
 
 const theme = createMuiTheme({
   typography: {
@@ -26,24 +25,25 @@ const theme = createMuiTheme({
   }
 })
 
-// const initialState = localStorage['redux-store']
-//   ? JSON.parse(localStorage['redux-store'])
-//   : sampleData
+const initialState = localStorage['redux-store']
+  ? JSON.parse(localStorage['redux-store'])
+  : {}
 
-// const saveState = () =>
-//   (localStorage['redux-store'] = JSON.stringify(store.getState()))
+const saveState = () =>
+  (localStorage['redux-store'] = JSON.stringify(store.getState()))
 
-const store = storeFactory()
-// store.subscribe(saveState)
+const store = storeFactory(initialState)
+store.subscribe(saveState)
 
 // const handleError = error => {
 //   store.dispatch(addCustomerError(error.message))
 // }
-const cookies = new Cookies()
-const storeIdFromCookie = cookies.get('STORE_ID_COOKIE')
-store.dispatch(initialData(storeIdFromCookie))
 
+//const cookies = new Cookies()
+//const storeIdFromCookie = cookies.get('STORE_ID_COOKIE')
+// store.dispatch(initialData(storeIdFromCookie))
 window.store = store
+
 // window.addEventListener('error', handleError)
 
 // store.dispatch(

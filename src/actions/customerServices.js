@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, urlAPI } from '../utils'
+import { handleErrors, urlAPI, getHeader } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeService } from './employeeServices'
 import { createErrorLog } from './index'
@@ -61,9 +61,7 @@ export const deleteCustomerService = customerService => (
       }.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('DELETE')
     }
   )
     .then(handleErrors)

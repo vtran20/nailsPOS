@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate, getHeader } from '../utils'
 import { addEmployeeService } from './employeeServices'
 import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
@@ -72,9 +72,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
       {
         method: 'POST',
         body: { customerId: customerId, employeeId: employeeId },
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: getHeader('POST')
       }
     )
       .then(handleErrors)
@@ -95,9 +93,7 @@ export const createEmployee = employee => (dispatch, getState) => {
   fetch(urlAPI + `/employees.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(employee),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('POST')
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -117,9 +113,7 @@ export const updatingEmployee = employee => (dispatch, getState) => {
   fetch(urlAPI + `/employees/${employee.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(employee),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: getHeader('PUT')
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -145,9 +139,7 @@ export const deleteEmployee = employeeId => (
       `/employees/${employeeId}.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: getHeader('DELETE')
     }
   )
     .then(handleErrors)

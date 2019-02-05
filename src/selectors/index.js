@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import Cookies from 'universal-cookie'
 
 
+const cookies = new Cookies()
 const getStoresById = (state) => state.stores.byId
 // const getStoresAllIds = (state) => state.stores.allIds
 const getStores = (state) => state.stores
@@ -20,6 +21,14 @@ const getEmployeeServicesById = (state) => state.employeeServices.byId
 const getPOSScreen = (state) => state.posScreen
 const getCurrentCheckout = (state) => state.payments.currentCheckout
 
+export const isLoggedIn = (state) => {
+  if (state.isLoggedIn) {
+    return state.isLoggedIn
+  } else {
+    return cookies.get('USER_SESSION_SECURE_COOKIE')? true : false
+  }
+}
+
 //Get current customer
 export const getStore = createSelector(
   [ getStoresById, getStores ],
@@ -32,7 +41,6 @@ export const getCurrentStoreId = createSelector(
     if (stores && stores.currentStoreId) {
       return stores.currentStoreId
     } else {
-      const cookies = new Cookies()
       return cookies.get('STORE_ID_COOKIE')
     }
 })
