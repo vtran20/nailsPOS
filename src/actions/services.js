@@ -21,6 +21,26 @@ export const updateService = service => {
     payload: service
   }
 }
+export const addServiceGroup = group => {
+  return {
+    type: C.SERVICE_GROUP_ADD,
+    payload: group
+  }
+}
+
+export const updateServiceGroup = group => {
+  return {
+    type: C.SERVICE_GROUP_UPDATE,
+    payload: group
+  }
+}
+
+export const changeServiceGroup = (service) => {
+  return {
+    type: C.SERVICE_GROUP_CHANGE,
+    payload: service
+  }
+}
 
 export const editService = service => {
   return {
@@ -38,6 +58,12 @@ export const removeService = serviceId => {
   return {
     type: C.SERVICE_REMOVE,
     payload: serviceId
+  }
+}
+export const removeServiceGroup = groupId => {
+  return {
+    type: C.SERVICE_GROUP_REMOVE,
+    payload: groupId
   }
 }
 
@@ -98,7 +124,7 @@ export const createService = service => (dispatch, getState) => {
   })
 }
 
-export const updatingService = service => (dispatch, getState) => {
+export const updatingService = (service, oldGroupId) => (dispatch, getState) => {
   fetch(urlAPI + `/services/${service.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(service),
@@ -108,6 +134,10 @@ export const updatingService = service => (dispatch, getState) => {
   .then(response => response.json())
   .then(data => {
     handleErrorMessages(data)
+    if (data.service && service.groupId !== oldGroupId) {
+      const newService = {...data.service, oldGroupId: oldGroupId}
+      dispatch(changeServiceGroup(newService))
+    }
     dispatch(updateService(data.service))
     if (data.messages) {
       dispatch(addGlobalMessages(data.messages.infos))

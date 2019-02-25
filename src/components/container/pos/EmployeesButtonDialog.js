@@ -10,7 +10,8 @@ import {
   FormGroup,
   Toolbar,
   IconButton,
-  Typography  
+  Typography,
+  AppBar
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close';
 import { removePOSDialog } from '../../../actions'
@@ -69,14 +70,16 @@ class EmployeesButtonDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          <Toolbar>
-            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.flex}>
-              Select Employee
-            </Typography>
-          </Toolbar>
+          <AppBar position="relative">
+            <Toolbar>
+              <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
+                Select Employee
+              </Typography>
+            </Toolbar>
+          </AppBar>
         </DialogTitle>
         <div className={classes.dialogBody}>
           {employees.map(employee => {

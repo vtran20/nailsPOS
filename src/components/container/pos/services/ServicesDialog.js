@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment  } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 import {
@@ -16,7 +16,8 @@ import {
   ListItemSecondaryAction,
   Fab,
   TextField,
-  InputAdornment
+  InputAdornment,
+  MenuItem
 } from '@material-ui/core'
 
 import { Edit, Delete, Add } from '@material-ui/icons'
@@ -25,8 +26,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles'
 import {editService, editServiceClear, createService, updatingService, deleteService} from '../../../../actions/services'
 import { connect } from 'react-redux'
-import { getServices } from '../../../../selectors'
-import { cents2Fixed2, dollars2Cents } from '../../../../utils'
+import { getServices, getServiceGroups } from '../../../../selectors'
+import { cents2Fixed2, dollars2Cents, renderSelectField, renderTextField, renderPriceTextField, getServicesByGroup } from '../../../../utils'
 import { updatePOSScreen } from '../../../../actions'
 
 
@@ -68,6 +69,9 @@ const styles = theme => ({
   appBar: {
     position: 'relative',
   },
+  subList: {
+    margin: `0 0 0 ${theme.spacing.unit * 3}px`
+  },
   flex: {
     flex: 1,
   },
@@ -80,7 +84,8 @@ const validate = values => {
   const requiredFields = [
     'name',
     'price',
-    'minutes'
+    'minutes',
+    'groupId',
   ]
   requiredFields.forEach(field => {
     if (!values[field]) {
@@ -115,59 +120,6 @@ const validate = values => {
   return errors
 }
 
-const renderTextField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    // placeholder={label}
-    variant="outlined"
-    margin="normal"
-    error={touched && invalid}
-    helperText={touched && error}
-    fullWidth
-    InputLabelProps={{
-      shrink: true,
-    }}    
-    {...input}
-    {...custom}
-  />
-)
-
-const renderPriceTextField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    // placeholder={label}
-    variant="outlined"
-    margin="normal"
-    error={touched && invalid}
-    helperText={touched && error}
-    fullWidth
-    InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}    
-    {...input}
-    {...custom}
-  />
-)
-
-
-const renderInput = field =>   // Define stateless component to render input and errors
-  <div>
-    <input {...field.input} type={field.type}/> 
-    {field.meta.touched &&
-     field.meta.error &&
-     <span className="error">{field.meta.error}</span>}
-  </div>
-
 class ServicesDialog extends Component {
 
   // handleChange = name => ({ target: { value } }) => {
@@ -176,7 +128,8 @@ class ServicesDialog extends Component {
   handleSubmit = (values) => {
     if (this.props.initialValues.id) {
       const data = {...this.props.formData, price: dollars2Cents(this.props.formData.price), id: this.props.initialValues.id}
-      this.props.dispatch(updatingService(data))
+      const oldGroupId = this.props.initialValues.groupId
+      this.props.dispatch(updatingService(data, oldGroupId))
     } else {
       const data = {...this.props.formData, price: dollars2Cents(this.props.formData.price)}
       this.props.dispatch(createService(data))
@@ -208,7 +161,9 @@ class ServicesDialog extends Component {
     
   }
   render() {
-    const { classes, open, services, name, price, minutes, isNewService, pristine, submitting, formData, handleSubmit, reset, valid } = this.props
+    const { 
+      classes, open, byId, services, serviceGroups, 
+      name, price, minutes, isNewService, pristine, submitting, formData, handleSubmit, reset, valid } = this.props
     return (
       <div>
       <Dialog
@@ -236,23 +191,51 @@ class ServicesDialog extends Component {
               <Grid item xs={6}>
                 <Paper className={classes.paper}>
                   {
-                    services ? (
-                      <List component="ul">
-                        {services.map(service => (
-                          <ListItem key={service.id} button onClick={() => this.onSelect(service.id)}>
-                            <ListItemText primary={service.name} />
-                            <ListItemSecondaryAction>
-                              <IconButton onClick={() => this.onSelectEdit(service)}>
-                                <Edit />
-                              </IconButton>
-                              <IconButton onClick={() => this.onDelete(service.id)}>
-                                <Delete />
-                              </IconButton>
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        ))}
-                      </List>
-                    ) : null
+                    serviceGroups
+                    ? (
+                        serviceGroups.map(group => {
+                          const servicesByGroup = getServicesByGroup (byId, group)
+                          return (
+                          <List component="ul" key={group.id}>
+                            <ListItem button onClick={() => this.onSelect(group.id)}>
+                              <ListItemText primary={group.name} />
+                            {/*
+                              <ListItemSecondaryAction>
+                                <IconButton onClick={() => this.onSelectEdit(group)}>
+                                  <Edit />
+                                </IconButton>
+                                <IconButton onClick={() => this.onDelete(group.id)}>
+                                  <Delete />
+                                </IconButton>
+                              </ListItemSecondaryAction>
+                            */}
+                            </ListItem>
+                            {
+                              servicesByGroup && servicesByGroup.length > 0
+                              ? (
+                                <List component="ul" key={group.id} className={classes.subList}>
+                                  {servicesByGroup.map(service => (
+                                    <ListItem key={service.id} button onClick={() => this.onSelect(service.id)}>
+                                      <ListItemText primary={service.name} />
+                                      <ListItemSecondaryAction>
+                                        <IconButton onClick={() => this.onSelectEdit(service)}>
+                                          <Edit />
+                                        </IconButton>
+                                        <IconButton onClick={() => this.onDelete(service.id)}>
+                                          <Delete />
+                                        </IconButton>
+                                      </ListItemSecondaryAction>
+                                    </ListItem>
+                                  ))}
+                                </List>
+                                )
+                              : null
+                            }
+                          </List>
+                        )}
+                        )
+                      ) 
+                    : null
                   }
                 </Paper>
               </Grid>
@@ -283,6 +266,22 @@ class ServicesDialog extends Component {
                           label="Minutes"
                           />
                         </div>
+                        <div>
+                          <Field
+                            name="groupId"
+                            component={renderSelectField}
+                            label="Service Group"
+                          >
+                            <MenuItem value="">----</MenuItem>
+                            {
+                              serviceGroups && serviceGroups.map (group =>(
+                                <MenuItem value={group.id} key={group.id}>{group.name}</MenuItem>
+                                )
+                              )
+                            }
+                          </Field>
+                        </div>
+
                           <br />
                             {isNewService
                               ? (
@@ -329,7 +328,9 @@ class ServicesDialog extends Component {
   }
 }
 const mapStateToProps = state => ({
+  byId: state.services.byId,
   services: getServices(state),
+  serviceGroups: getServiceGroups(state),
   isNewService : state.services.edit.id? false : true,
   name: state.services.edit.name,
   price: state.services.edit.price,

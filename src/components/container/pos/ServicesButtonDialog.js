@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import {
   Button,
@@ -10,15 +10,18 @@ import {
   FormGroup,
   Toolbar,
   IconButton,
-  Typography  
+  Typography,
+  AppBar,
+  Tabs,
+  Tab,TabContainer
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close'
 import { removePOSDialog } from '../../../actions'
 import { withStyles } from '@material-ui/core/styles'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import { cents2Dollars } from '../../../utils'
 import { addServiceToCustomer } from '../../../actions/services'
-import { getServiceIdsOfCustomer, getServices } from '../../../selectors'
+import { getServiceIdsOfCustomer, getServices, getServicesByGroup, getServiceGroups } from '../../../selectors'
 
 
 const styles = theme => ({
@@ -44,12 +47,18 @@ const styles = theme => ({
   },
   dialogBody: {
     padding: `0 ${theme.spacing.unit * 3}px`
-  }
-
+  },
+  appBar: {
+      position: 'relative',
+  },
 })
 
 
 class ServicesButtonDialog extends Component {
+
+  state = {
+    value: 0
+  }
 
   handleAddServiceToCustomer = serviceId => {
     //add service to this current customer.
@@ -65,8 +74,13 @@ class ServicesButtonDialog extends Component {
     // }
   }
 
+  handleChange = (event, newValue) => {
+    this.setState({value: newValue})
+
+  }
+
   render() {
-    const { classes, services, selectedServiceIds } = this.props
+    const { classes, services, selectedServiceIds, serviceGroups, byId } = this.props
 
     return (
       <Dialog
@@ -76,6 +90,7 @@ class ServicesButtonDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
+          <AppBar position="relative">
           <Toolbar>
             <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
               <CloseIcon />
@@ -84,35 +99,56 @@ class ServicesButtonDialog extends Component {
               Select Services
             </Typography>
           </Toolbar>
+            <Tabs value={this.state.value} onChange={this.handleChange}>
+            { serviceGroups
+              && serviceGroups.map((group, index) => {
+                const servicesByGroup = getServicesByGroup (byId, group)
+                const groupId = group.id
+                return <Tab key={index} value={index} label={group.name} />
+              })
+            }
+            </Tabs>
+          </AppBar>
         </DialogTitle>
         <div className={classes.dialogBody}>
-          {services.map(service => {
-            return (
-              <Button
-                key={service.id}
-                variant={selectedServiceIds.find(x => x === service.id)? 'outlined' : 'contained'}
-                color="secondary"
-                size="small"
-                className={classes.button}
-                onClick={() =>
-                    this.handleAddServiceToCustomer(service.id)
-                  }
-              >
-              <SvgIcon>
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
-              </SvgIcon>
-                {service.name + ' - ' + cents2Dollars(service.price)}
-              </Button>
-            )
-          })}
-
+          { serviceGroups
+            && serviceGroups.map((group, index) => {
+              const servicesByGroup = getServicesByGroup (byId, group)
+              const groupId = group.id
+              return this.state.value === index 
+              && 
+              <div key={index}>
+                {servicesByGroup && servicesByGroup.map(service => 
+                  (
+                    <Button
+                      key={service.id}
+                      variant={selectedServiceIds.find(x => x === service.id)? 'outlined' : 'contained'}
+                      color="secondary"
+                      size="small"
+                      className={classes.button}
+                      onClick={() =>
+                          this.handleAddServiceToCustomer(service.id)
+                        }
+                    >
+                    <SvgIcon>
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/><path d="M0 0h24v24H0z" fill="none"/>
+                    </SvgIcon>
+                      {service.name + ' - ' + cents2Dollars(service.price)}
+                    </Button>
+                  )
+                )}
+              </div>
+            })
+          }
         </div>
       </Dialog>
     )
   }
 }
 const mapStateToProps = state => ({
+  byId: state.services.byId,
   services: getServices(state),
+  serviceGroups: getServiceGroups(state),  
   selectedServiceIds : getServiceIdsOfCustomer(state),
   openAddServiceDialog : (state.posScreen && state.posScreen.openAddServiceDialog)? true : false
 })

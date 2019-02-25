@@ -4,7 +4,8 @@ import {
   TextField,
   InputAdornment,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Select
 } from '@material-ui/core'
 import MaskedInput from 'react-text-mask'
 import Cookies from 'universal-cookie'
@@ -140,6 +141,28 @@ export const renderTextField = ({
   />
 )
 
+export const renderPriceTextField = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}) => (
+  <TextField
+    label={label}
+    // placeholder={label}
+    variant="outlined"
+    margin="normal"
+    error={touched && invalid}
+    helperText={touched && error}
+    fullWidth
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}    
+    {...input}
+    {...custom}
+  />
+)
+
 export const renderPhoneTextField = ({
   label,
   input,
@@ -188,6 +211,35 @@ export const renderCheckbox = ({ input, label }) => (
   </div>
 )
 
+export const renderSelectField = ({ input, label, meta: { touched, invalid, error }, children, ...custom }) => (
+  <TextField
+      fullWidth
+      id={label}
+      select
+      label={label}
+      error={touched && invalid}
+      helperText={touched && error}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      {...input}
+      {...custom}
+      // className={classes.textField}
+      //value={0}
+      // onChange={handleChange('currency')}
+      // SelectProps={{
+      //   MenuProps: {
+      //     className: classes.menu,
+      //   },
+      // }}
+      // helperText="Please select your currency"
+      margin="normal"
+      variant="outlined"
+    >
+    {children}
+  </TextField>
+)
+
 const cookies = new Cookies()
 export const getHeader = method => {
   if ('GET' === method || 'POST' === method || 'PUT' === method || 'DELETE' === method) {
@@ -198,3 +250,10 @@ export const getHeader = method => {
     }
   }
 }
+
+//Get all group of services
+export const getServicesByGroup = (byId, group) => (
+  group && group.services
+  ? group.services.map(id => byId[id])
+  : []
+)

@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { addCustomer, fetchCustomerBegin, fetchCustomerComplete } from './customers'
-import { addService } from './services'
+import { addService, addServiceGroup } from './services'
 import { addEmployee } from './employees'
 import { addCustomerCheckout, updateCustomerCheckout, updateCurrentCheckout, clearCurrentCheckout } from './payments'
 import { addCustomerService } from './customerServices'
@@ -84,6 +84,8 @@ export const initialData = storeId => (dispatch, getState) => {
     .then(result => {
       handleErrorMessages(result)
       if (result.stores) result.stores.map(store => dispatch(addStore(store)))
+      if (result.serviceGroups)
+        result.serviceGroups.map(group => dispatch(addServiceGroup(group)))
       if (result.services)
         result.services.map(service => dispatch(addService(service)))
       if (result.customers)

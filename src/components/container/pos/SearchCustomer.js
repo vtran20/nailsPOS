@@ -127,7 +127,7 @@ class SearchCustom extends React.Component {
                             className={classes.button}
                             onClick={() => this.handleSelectCustomerForAppointment(customer)}
                           >
-                            Select Customer
+                            Select
                           </Button>
                           )
                         : (

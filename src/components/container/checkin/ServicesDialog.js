@@ -9,21 +9,71 @@ import {
   DialogActions,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Grid,
+  Paper,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Tabs,
+  Tab,TabContainer
 } from '@material-ui/core'
+import { Edit, Delete, Add } from '@material-ui/icons'
+import CloseIcon from '@material-ui/icons/Close';
 import {
   addCustomerServiceForm,
   createNewCustomerServiceForCheckIn,
   makeAppointment
 } from '../../../actions/forms'
+import { getServiceIdsOfCustomer, getServices, getServicesByGroup, getServiceGroups } from '../../../selectors'
+import SvgIcon from '@material-ui/core/SvgIcon'
+import { cents2Dollars } from '../../../utils'
+import { withStyles } from '@material-ui/core/styles'
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth: 700
+  },
+  button: {
+    margin: theme.spacing.unit
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit
+  },
+  iconSmall: {
+    fontSize: 20
+  },
+  dialogBody: {
+    padding: `0 ${theme.spacing.unit * 3}px`
+  },
+  appBar: {
+      position: 'relative',
+  },
+})
 
 class ServicesDialog extends Component {
-  state = {}
-  baseState = {}
+  state = {
+    value: 0
+  }
+  baseState = {value: 0}
 
   handleSelectServices = name => event => {
     this.setState({ [name]: event.target.checked })
     this.baseState = { ...this.baseState, [name]: '' }
+  }
+
+  handleChange = (event, newValue) => {
+    this.setState({value: newValue})
+
   }
 
   //////////////////////Start Self CheckIn////////////////////////
@@ -80,7 +130,7 @@ class ServicesDialog extends Component {
   ///////////////////////End for POS///////////////////////
 
   render() {
-    const { fullScreen, open, page } = this.props
+    const { classes, fullScreen, open, page, services, selectedServiceIds, serviceGroups, byId } = this.props
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -89,20 +139,43 @@ class ServicesDialog extends Component {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {'Please select your services'}
+          <AppBar position="relative">
+          <Toolbar>
+            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.flex}>
+              Select Services
+            </Typography>
+          </Toolbar>
+            <Tabs value={this.state.value} onChange={this.handleChange}>
+            { serviceGroups
+              && serviceGroups.map((group, index) => {
+                const servicesByGroup = getServicesByGroup (byId, group)
+                const groupId = group.id
+                return <Tab key={index} value={index} label={group.name} />
+              })
+            }
+            </Tabs>
+          </AppBar>
         </DialogTitle>
-        <DialogContent>
-          <FormGroup row>
-            {this.props.servicesIds.map(serviceId => {
-              let service = this.props.services[serviceId]
+        <div className={classes.dialogBody}>
+          { serviceGroups
+            && serviceGroups.map((group, index) => {
+              const servicesByGroup = getServicesByGroup (byId, group)
+              const groupId = group.id
+              return this.state.value === index 
+              && 
+            <FormGroup row key={index}>
+            {servicesByGroup && servicesByGroup.map(service => {
               return (
                 <FormControlLabel
-                  key={serviceId}
+                  key={service}
                   control={
                     <Checkbox
                       checked={this.state.serviceId}
-                      onChange={this.handleSelectServices(serviceId)}
-                      value={`${serviceId}`}
+                      onChange={this.handleSelectServices(service.id)}
+                      value={`${service.id}`}
                     />
                   }
                   label={service.name}
@@ -110,7 +183,9 @@ class ServicesDialog extends Component {
               )
             })}
           </FormGroup>
-        </DialogContent>
+            })
+          }
+        </div>
         {page === 'appointment'
           ? (
         <DialogActions>
@@ -154,9 +229,10 @@ class ServicesDialog extends Component {
   }
 }
 const mapStateToProps = state => ({
-  servicesIds: state.services.allIds,
-  services: state.services.byId,
-  customerForm: state.forms.customerForm,
-  customerServices: state.customerServices.byId
+  byId: state.services.byId,
+  services: getServices(state),
+  serviceGroups: getServiceGroups(state),  
+  selectedServiceIds : getServiceIdsOfCustomer(state),
+  customerForm: state.forms.customerForm
 })
-export default connect(mapStateToProps)(ServicesDialog)
+export default connect(mapStateToProps)(withStyles(styles)(ServicesDialog))

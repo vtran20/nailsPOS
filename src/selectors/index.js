@@ -14,6 +14,8 @@ const getAppointmentsById = (state) => state.appointments.byId
 const getAppointmentsAllIds = (state) => state.appointments.allIds
 const getServicesById = (state) => state.services.byId
 const getServicesAllIds = (state) => state.services.allIds
+const getServiceGroupsById = (state) => state.services.groupById
+const getServiceGroupsAllIds = (state) => state.services.groupAllIds
 const getCustomerServicesById = (state) => state.customerServices.byId
 // const getCustomerServicesAllIds = (state) => state.customerServices.allIds
 const getEmployeeServicesById = (state) => state.employeeServices.byId
@@ -72,6 +74,12 @@ export const getAppointments = createSelector(
 export const getServices = createSelector(
   [ getServicesById, getServicesAllIds ],
   (byId, allIds) => allIds.map(id => byId[id])
+)
+
+//Get all group of services
+export const getServiceGroups = createSelector(
+  [ getServiceGroupsById, getServiceGroupsAllIds ],
+  (groupById, groupAllIds) => groupAllIds.map(id => groupById[id])
 )
 
 //Get all customer service of a current customer
@@ -196,6 +204,15 @@ export const getCustomerId = (phone, email, state) => {
   })
   return customerId
 }
+
+//Get all group of services
+export const getServicesByGroup = (byId, group) => (
+  group && group.services
+  ? group.services.map(id => byId[id])
+  : []
+)
+
+
 
 
 
