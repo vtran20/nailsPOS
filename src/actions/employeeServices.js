@@ -59,7 +59,8 @@ export const deleteEmployeeService = employeeService => (
       }.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
-      headers: getHeader('DELETE')
+      headers: getHeader('DELETE'),
+      credentials: 'include'
     }
   )
     .then(handleErrors)

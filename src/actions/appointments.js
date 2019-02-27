@@ -38,7 +38,8 @@ export const createAppointment = appointment => (dispatch, getState) => {
   fetch(urlAPI + `/appointments.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(appointment),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+    credentials: 'include'
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -59,7 +60,8 @@ export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
   dispatch(fetchingAppointment(true))
  fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
     method: 'GET',
-    headers: getHeader('GET')
+    headers: getHeader('GET'),
+    credentials: 'include'
   })
      .then(handleErrors)
     .then(response => response.json())
@@ -86,7 +88,8 @@ export const deleteAppointment = appointmentId => (
       `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
     {
       method: 'DELETE',
-      headers: getHeader('DELETE')
+      headers: getHeader('DELETE'),
+      credentials: 'include'
     }
   )
     .then(handleErrors)

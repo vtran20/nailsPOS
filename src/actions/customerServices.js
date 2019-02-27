@@ -61,7 +61,8 @@ export const deleteCustomerService = customerService => (
       }.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
-      headers: getHeader('DELETE')
+      headers: getHeader('DELETE'),
+      credentials: 'include'
     }
   )
     .then(handleErrors)

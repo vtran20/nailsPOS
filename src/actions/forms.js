@@ -50,7 +50,8 @@ export const createNewCustomerServiceForCheckIn = () => (
   fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+      credentials: 'include'
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -84,7 +85,8 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
   fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+      credentials: 'include'
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -104,7 +106,8 @@ export const makeAppointment = serviceIds => (dispatch, getState) => {
   fetch(urlAPI + `/customers/makeAppointment.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+      credentials: 'include'
   })
     .then(handleErrors)
     .then(response => response.json())

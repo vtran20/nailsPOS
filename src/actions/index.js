@@ -22,7 +22,8 @@ export const login = (loginForm) => (dispatch, getState) => {
       method: 'POST',
       body: JSON.stringify(loginForm),
       headers: getHeader('POST'),
-      credentials: 'same-origin' //enable cookie
+      //credentials: 'same-origin' //enable cookie
+      credentials: 'include' //enable cookie
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -35,9 +36,9 @@ export const login = (loginForm) => (dispatch, getState) => {
             if (loginForm.rememberMe) {
               maxAge  = new Date(Date.now() + 30*24*60*60)
             }
-            cookies.set('USER_SESSION_SECURE_COOKIE', result.USER_SESSION_SECURE_COOKIE, {
-              maxAge : maxAge 
-            })
+            // cookies.set('USER_SESSION_SECURE_COOKIE', result.USER_SESSION_SECURE_COOKIE, {
+            //   maxAge : maxAge 
+            // })
             dispatch(isLoggedIn(true))
           }
         }
@@ -53,7 +54,7 @@ export const logout = () => (dispatch) => {
     fetch(urlAPI + `/logout.json`, {
       method: 'GET',
       headers: getHeader('GET'),
-      credentials: 'same-origin' //enable cookie
+      credentials: 'include' //enable cookie
     })
       .then(handleErrors)
       .then(response => {
@@ -82,7 +83,7 @@ export const initialData = storeId => (dispatch, getState) => {
   fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
     method: 'GET',
     headers: getHeader('GET'),
-    credentials: 'same-origin' //enable cookie
+    credentials: 'include' //enable cookie
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -152,7 +153,7 @@ export const reloadData = () => (dispatch, getState) => {
     fetch(urlAPI + `/reload.json?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
       method: 'GET',
       headers: getHeader('GET'),
-      credentials: 'same-origin'
+      credentials: 'include'
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -192,7 +193,7 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
       method: 'POST',
       body: JSON.stringify(inputData),
       headers: getHeader('POST'),
-      credentials: 'same-origin' //enable cookie
+      credentials: 'include' //enable cookie
     })    
   } else if (rootCause === 'NEED_LOGIN_AGAIN') {
     dispatch(logout())

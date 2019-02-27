@@ -72,7 +72,8 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
       {
         method: 'POST',
         body: { customerId: customerId, employeeId: employeeId },
-        headers: getHeader('POST')
+        headers: getHeader('POST'),
+      credentials: 'include'
       }
     )
       .then(handleErrors)
@@ -93,7 +94,8 @@ export const createEmployee = employee => (dispatch, getState) => {
   fetch(urlAPI + `/employees.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(employee),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+      credentials: 'include'
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -113,7 +115,8 @@ export const updatingEmployee = employee => (dispatch, getState) => {
   fetch(urlAPI + `/employees/${employee.id}.json?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(employee),
-    headers: getHeader('PUT')
+    headers: getHeader('PUT'),
+      credentials: 'include'
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -139,7 +142,8 @@ export const deleteEmployee = employeeId => (
       `/employees/${employeeId}.json?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
-      headers: getHeader('DELETE')
+      headers: getHeader('DELETE'),
+      credentials: 'include'
     }
   )
     .then(handleErrors)

@@ -178,7 +178,8 @@ export const completePayment = () => (dispatch, getState) => {
   fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(inputData),
-    headers: getHeader('POST')
+    headers: getHeader('POST'),
+      credentials: 'include'
   })
     .then(handleErrors)
     .then(response => response.json())
