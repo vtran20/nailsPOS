@@ -14,6 +14,10 @@ export const urlAPI = 'http://localhost/nails'
 const DEFAULT_CURRENCY = 'USD'
 const DEFAULT_LOCALE = 'en-US'
 const POS_DATETIME_FORMAT = `YYYY-MM-DDTHH:mm:ssZ`
+//credentials: 'same-origin' 
+//CREDENTIALS 'include' only works for cross-origin requests, but not for same-origin requests. 
+//Official docs: github.com/github/fetch#sending-cookies
+export const CREDENTIALS = 'include'
 
 export const getCurrentDateTime = () => moment().format(POS_DATETIME_FORMAT)
 export const getStartEndCurrentDate = () => {

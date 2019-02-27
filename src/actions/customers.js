@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader, CREDENTIALS } from '../utils'
 import {
   clearCustomerSearchs
 } from './customerSearch'
@@ -82,7 +82,7 @@ export const createCustomer = customer => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -113,7 +113,7 @@ export const checkInCustomer = customerId => (dispatch, getState) => {
   fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     headers: getHeader('PUT'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -134,7 +134,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
     fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
       method: 'PUT',
       headers: getHeader('PUT'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -156,7 +156,7 @@ export const updateCustomerDB = customer => (dispatch, getState) => {
     method: 'PUT',
     body: JSON.stringify(customer),
     headers: getHeader('PUT'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())

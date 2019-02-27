@@ -7,7 +7,7 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader, CREDENTIALS } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 import { getServiceCost, getCurrentStoreId, getSecureCookie } from '../selectors'
@@ -21,9 +21,8 @@ export const login = (loginForm) => (dispatch, getState) => {
     fetch(urlAPI + `/login.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(loginForm),
-      headers: getHeader('POST'),
-      //credentials: 'same-origin' //enable cookie
-      credentials: 'include' //enable cookie
+      headers: getHeader('POST'),      
+      credentials: CREDENTIALS //enable cookie
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -36,9 +35,6 @@ export const login = (loginForm) => (dispatch, getState) => {
             if (loginForm.rememberMe) {
               maxAge  = new Date(Date.now() + 30*24*60*60)
             }
-            // cookies.set('USER_SESSION_SECURE_COOKIE', result.USER_SESSION_SECURE_COOKIE, {
-            //   maxAge : maxAge 
-            // })
             dispatch(isLoggedIn(true))
           }
         }
@@ -54,7 +50,7 @@ export const logout = () => (dispatch) => {
     fetch(urlAPI + `/logout.json`, {
       method: 'GET',
       headers: getHeader('GET'),
-      credentials: 'include' //enable cookie
+      credentials: CREDENTIALS //enable cookie
     })
       .then(handleErrors)
       .then(response => {
@@ -83,7 +79,7 @@ export const initialData = storeId => (dispatch, getState) => {
   fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
     method: 'GET',
     headers: getHeader('GET'),
-    credentials: 'include' //enable cookie
+    credentials: CREDENTIALS //enable cookie
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -153,7 +149,7 @@ export const reloadData = () => (dispatch, getState) => {
     fetch(urlAPI + `/reload.json?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
       method: 'GET',
       headers: getHeader('GET'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -193,7 +189,7 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
       method: 'POST',
       body: JSON.stringify(inputData),
       headers: getHeader('POST'),
-      credentials: 'include' //enable cookie
+      credentials: CREDENTIALS //enable cookie
     })    
   } else if (rootCause === 'NEED_LOGIN_AGAIN') {
     dispatch(logout())

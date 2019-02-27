@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getStartEndCurrentDate, getHeader, CREDENTIALS } from '../utils'
 import { addEmployeeService } from './employeeServices'
 import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
@@ -73,7 +73,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
         method: 'POST',
         body: { customerId: customerId, employeeId: employeeId },
         headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
       }
     )
       .then(handleErrors)
@@ -95,7 +95,7 @@ export const createEmployee = employee => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(employee),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -116,7 +116,7 @@ export const updatingEmployee = employee => (dispatch, getState) => {
     method: 'PUT',
     body: JSON.stringify(employee),
     headers: getHeader('PUT'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -143,7 +143,7 @@ export const deleteEmployee = employeeId => (
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     }
   )
     .then(handleErrors)

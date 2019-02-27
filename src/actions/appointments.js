@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader, CREDENTIALS } from '../utils'
 import { createErrorLog } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
@@ -39,7 +39,7 @@ export const createAppointment = appointment => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(appointment),
     headers: getHeader('POST'),
-    credentials: 'include'
+    credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -61,7 +61,7 @@ export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
  fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
     method: 'GET',
     headers: getHeader('GET'),
-    credentials: 'include'
+    credentials: CREDENTIALS
   })
      .then(handleErrors)
     .then(response => response.json())
@@ -89,7 +89,7 @@ export const deleteAppointment = appointmentId => (
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     }
   )
     .then(handleErrors)

@@ -1,5 +1,5 @@
 import C from '../constants'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader, CREDENTIALS } from '../utils'
 import { addCustomer } from './customers'
 import { addAppointment } from './appointments'
 import { clearCurrentCheckout } from './payments'
@@ -51,7 +51,7 @@ export const createNewCustomerServiceForCheckIn = () => (
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -86,7 +86,7 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -107,7 +107,7 @@ export const makeAppointment = serviceIds => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())

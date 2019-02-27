@@ -1,6 +1,6 @@
 import C from '../constants'
 import fetch from 'isomorphic-fetch'
-import { handleErrors, urlAPI, getHeader } from '../utils'
+import { handleErrors, urlAPI, getHeader, CREDENTIALS } from '../utils'
 import { removeEmployeeServiceFromEmployee } from './employees'
 import { removeEmployeeServiceFromCustomerService } from './customerServices'
 import {createErrorLog} from './index'
@@ -60,7 +60,7 @@ export const deleteEmployeeService = employeeService => (
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     }
   )
     .then(handleErrors)

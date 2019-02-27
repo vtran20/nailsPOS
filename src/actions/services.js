@@ -2,7 +2,7 @@ import C from '../constants'
 import fetch from 'isomorphic-fetch'
 import {addCustomerService} from './customerServices'
 import {calculateCurrentPrices} from './payments'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader, CREDENTIALS } from '../utils'
 import { createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
@@ -88,7 +88,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
         method: 'POST',
         body: { customerId: customerId, serviceId: serviceId },
         headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
       }
     )
       .then(handleErrors)
@@ -110,7 +110,7 @@ export const createService = service => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(service),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -131,7 +131,7 @@ export const updatingService = (service, oldGroupId) => (dispatch, getState) => 
     method: 'PUT',
     body: JSON.stringify(service),
     headers: getHeader('PUT'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
   .then(handleErrors)
   .then(response => response.json())
@@ -162,7 +162,7 @@ export const deleteService = serviceId => (
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),
-      credentials: 'include'
+      credentials: CREDENTIALS
     }
   )
     .then(handleErrors)

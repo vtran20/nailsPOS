@@ -2,7 +2,7 @@ import C from '../constants'
 
 import {changePOSScreen, addGlobalError, addGlobalMessage, createErrorLog} from './index'
 import {updateCustomer} from './customers'
-import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader } from '../utils'
+import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeader, CREDENTIALS } from '../utils'
 import { getServiceCost, getCurrentStoreId, getEmployeeIdsOfCustomer, checkingTotalTip } from '../selectors'
 import moment from 'moment'
 
@@ -179,7 +179,7 @@ export const completePayment = () => (dispatch, getState) => {
     method: 'POST',
     body: JSON.stringify(inputData),
     headers: getHeader('POST'),
-      credentials: 'include'
+      credentials: CREDENTIALS
   })
     .then(handleErrors)
     .then(response => response.json())
