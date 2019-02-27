@@ -29,9 +29,12 @@ export const handleErrors = response => {
 
 export const handleErrorMessages = data => {
   if (data) {
-    console.log(data.errors)
+    console.log(data)
     if (data.errors) {
       throw Error (data.errors[0])
+    }
+    if (data.isLoggedIn === 'N') {
+      throw Error ('NEED_LOGIN_AGAIN')
     }
   }
   return data
@@ -241,12 +244,13 @@ export const renderSelectField = ({ input, label, meta: { touched, invalid, erro
 )
 
 const cookies = new Cookies()
-export const getHeader = method => {
-  if ('GET' === method || 'POST' === method || 'PUT' === method || 'DELETE' === method) {
-      const secureCookie = cookies.get('USER_SESSION_SECURE_COOKIE')
+export const getHeader = (method) => {
+  if ('GET' === method || 'POST' === method || 'PUT' === method || 'DELETE' === method || 'OPTIONS' === method) {
+    let secureKey = cookies.get('USER_SESSION_SECURE_COOKIE')
     return {
       'Content-Type': 'application/json',
-      'app-id': secureCookie
+      'app-id': '0ea11701-8245-11e4-8c34-51dbef5e20d3',
+      'USER_SESSION_SECURE_COOKIE': secureKey
     }
   }
 }

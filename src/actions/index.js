@@ -10,7 +10,7 @@ import { addStore, selectStoreId } from './stores'
 import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
-import { getServiceCost, getCurrentStoreId } from '../selectors'
+import { getServiceCost, getCurrentStoreId, getSecureCookie } from '../selectors'
 import moment from 'moment'
 
 const cookies = new Cookies()
@@ -21,7 +21,8 @@ export const login = (loginForm) => (dispatch, getState) => {
     fetch(urlAPI + `/login.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(loginForm),
-      headers: getHeader('POST')
+      headers: getHeader('POST'),
+      credentials: 'same-origin' //enable cookie
     })
       .then(handleErrors)
       .then(response => response.json())
@@ -29,7 +30,6 @@ export const login = (loginForm) => (dispatch, getState) => {
         handleErrorMessages(result.messages)
         dispatch(fetchCustomerComplete())
         if (result.isLoggedIn && result.isLoggedIn === 'Y') {
-          dispatch(isLoggedIn(true))
           if (result.USER_SESSION_SECURE_COOKIE) {
             let maxAge  = -1
             if (loginForm.rememberMe) {
@@ -38,6 +38,7 @@ export const login = (loginForm) => (dispatch, getState) => {
             cookies.set('USER_SESSION_SECURE_COOKIE', result.USER_SESSION_SECURE_COOKIE, {
               maxAge : maxAge 
             })
+            dispatch(isLoggedIn(true))
           }
         }
       })
@@ -51,11 +52,13 @@ export const login = (loginForm) => (dispatch, getState) => {
 export const logout = () => (dispatch) => {
     fetch(urlAPI + `/logout.json`, {
       method: 'GET',
-      headers: getHeader('GET')
+      headers: getHeader('GET'),
+      credentials: 'same-origin' //enable cookie
     })
       .then(handleErrors)
       .then(response => {
         dispatch(isLoggedIn(false))
+        dispatch(resetGlobalData())
         cookies.remove('USER_SESSION_SECURE_COOKIE');
       })
       .catch(error => {
@@ -77,7 +80,9 @@ export const initialData = storeId => (dispatch, getState) => {
   dispatch(fetchGlobalBegin())
   dispatch(isLoggedIn(loginStatus))
   fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
-    credentials: 'same-origin'
+    method: 'GET',
+    headers: getHeader('GET'),
+    credentials: 'same-origin' //enable cookie
   })
     .then(handleErrors)
     .then(response => response.json())
@@ -145,6 +150,8 @@ export const reloadData = () => (dispatch, getState) => {
     const startDate = getState().moment
     const endDate = moment().endOf('day').format()
     fetch(urlAPI + `/reload.json?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
+      method: 'GET',
+      headers: getHeader('GET'),
       credentials: 'same-origin'
     })
       .then(handleErrors)
@@ -184,8 +191,12 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
     fetch(urlAPI + `/errorLog.json?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(inputData),
-      headers: getHeader('POST')
+      headers: getHeader('POST'),
+      credentials: 'same-origin' //enable cookie
     })    
+  } else if (rootCause === 'NEED_LOGIN_AGAIN') {
+    dispatch(logout())
+    console.log (rootCause)
   } else {
     dispatch(addGlobalError(rootCause))
   }
