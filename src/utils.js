@@ -33,7 +33,6 @@ export const handleErrors = response => {
 
 export const handleErrorMessages = data => {
   if (data) {
-    console.log(data)
     if (data.errors) {
       throw Error (data.errors[0])
     }

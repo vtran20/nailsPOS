@@ -6,15 +6,6 @@ export const byId = (state = {}, action) => {
   let existing
   switch (action.type) {
     case C.CUSTOMER_SERVICE_ADD:
-      // existing = state[action.payload.id] ? true : false
-      // if (existing) {
-      //   return state
-      // } else {
-      //   return {
-      //     ...state,
-      //     [action.payload.id]: action.payload
-      //   }
-      // }
       if (!state[action.payload.id]) {
         return produce(state, draft => {
           draft[action.payload.id]= action.payload
@@ -49,17 +40,23 @@ export const byId = (state = {}, action) => {
       } else {
         existing = state[action.payload.customerServiceId] ? true : false
         if (existing) {
-          return {
-            ...state,
-            [action.payload.customerServiceId]: {
-              ...state[action.payload.customerServiceId],
-              employeeServices: state[action.payload.customerServiceId]
-                .employeeServices
-                ? [
-                    ...state[action.payload.customerServiceId].employeeServices,
-                    action.payload.id
-                  ]
-                : [action.payload.id]
+          const customerService = state[action.payload.customerServiceId]
+          const hadEmployeeServiceId = customerService && customerService.employeeServices? customerService.employeeServices.find(x => x === action.payload.id) : null
+          if (hadEmployeeServiceId) {
+            return state
+          } else {
+            return {
+              ...state,
+              [action.payload.customerServiceId]: {
+                ...state[action.payload.customerServiceId],
+                employeeServices: state[action.payload.customerServiceId]
+                  .employeeServices
+                  ? [
+                      ...state[action.payload.customerServiceId].employeeServices,
+                      action.payload.id
+                    ]
+                  : [action.payload.id]
+              }
             }
           }
         } else {

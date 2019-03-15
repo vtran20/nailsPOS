@@ -47,7 +47,7 @@ class ScheduleAppointment extends Component {
       endResizable: false,
       movable: false,
       views: [{viewName: 'Day', viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false},
-        {viewName: 'Week', viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false},]
+        {viewName: 'Week', viewType: ViewTypes.Week, showAgenda: false, isEventPerspective: false},],
       //hours: {'Sun':'12-18', 'Mon':'10-20', 'Tue':'11-20', 'Wed':'12-20', 'Thu':'13-20', 'Fri':'14-20','Sat':'15-21'}
     }
 

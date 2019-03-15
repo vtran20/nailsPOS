@@ -125,7 +125,7 @@ class ServiceTables extends React.Component {
                           return (
                             <TableRow key={employeeService.id}>
                               <TableCell component="th" scope="row">
-                                {employee.firstName + ' ' + employee.lastName}
+                                {employee? employee.firstName + ' ' + employee.lastName : ''}
                               </TableCell>
                               <TableCell align="right">
                                 <FormControl className={classes.input}>

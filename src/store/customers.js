@@ -33,17 +33,23 @@ export const byId = (state = {}, action) => {
       } else {
         existing = state[action.payload.customerId] ? true : false
         if (existing) {
-          return {
-            ...state,
-            [action.payload.customerId]: {
-              ...state[action.payload.customerId],
-              customerServices: state[action.payload.customerId]
-                .customerServices
-                ? [
-                    ...state[action.payload.customerId].customerServices,
-                    action.payload.id
-                  ]
-                : [action.payload.id]
+          const customer = state[action.payload.customerId]
+          const hadCustomerServiceId = customer && customer.customerServices? customer.customerServices.find(x => x === action.payload.id) : null
+          if (hadCustomerServiceId) {
+            return state
+          } else {
+            return {
+              ...state,
+              [action.payload.customerId]: {
+                ...state[action.payload.customerId],
+                customerServices: state[action.payload.customerId]
+                  .customerServices
+                  ? [
+                      ...state[action.payload.customerId].customerServices,
+                      action.payload.id
+                    ]
+                  : [action.payload.id]
+              }
             }
           }
         } else {

@@ -9,9 +9,9 @@ import ServiceTables from './ServiceTables'
 import ServiceCostSummary from './ServiceCostSummary'
 import { connect } from 'react-redux'
 import { updateCustomerDB } from '../../../actions/customers'
-import { handleOpenDialog } from '../../../actions'
+import { handleOpenDialog, addGlobalError } from '../../../actions'
 import { handlePayment } from '../../../actions/payments'
-import { getCurrentCustomer } from '../../../selectors'
+import { getCurrentCustomer, getServiceCost } from '../../../selectors'
 
 const styles = theme => ({
   root: {
@@ -42,7 +42,14 @@ class CustomerDetail extends React.Component {
     this.props.dispatch(updateCustomerDB({id:customerId, status: 'IN_PROGRESS'}))
   }
   handlePayment = (screen) => {
-    this.props.dispatch(handlePayment(screen))
+    //Checking total price of all employees equal total price
+    console.log(this.props.serviceCost)
+    console.log(this.props.currentCheckout.servicePrice)
+    if (this.props.currentCheckout && this.props.currentCheckout.servicePrice !== this.props.serviceCost) {
+      this.props.dispatch(addGlobalError('Service price and payment cost are different. Please check again.'))
+    } else {
+      this.props.dispatch(handlePayment(screen))
+    }
   }
   handleOpenAddServicesDialog = (dialog) => {
     this.props.dispatch(handleOpenDialog(dialog))
@@ -205,7 +212,9 @@ CustomerDetail.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  currentCustomer: getCurrentCustomer(state)
+  currentCustomer: getCurrentCustomer(state),
+  serviceCost: getServiceCost(state),
+  currentCheckout : state.payments.currentCheckout
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(CustomerDetail))

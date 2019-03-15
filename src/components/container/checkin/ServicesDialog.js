@@ -166,11 +166,11 @@ class ServicesDialog extends Component {
               const groupId = group.id
               return this.state.value === index 
               && 
-            <FormGroup row key={index}>
+            <FormGroup row key={groupId}>
             {servicesByGroup && servicesByGroup.map(service => {
               return (
                 <FormControlLabel
-                  key={service}
+                  key={service.id}
                   control={
                     <Checkbox
                       checked={this.state.serviceId}

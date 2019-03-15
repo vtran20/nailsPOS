@@ -92,7 +92,7 @@ export const updateTipPay = data => (dispatch, getState) => {
     }
   })
   if (!assignedEmployee) {
-    dispatch(addGlobalError('please make sure all services have been assigned to employees'))
+    dispatch(addGlobalError('Please make sure all services have been assigned to employees'))
     return;
   }
 
@@ -144,7 +144,7 @@ export const completePayment = () => (dispatch, getState) => {
     }
   })
   if (!assignedEmployee) {
-    dispatch(addGlobalError('please make sure all services have been assigned to employees'))
+    dispatch(addGlobalError('Please make sure all services have been assigned to employees'))
     return;
   }
 
