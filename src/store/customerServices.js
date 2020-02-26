@@ -26,11 +26,14 @@ export const byId = (state = {}, action) => {
         }
       }
     case C.CUSTOMER_SERVICE_REMOVE:
-      return Object.keys(state).reduce(
-        (result, key) =>
-          key === action.payload ? result : { ...result, [key]: state[key] },
-        {}
-      )
+//      return Object.keys(state).reduce(
+//        (result, key) =>
+//          key === action.payload ? result : { ...result, [key]: state[key] },
+//        {}
+//      )
+        return produce(state, draft => {
+            delete draft[action.payload.id]
+        })
     case C.EMPLOYEE_SERVICE_ADD:
       const havingCustomerServiceId = action.payload.customerServiceId
         ? true
@@ -88,6 +91,13 @@ export const byId = (state = {}, action) => {
       } else {
         return state
       }
+//    case C.CUSTOMER_APPOINTMENT_REMOVE:
+      //return state.filter(customerService => customerService.appointmentId !== action.payload)
+//      return Object.keys(state).reduce(
+//        (result, key) =>
+//          state[key].appointmentId === action.payload ? result : { ...result, [key]: state[key] },
+//        {}
+//      )
 
     default:
       return state
@@ -104,7 +114,7 @@ export const allIds = (state = [], action) => {
       } else {
         return [...state, action.payload.id]
       }
-    case C.EMPLOYEE_SERVICE_REMOVE:
+    case C.CUSTOMER_SERVICE_REMOVE:
       return state.filter(id => id !== action.payload)
 
     default:
