@@ -11,7 +11,7 @@ import withDragDropContext from './withDnDContext'
 import { withStyles } from '@material-ui/core/styles'
 import 'react-big-scheduler/lib/css/style.css'
 
-import { compareAppointment, updateHours } from '../../../utils'
+import { compareAppointment } from '../../../utils'
 import { deleteAppointment, loadAppointment } from '../../../actions/appointments'
 import { updateCustomerForm } from '../../../actions/forms'
 import apptStyle from '../../../assets/css/appointment.css'
@@ -188,7 +188,7 @@ class ScheduleAppointment extends Component {
       schedulerData.events.forEach(item => {
         if (item.id >= newFreshId) newFreshId = item.id + 1
       })
-      this.props.dispatch (deleteAppointment(event.id))
+      this.props.dispatch (deleteAppointment(event.id, event.resourceId, event.customerId))
       this.setState({
         viewModel: schedulerData
       })

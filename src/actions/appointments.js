@@ -4,6 +4,10 @@ import { handleErrors, handleErrorMessages, urlAPI, getCurrentDateTime, getHeade
 import { createErrorLog } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
+import { removeEmployeeServiceFromEmployee } from './employees'
+import { removeCustomer } from './customers'
+import { removeEmployeeService } from './employeeServices'
+import { removeEmployeeServiceFromCustomerService, removeCustomerService, removeCustomerServiceFromCustomer} from './customerServices'
 
 export const addAppointment = appointment => {
   return {
@@ -79,7 +83,7 @@ export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
 }
 
 //Delete mean delete from database and remove from store as well
-export const deleteAppointment = appointmentId => (
+export const deleteAppointment = (appointmentId, employeeId, customerId) => (
   dispatch,
   getState
 ) => {
@@ -94,7 +98,25 @@ export const deleteAppointment = appointmentId => (
   )
     .then(handleErrors)
     .then(response => {
-      dispatch(removeAppointment(appointmentId))
+        dispatch(removeAppointment(appointmentId))
+        let customer = customerId? getState().customers.byId[customerId] : null
+        if (customer && customer.customerServices) {
+            customer.customerServices.map (customerServiceId => {
+                let customerService = getState().customerServices.byId[customerServiceId]
+                if (customerService && customerService.employeeServices) {
+                    customerService.employeeServices.map(employeeServiceId => {
+                        dispatch(removeEmployeeServiceFromEmployee({...getState().employeeServices.byId[employeeServiceId]}))
+                        dispatch(removeEmployeeServiceFromCustomerService({...getState().employeeServices.byId[employeeServiceId]}))
+                        dispatch(removeEmployeeService(employeeServiceId))
+                    })
+                }
+                console.log (JSON.stringify(customerService))
+                dispatch(removeCustomerService(customerService.id))
+                dispatch(removeCustomerServiceFromCustomer(customerService))
+//                dispatch(calculateCurrentPrices())
+                dispatch(removeCustomer(customerId))
+            })
+        }
     })
     .catch(error => {
       dispatch(createErrorLog(error.message))

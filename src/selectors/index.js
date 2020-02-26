@@ -159,7 +159,7 @@ export const getServiceCost = createSelector(
       if (customer && customer.customerServices) {
         customer.customerServices.map(csId => {
           let serviceTotal = 0;
-          if (customerServices[csId].employeeServices) {
+          if (customerServices[csId] && customerServices[csId].employeeServices) {
             customerServices[csId].employeeServices.map (esId => {
               const employeeService = employeeServices[esId]
               if (employeeService && employeeService.servicePrice > 0) {
@@ -167,12 +167,13 @@ export const getServiceCost = createSelector(
               }
               return
             })
-          } 
-          //use servicePrice from employeeService if any
-          if (serviceTotal > 0) {
-            total = total + serviceTotal
-          } else {
-              total = total + customerServices[csId].price
+
+            //use servicePrice from employeeService if any
+            if (serviceTotal > 0) {
+                total = total + serviceTotal
+            } else {
+                total = total + customerServices[csId].price
+            }
           }
           return
         })

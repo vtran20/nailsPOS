@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import MaskedInput from 'react-text-mask'
 import Cookies from 'universal-cookie'
-export const urlAPI = 'http://localhost/nails'
+export const urlAPI = 'http://nails.webphattai.net/nails'
 
 const DEFAULT_CURRENCY = 'USD'
 const DEFAULT_LOCALE = 'en-US'
@@ -78,7 +78,7 @@ export const updateHours = (currentDate, hours) => {
 }
 
 //This method is used for sorting appointments order by startDate.
-export const compareAppointment = (a, b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)
+export const compareAppointment = (a, b) => (a && b && a.start > b.start) ? 1 : ((a && b && b.start > a.start) ? -1 : 0)
 
 
 //Validation

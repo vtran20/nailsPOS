@@ -8,7 +8,6 @@ import { addCustomerService, updateCustomerService } from './customerServices'
 import { clearCustomerSearchs } from './customerSearch'
 import {resetPOSScreen, changePOSScreen, createErrorLog} from './index'
 import { getCurrentStoreId } from '../selectors'
-import moment from 'moment'
 
 export const addCustomerForm = customer => {
   return {

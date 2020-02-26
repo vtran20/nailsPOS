@@ -74,7 +74,7 @@ class ServiceTables extends React.Component {
       <div>
         {customerServices
           ? customerServices.map(customerService => {
-              const employeeServiceIds = customerService.employeeServices
+              const employeeServiceIds = customerService? customerService.employeeServices : null
               const service = services[customerService.serviceId]
               return (
                 <Paper className={classes.root} key={customerService.id}>

@@ -10,7 +10,7 @@ import { addStore, selectStoreId } from './stores'
 import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader, CREDENTIALS } from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
-import { getServiceCost, getCurrentStoreId, getSecureCookie } from '../selectors'
+import { getServiceCost, getCurrentStoreId } from '../selectors'
 import moment from 'moment'
 
 const cookies = new Cookies()
@@ -31,10 +31,6 @@ export const login = (loginForm) => (dispatch, getState) => {
         dispatch(fetchCustomerComplete())
         if (result.isLoggedIn && result.isLoggedIn === 'Y') {
           if (result.USER_SESSION_SECURE_COOKIE) {
-            let maxAge  = -1
-            if (loginForm.rememberMe) {
-              maxAge  = new Date(Date.now() + 30*24*60*60)
-            }
             dispatch(isLoggedIn(true))
           }
         }
