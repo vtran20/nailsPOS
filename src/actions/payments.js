@@ -111,7 +111,7 @@ export const updateCurrentPaymentMethod = data => (dispatch, getState) => {
 }
 
 export const calculateCurrentPrices = () => (dispatch, getState) => {
-
+  console.log("calculateCurrentPrices", getState())
   const servicePrice = getServiceCost(getState())
   let  temp = getState().payments.currentCheckout
   const totalPrice = (temp.tipPrice? temp.tipPrice : 0) + servicePrice
@@ -175,7 +175,7 @@ export const completePayment = () => (dispatch, getState) => {
     return;
   }
 
-  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers/${getState().posScreen.customerId}/checkout?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(inputData),
     headers: getHeader('POST'),

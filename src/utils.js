@@ -9,7 +9,9 @@ import {
 } from '@material-ui/core'
 import MaskedInput from 'react-text-mask'
 import Cookies from 'universal-cookie'
-export const urlAPI = 'http://nails.webphattai.net/nails'
+import {logout} from "./actions";
+export const urlAuthAPI = 'http://localhost:8080';
+export const urlAPI = urlAuthAPI + '/api/v1';
 
 const DEFAULT_CURRENCY = 'USD'
 const DEFAULT_LOCALE = 'en-US'
@@ -26,7 +28,15 @@ export const getStartEndCurrentDate = () => {
 
 export const handleErrors = response => {
   if (!response.ok) {
-    throw Error(response.statusText + ':' + response.url)
+    console.log ("response.status", response.status)
+    console.log ("response", response)
+    console.log ("jwtToken", localStorage.getItem("jwtToken"))
+    //TODO: should log for security reviewing.
+    if (response.status === 401) {
+      throw Error ('NEED_LOGIN_AGAIN')
+    } else {
+      throw Error(response.statusText + ':' + response.url)
+    }
   }
   return response
 }
@@ -36,7 +46,8 @@ export const handleErrorMessages = data => {
     if (data.errors) {
       throw Error (data.errors[0])
     }
-    if (data.isLoggedIn === 'N') {
+    console.log("!!data.isLoggedIn", !!data.isLoggedIn)
+    if (!!data.isLoggedIn) {
       throw Error ('NEED_LOGIN_AGAIN')
     }
   }
@@ -250,10 +261,14 @@ const cookies = new Cookies()
 export const getHeader = (method) => {
   if ('GET' === method || 'POST' === method || 'PUT' === method || 'DELETE' === method || 'OPTIONS' === method) {
     let secureKey = cookies.get('USER_SESSION_SECURE_COOKIE')
+    let jwtToken = localStorage['jwtToken']
+        ? 'Bearer ' + localStorage['jwtToken']
+        : null
     return {
       'Content-Type': 'application/json',
       'app-id': '0ea11701-8245-11e4-8c34-51dbef5e20d3',
-      'USER_SESSION_SECURE_COOKIE': secureKey
+      'USER_SESSION_SECURE_COOKIE': secureKey,
+      'Authorization': `${jwtToken}`
     }
   }
 }

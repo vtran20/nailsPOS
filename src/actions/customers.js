@@ -55,7 +55,7 @@ export const fetchCustomerComplete = () => {
 }
 
 export const searchCustomers = (phone, email) => (dispatch, getState) => {
-  let queryString = urlAPI + `/searchNailCustomer.json?storeId=${getCurrentStoreId(getState())}`
+  let queryString = urlAPI + `/searchNailCustomer?storeId=${getCurrentStoreId(getState())}`
   if (phone) {
     queryString = queryString + 'phone=' + phone + '&'
   }
@@ -63,7 +63,10 @@ export const searchCustomers = (phone, email) => (dispatch, getState) => {
     queryString = queryString + 'email=' + email
   }
 
-  fetch(queryString)
+  fetch(queryString, {
+    method: 'GET',
+    headers: getHeader('GET')
+  })
     .then(response => response.json())
     .then(data => {
       handleErrorMessages(data)
@@ -78,7 +81,7 @@ export const searchCustomers = (phone, email) => (dispatch, getState) => {
 }
 
 export const createCustomer = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: getHeader('POST'),
@@ -110,7 +113,7 @@ export const updateCustomerService = services => {
 }
 
 export const checkInCustomer = customerId => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers/${customerId}/checkIn?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     headers: getHeader('PUT'),
       credentials: CREDENTIALS
@@ -131,7 +134,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
     dispatch(selectCustomer({ screen: 'CUSTOMER_DETAIL', customerId: customerId }))
     dispatch(addGlobalMessage('This customer checked in today.'))
   } else {
-    fetch(urlAPI + `/customers/${customerId}/checkIn.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+    fetch(urlAPI + `/customers/${customerId}/checkIn?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
       method: 'PUT',
       headers: getHeader('PUT'),
       credentials: CREDENTIALS
@@ -152,7 +155,7 @@ export const checkInCustomerAtPOS = customerId => (dispatch, getState) => {
 
 
 export const updateCustomerDB = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/${customer.id}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers/${customer.id}?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'PUT',
     body: JSON.stringify(customer),
     headers: getHeader('PUT'),

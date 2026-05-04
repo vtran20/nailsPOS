@@ -23,35 +23,36 @@ const styles = theme => ({
   }
 })
 
-class AddCustomer extends React.Component {
+const AddCustomer = (props) => {
+  const { classes, page, phone, email } = props
 
-  handleSubmitCustomerForm = () => {
+  const handleSubmitCustomerForm = () => {
     //call back to parent method, this will save information to store.forms
-    if (typeof this.props.onSubmit === 'function') {
-      this.props.onSubmit()
+    console.log ("handleSubmitCustomerForm props.onSubmit", props.onSubmit)
+    if (typeof props.onSubmit === 'function') {
+      props.onSubmit()
     }
-    //Create new customer service for for checkin and clear forms after that.
-    this.props.dispatch(createNewCustomerServiceForCheckIn())
+    //Create new customer service for checkin and clear forms after that.
+    props.dispatch(createNewCustomerServiceForCheckIn())
   }
 
-  handleSubmitCustomerFormForAppointment = () => {
+  const handleSubmitCustomerFormForAppointment = () => {
+    console.log("handleSubmitCustomerFormForAppointment", props.onSelectCustomer)
     //call back to parent method and move to select appointment time
-    if (typeof this.props.onSelectCustomer === 'function') {
-      this.props.onSelectCustomer()
+    if (typeof props.onSelectCustomer === 'function') {
+      props.onSelectCustomer()
     }    
   }
 
-  handleSubmitCustomerFormForPOSCheckIn = () => {
+  const handleSubmitCustomerFormForPOSCheckIn = () => {
+    console.log("handleSubmitCustomerFormForPOSCheckIn", props.onSelectCustomer)
     //call back to parent method and move to select appointment time
-    if (typeof this.props.onSelectCustomer === 'function') {
-      this.props.onSelectCustomer()
+    if (typeof props.onSelectCustomer === 'function') {
+      props.onSelectCustomer()
     }    
   }
 
-  render() {
-    const { classes, page, phone, email } = this.props
-
-    return (
+  return (
       <div className={classes.root}>
         <Grid container spacing={16}>
           <Grid item xs={12}>
@@ -59,23 +60,27 @@ class AddCustomer extends React.Component {
               New Customer
             </Typography>
             <div className={classes.demo}>
-              <CustomerForm 
-              onSubmit={this.handleSubmitCustomerForm} 
-              onSelectCustomer={this.handleSubmitCustomerFormForAppointment}
-              page={page}
-              phone={phone}
-              email={email}
+              <CustomerForm
+                  onSubmit={handleSubmitCustomerForm}
+                  onSelectCustomer={handleSubmitCustomerFormForAppointment}
+                  page={page}
+                  phone={phone}
+                  email={email}
               />
             </div>
           </Grid>
         </Grid>
       </div>
-    )
-  }
+  )
 }
 
 AddCustomer.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  page: PropTypes.string,
+  phone: PropTypes.string,
+  email: PropTypes.string,
+  onSubmit: PropTypes.func,
+  onSelectCustomer: PropTypes.func
 }
 
 // const mapStateToProps = state => ({

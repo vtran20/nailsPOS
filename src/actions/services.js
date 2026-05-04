@@ -83,7 +83,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
     const customerId = getState().posScreen.customerId
 
     fetch(
-      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
+      urlAPI + `/services/${serviceId}/addServiceToCustomer/${customerId}?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
       {
         method: 'POST',
         body: { customerId: customerId, serviceId: serviceId },
@@ -106,7 +106,7 @@ export const addServiceToCustomer = serviceId => (dispatch, getState) => {
 }
 
 export const createService = service => (dispatch, getState) => {
-  fetch(urlAPI + `/services.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/services?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(service),
     headers: getHeader('POST'),
@@ -127,7 +127,7 @@ export const createService = service => (dispatch, getState) => {
 }
 
 export const updatingService = (service, oldGroupId) => (dispatch, getState) => {
-  fetch(urlAPI + `/services/${service.id}.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/services/${service.id}?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(service),
     headers: getHeader('PUT'),
@@ -158,7 +158,7 @@ export const deleteService = serviceId => (
 ) => {
   fetch(
     urlAPI +
-      `/services/${serviceId}.json`,
+      `/services/${serviceId}`,
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),

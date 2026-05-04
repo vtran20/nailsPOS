@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "../.."
+    },
+    {
+      "path": "../../../rental-management"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true
+  }
+}

@@ -7,7 +7,15 @@ import { addCustomerService } from './customerServices'
 import { addEmployeeService } from './employeeServices'
 import { addAppointment } from './appointments'
 import { addStore, selectStoreId } from './stores'
-import { handleErrors, handleErrorMessages, urlAPI, getStartEndCurrentDate, getHeader, CREDENTIALS } from '../utils'
+import {
+  handleErrors,
+  handleErrorMessages,
+  urlAPI,
+  getStartEndCurrentDate,
+  getHeader,
+  CREDENTIALS,
+  urlAuthAPI
+} from '../utils'
 import Cookies from 'universal-cookie'
 import C from '../constants'
 import { getServiceCost, getCurrentStoreId } from '../selectors'
@@ -18,10 +26,12 @@ const cookies = new Cookies()
 export const login = (loginForm) => (dispatch, getState) => {
   if (loginForm) {
     dispatch(fetchCustomerBegin())
-    fetch(urlAPI + `/login.json?storeId=${getCurrentStoreId(getState())}`, {
+    fetch(urlAuthAPI + `/authenticate?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(loginForm),
-      headers: getHeader('POST'),      
+      headers: {
+        'Content-Type': 'application/json'
+      },
       credentials: CREDENTIALS //enable cookie
     })
       .then(handleErrors)
@@ -29,10 +39,9 @@ export const login = (loginForm) => (dispatch, getState) => {
       .then(result => {
         handleErrorMessages(result.messages)
         dispatch(fetchCustomerComplete())
-        if (result.isLoggedIn && result.isLoggedIn === 'Y') {
-          if (result.USER_SESSION_SECURE_COOKIE) {
-            dispatch(isLoggedIn(true))
-          }
+        if (result.token) {
+          localStorage.setItem('jwtToken', result.token);
+          dispatch(isLoggedIn(true))
         }
       })
       .catch(error => {
@@ -43,21 +52,23 @@ export const login = (loginForm) => (dispatch, getState) => {
 }
 
 export const logout = () => (dispatch) => {
-    fetch(urlAPI + `/logout.json`, {
-      method: 'GET',
-      headers: getHeader('GET'),
-      credentials: CREDENTIALS //enable cookie
-    })
-      .then(handleErrors)
-      .then(response => {
-        dispatch(isLoggedIn(false))
-        dispatch(resetGlobalData())
-        cookies.remove('USER_SESSION_SECURE_COOKIE');
-      })
-      .catch(error => {
-        dispatch(createErrorLog(error.message))
-      })
-
+    // fetch(urlAPI + `/logout`, {
+    //   method: 'GET',
+    //   headers: getHeader('GET'),
+    //   credentials: CREDENTIALS //enable cookie
+    // })
+    //   .then(handleErrors)
+    //   .then(response => {
+    //     dispatch(isLoggedIn(false))
+    //     dispatch(resetGlobalData())
+    //     cookies.remove('USER_SESSION_SECURE_COOKIE');
+    //   })
+    //   .catch(error => {
+    //     dispatch(createErrorLog(error.message))
+    //   })
+  dispatch(isLoggedIn(false))
+  dispatch(resetGlobalData())
+  localStorage.removeItem('jwtToken');
 }
 
 export const selectStore = storeId => (dispatch, getState) => {
@@ -72,7 +83,7 @@ export const initialData = storeId => (dispatch, getState) => {
   dispatch(resetGlobalData())
   dispatch(fetchGlobalBegin())
   dispatch(isLoggedIn(loginStatus))
-  fetch(urlAPI + `/initialData.json?storeId=${storeId}&${getStartEndCurrentDate()}`, {
+  fetch(urlAPI + `/initialData?storeId=${storeId}&${getStartEndCurrentDate()}`, {
     method: 'GET',
     headers: getHeader('GET'),
     credentials: CREDENTIALS //enable cookie
@@ -142,7 +153,7 @@ export const reloadData = () => (dispatch, getState) => {
     dispatch(fetchCustomerBegin())
     const startDate = getState().moment
     const endDate = moment().endOf('day').format()
-    fetch(urlAPI + `/reload.json?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
+    fetch(urlAPI + `/reload?storeId=${storeId}&startDate=${startDate}&endDate=${endDate}`, {
       method: 'GET',
       headers: getHeader('GET'),
       credentials: CREDENTIALS
@@ -181,7 +192,7 @@ export const createErrorLog = (rootCause) => (dispatch, getState) => {
     inputData['rootCause'] = rootCause
     inputData['data'] = getState()
 
-    fetch(urlAPI + `/errorLog.json?storeId=${getCurrentStoreId(getState())}`, {
+    fetch(urlAPI + `/errorLog?storeId=${getCurrentStoreId(getState())}`, {
       method: 'POST',
       body: JSON.stringify(inputData),
       headers: getHeader('POST'),

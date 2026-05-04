@@ -42,11 +42,16 @@ export const clearAllForm = () => {
   }
 }
 
+/**
+ * This method will create a customer and checkin to the current day.
+ *
+ * @returns {(function(*, *): void)|*}
+ */
 export const createNewCustomerServiceForCheckIn = () => (
   dispatch,
   getState
 ) => {
-  fetch(urlAPI + `/customers/customerServices.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers/customerServices?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: getHeader('POST'),
@@ -80,8 +85,15 @@ export const createNewCustomerServiceForCheckIn = () => (
     })
 }
 
+/**
+ *
+ * Checkin customer which made an appointment.
+ *
+ * @param customer
+ * @returns {(function(*, *): void)|*}
+ */
 export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
-  fetch(urlAPI + `/customers/customerServices.json?appointment=Y&storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
+  fetch(urlAPI + `/customers/customerServices?appointment=Y&storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`, {
     method: 'POST',
     body: JSON.stringify(customer),
     headers: getHeader('POST'),
@@ -102,7 +114,7 @@ export const checkInAppointmentCustomer = customer => (dispatch, getState) => {
 
 export const makeAppointment = serviceIds => (dispatch, getState) => {
   dispatch(updateCustomerForm({services: serviceIds}))
-  fetch(urlAPI + `/customers/makeAppointment.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/customers/makeAppointment?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(getState().forms['customerForm']),
     headers: getHeader('POST'),

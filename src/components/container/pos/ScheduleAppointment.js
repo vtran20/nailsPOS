@@ -204,12 +204,16 @@ class ScheduleAppointment extends Component {
   }
 
   newEvent = (schedulerData, slotId, slotName, start, end, type, item) => {
+    console.log("newEvent")
     if (schedulerData.viewType === 0) {
       if (this.props.customerForm) {
+        console.log("this.props.customerForm", this.props.customerForm)
         this.props.dispatch (updateCustomerForm({startDate: start, endDate: end, employeeId: slotId}))
+        console.log("this.props.customerForm", this.props.customerForm)
         this.setState({selectServicesDialog: true})
         //this.props.dispatch(handleOpenDialog({openAddServiceDialog: true, page:'appointment'}))
       } else {
+        console.log("initial customer form")
         this.handleCustomerSearchOpen()
       }
     }
@@ -265,6 +269,7 @@ class ScheduleAppointment extends Component {
   }
 
   handleCustomerSearchOpen = () => {
+    console.log("handleCustomerSearchOpen")
         //call back to parent method
      if (typeof this.props.onOpenSelectCustomerDialog === 'function') {
        this.props.onOpenSelectCustomerDialog()
@@ -280,4 +285,5 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps)(withStyles(styles)(withDragDropContext(ScheduleAppointment)))
+// export default connect(mapStateToProps)(withStyles(styles))
+ export default connect(mapStateToProps)(withStyles(styles)(withDragDropContext(ScheduleAppointment)))

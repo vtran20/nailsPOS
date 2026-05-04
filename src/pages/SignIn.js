@@ -65,7 +65,7 @@ const styles = theme => ({
 const validate = values => {
   const errors = {}
   const requiredFields = [
-    'userName',
+    'username',
     'password',
   ]
   requiredFields.forEach(field => {
@@ -74,9 +74,9 @@ const validate = values => {
     }
   })
 
-  if (values.userName) {
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.userName)) {
-      errors.userName = 'Invalid email address'
+  if (values.username) {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.username)) {
+      errors.username = 'Invalid email address'
     }
   }
 
@@ -123,7 +123,7 @@ class SignIn extends Component {
         <form className={classes.form} onSubmit={handleSubmit(val => this.handleSubmit(val))}>
           <FormControl margin="normal" required fullWidth>
               <Field 
-              name="userName" 
+              name="username"
               component={renderTextField}
               label="Email"
               />

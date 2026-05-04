@@ -27,7 +27,7 @@ export const isLoggedIn = (state) => {
   if (state.isLoggedIn) {
     return state.isLoggedIn
   } else {
-    return cookies.get('USER_SESSION_SECURE_COOKIE')? true : false
+    return !!localStorage['jwtToken']
   }
 }
 

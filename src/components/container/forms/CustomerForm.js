@@ -82,83 +82,81 @@ const validate = values => {
   return errors
 }
 
-class CustomerForm extends Component {
+let CustomerForm = (props) => {
 
-    handleSubmit = (values) => {
-      this.props.dispatch(addCustomerForm({...values, phone: values.phone? values.phone.replace(/\D+/g, '') : undefined}))
-      console.log(this.props.page)
-      if (this.props.page === 'posCheckIn') {
+  const { dispatch, classes, page, pristine, submitting, handleSubmit, reset, valid, phone, email, onSubmit, onSelectCustomer } = props
+    const handleSubmitForm = (values) => {
+      dispatch(addCustomerForm({...values, phone: values.phone? values.phone.replace(/\D+/g, '') : undefined}))
+      console.log(page)
+      if (page === 'posCheckIn') {
         //call back to parent method
-        if (typeof this.props.onSubmit === 'function') {
-          console.log('onSubmit:'+ typeof this.props.onSubmit)
-          this.props.onSubmit()
+        if (typeof onSubmit === 'function') {
+          console.log('onSubmit:'+ typeof onSubmit)
+          onSubmit()
         }
-      } else if (this.props.page === 'appointment') {
+      } else if (page === 'appointment') {
         //call back to parent method and move to select appointment time
-        if (typeof this.props.onSelectCustomer === 'function') {
-          console.log('onSelectCustomer:'+ typeof this.props.onSelectCustomer)
-          this.props.onSelectCustomer()
+        if (typeof onSelectCustomer === 'function') {
+          console.log('onSelectCustomer:'+ typeof onSelectCustomer)
+          onSelectCustomer()
         }
       }
       return
   }
 
-  render() {
-    const { classes, customer, page, pristine, submitting, formData, handleSubmit, reset, valid, phone, email } = this.props
-    return (
-            <form onSubmit={handleSubmit(val => this.handleSubmit(val))}>
-            <div>
-              <Field 
-              name="firstName" 
+  return (
+      <form onSubmit={handleSubmit(handleSubmitForm)}>
+        <div>
+          <Field
+              name="firstName"
               component={renderTextField}
               label="First Name"
-              />
-            </div>
-            <div>
-              <Field 
-              name="lastName" 
+          />
+        </div>
+        <div>
+          <Field
+              name="lastName"
               component={renderTextField}
               label="Last Name"
-              />
-            </div>
-            <div>
-              <Field 
-              name="phone" 
+          />
+        </div>
+        <div>
+          <Field
+              name="phone"
               component={renderPhoneTextField}
               label="Phone"
               validate={phone? required : undefined}
-              />
-            </div>
-            <div>
-              <Field 
-              name="email" 
+          />
+        </div>
+        <div>
+          <Field
+              name="email"
               component={renderTextField}
               label="Email"
               validate={email? required : undefined}
-              />
-            </div>
-              <br />
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                type="submit"
-                disabled={!valid || pristine || submitting}
-              >
-                Add
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                type="button"
-                disabled={pristine || submitting} onClick={reset}
-              >
-                Reset
-              </Button>
-            </form>
-    )
-  }
+          />
+        </div>
+        <br />
+        <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            type="submit"
+            disabled={!valid || pristine || submitting}
+        >
+          Add
+        </Button>
+        <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            type="button"
+            disabled={pristine || submitting} onClick={reset}
+        >
+          Reset
+        </Button>
+      </form>
+  )
 }
 const mapStateToProps = state => ({
   allIds: state.customers.allIds,

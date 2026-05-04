@@ -39,7 +39,7 @@ export const fetchingAppointment = fetching => {
 
 export const createAppointment = appointment => (dispatch, getState) => {
   // dispatch(fetchingAppointment(true))
-  fetch(urlAPI + `/appointments.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/appointments?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(appointment),
     headers: getHeader('POST'),
@@ -62,7 +62,7 @@ export const createAppointment = appointment => (dispatch, getState) => {
 
 export const loadAppointment = (startDate, endDate) => (dispatch, getState) => {
   dispatch(fetchingAppointment(true))
- fetch(urlAPI + `/appointments.json?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
+ fetch(urlAPI + `/appointments?startDate=${startDate}&endDate=${endDate}&storeId=${getCurrentStoreId(getState())}`, {
     method: 'GET',
     headers: getHeader('GET'),
     credentials: CREDENTIALS
@@ -89,7 +89,7 @@ export const deleteAppointment = (appointmentId, employeeId, customerId) => (
 ) => {
   fetch(
     urlAPI +
-      `/appointments/${appointmentId}.json?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
+      `/appointments/${appointmentId}?storeId=${getCurrentStoreId(getState())}&currentDate=${getCurrentDateTime()}`,
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),

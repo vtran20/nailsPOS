@@ -1,29 +1,11 @@
-import React, { Component } from 'react'
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  FormGroup,
-  Grid,
-  Paper,
-  Tooltip,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography
-} from '@material-ui/core'
+import React from 'react';
+import { Dialog, DialogTitle, IconButton, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import ScheduleAppointment from './ScheduleAppointment'
-import { withStyles } from '@material-ui/core/styles'
-import SvgIcon from '@material-ui/core/SvgIcon'
-import SearchCustomer from './SearchCustomer'
-import { connect } from 'react-redux'
-import { clearCustomerForm } from '../../../actions/forms'
-import { clearCustomerSearchs } from '../../../actions/customerSearch'
-
+import ScheduleAppointment from './ScheduleAppointment';
+import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { clearCustomerForm } from '../../../actions/forms';
+import { clearCustomerSearchs } from '../../../actions/customerSearch';
 
 const styles = theme => ({
   root: {
@@ -59,55 +41,47 @@ const styles = theme => ({
   },
   dialogBody: {
     //padding: `0 ${theme.spacing.unit * 3}px`,
-     color: 'white'
+    color: 'white'
   }
+});
 
-})
+const ScheduleDialog = ({ classes, open, dispatch, onCloseScheduleDialog, onOpenSelectCustomerDialog }) => {
+  const onClose = () => {
+    dispatch(clearCustomerForm());
+    dispatch(clearCustomerSearchs());
 
-class ScheduleDialog extends Component {
-  
-  onClose = () => {
-    this.props.dispatch(clearCustomerForm())
-    this.props.dispatch(clearCustomerSearchs())   
+    // call back to parent method
+    if (typeof onCloseScheduleDialog === 'function') {
+      onCloseScheduleDialog();
+    }
+  };
 
-    //call back to parent method
-     if (typeof this.props.onCloseScheduleDialog === 'function') {
-       this.props.onCloseScheduleDialog()
-     }
-  }
-  handleOpenSelectCustomerDialog = () => {
-    //call back to parent method
-     if (typeof this.props.onOpenSelectCustomerDialog === 'function') {
-       this.props.onOpenSelectCustomerDialog()
-     }
-  }
+  const handleOpenSelectCustomerDialog = () => {
+    // call back to parent method
+    if (typeof onOpenSelectCustomerDialog === 'function') {
+      onOpenSelectCustomerDialog();
+    }
+  };
 
-  render() {
-    const { classes, open } = this.props
-    return (
+  return (
       <div>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={this.onClose}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          <Toolbar>
-            <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.flex}>
-              Schedule Appointments
-            </Typography>
-          </Toolbar>
-        </DialogTitle>
-        <div className={classes.dialogBody}>
-          <ScheduleAppointment onOpenSelectCustomerDialog={this.handleOpenSelectCustomerDialog}/>
-        </div>
-      </Dialog>
+        <Dialog fullScreen open={open} onClose={onClose} aria-labelledby="responsive-dialog-title">
+          <DialogTitle id="responsive-dialog-title">
+            <Toolbar>
+              <IconButton color="inherit" onClick={onClose} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
+                Schedule Appointments
+              </Typography>
+            </Toolbar>
+          </DialogTitle>
+          <div className={classes.dialogBody}>
+            <ScheduleAppointment onOpenSelectCustomerDialog={handleOpenSelectCustomerDialog}/>
+          </div>
+        </Dialog>
       </div>
-    )
-  }
-}
-export default connect()(withStyles(styles)(ScheduleDialog))
+  );
+};
+
+export default connect()(withStyles(styles)(ScheduleDialog));

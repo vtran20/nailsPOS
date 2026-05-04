@@ -58,7 +58,7 @@ export const deleteCustomerService = customerService => (
     urlAPI +
       `/customers/${customerService.customerId}/customerServices/${
         customerService.id
-      }.json?storeId=${getCurrentStoreId(getState())}`,
+      }?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),

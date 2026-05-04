@@ -17,6 +17,7 @@ import {
 } from '../../../actions/customerSearch'
 import {checkInCustomerAtPOS} from '../../../actions/customers'
 import {addCustomerForm} from '../../../actions/forms'
+import {updatePOSScreen} from "../../../actions";
 
 const styles = theme => ({
   root: {
@@ -32,9 +33,10 @@ const styles = theme => ({
   }
 })
 
-class SearchCustom extends React.Component {
+const SearchCustom = (props) =>  {
 
-  handleChange = name => event => {
+  const { dispatch, onSelectCustomer, classes, page, customerResults, fetching, notFound } = props
+  const handleChange = name => event => {
     if (event.target.value) {      
       let value = event.target.value
       if (name === 'phone') {
@@ -42,30 +44,29 @@ class SearchCustom extends React.Component {
       }
       
       if (value.length >= 3) {
-        this.props.dispatch(searchCustomers(value, name))
+        dispatch(searchCustomers(value, name))
       } else if (value.length === 0) {
-        this.props.dispatch(clearCustomerSearchs())
+        dispatch(clearCustomerSearchs())
       }
     }
   }
 
-  handleSelectCustomer = customer => {
-    this.props.dispatch(checkInCustomerAtPOS(customer.id))
+  const handleSelectCustomer = customer => {
+    dispatch(checkInCustomerAtPOS(customer.id))
   }
 
-  handleSelectCustomerForAppointment = customer => {
+  const handleSelectCustomerForAppointment = customer => {
     const updatedCustomer = {...customer, status: 'SCHEDULED'}
-    this.props.dispatch(addCustomerForm(updatedCustomer))
+    dispatch(addCustomerForm(updatedCustomer))
     //call back to parent method and move to select appointment time
-    if (typeof this.props.onSelectCustomer === 'function') {
-      this.props.onSelectCustomer()
+    if (typeof onSelectCustomer === 'function') {
+      onSelectCustomer()
     }
+    //open service for selecting.
+    //dispatch(updatePOSScreen({ servicesDialog: true}))
   }
 
-  render() {
-    const { classes, page, customerResults, fetching, notFound } = this.props
-
-    return (
+  return (
       <div className={classes.root}>
         <Grid container spacing={16}>
           <Grid item xs={12} md={12}>
@@ -74,86 +75,84 @@ class SearchCustom extends React.Component {
             </Typography>
             <div className={classes.demo}>
               <TextField
-                autoFocus
-                margin="dense"
-                id="phone"
-                label="Phone Number"
-                type="phone"
-                fullWidth
-                onChange={this.handleChange('phone')}
-                InputProps={{
-                  inputComponent: TextMaskCustom
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                }}                    
+                  autoFocus
+                  margin="dense"
+                  id="phone"
+                  label="Phone Number"
+                  type="phone"
+                  fullWidth
+                  onChange={handleChange('phone')}
+                  InputProps={{
+                    inputComponent: TextMaskCustom
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
               />
               <TextField
-                margin="dense"
-                id="email"
-                label="Email Address"
-                type="email"
-                fullWidth
-                onChange={this.handleChange('email')}
-                InputLabelProps={{
-                  shrink: true,
-                }}                    
+                  margin="dense"
+                  id="email"
+                  label="Email Address"
+                  type="email"
+                  fullWidth
+                  onChange={handleChange('email')}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
               />
             </div>
-          <br />
-          <br />
-          <Paper>
-            <Table>
-              <TableBody>
-                {notFound ? (
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      Cannot find your account
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  customerResults.map(customer => (
-                    <TableRow key={customer.id}>
-                      <TableCell component="th" scope="row">
-                        {customer.firstName} {customer.lastName} -{' '}
-                        {customer.phone} - {customer.email}
-                      </TableCell>
-                      <TableCell>
-                      {page === 'appointment'
-                        ? (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            onClick={() => this.handleSelectCustomerForAppointment(customer)}
-                          >
-                            Select
-                          </Button>
-                          )
-                        : (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            onClick={() => this.handleSelectCustomer(customer)}
-                          >
-                            Check In
-                          </Button>
-                          )
-                      }
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </Paper>
+            <br />
+            <br />
+            <Paper>
+              <Table>
+                <TableBody>
+                  {notFound ? (
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          Cannot find your account
+                        </TableCell>
+                      </TableRow>
+                  ) : (
+                      customerResults.map(customer => (
+                          <TableRow key={customer.id}>
+                            <TableCell component="th" scope="row">
+                              {customer.firstName} {customer.lastName} -{' '} {customer.phone} - {customer.email}
+                            </TableCell>
+                            <TableCell>
+                              {page === 'appointment'
+                                  ? (
+                                      <Button
+                                          variant="contained"
+                                          color="primary"
+                                          className={classes.button}
+                                          onClick={() => handleSelectCustomerForAppointment(customer)}
+                                      >
+                                        Select
+                                      </Button>
+                                  )
+                                  : (
+                                      <Button
+                                          variant="contained"
+                                          color="primary"
+                                          className={classes.button}
+                                          onClick={() => handleSelectCustomer(customer)}
+                                      >
+                                        Check In
+                                      </Button>
+                                  )
+                              }
+                            </TableCell>
+                          </TableRow>
+                      ))
+                  )}
+                </TableBody>
+              </Table>
+            </Paper>
 
           </Grid>
         </Grid>
       </div>
-    )
-  }
+  )
 }
 
 SearchCustom.propTypes = {

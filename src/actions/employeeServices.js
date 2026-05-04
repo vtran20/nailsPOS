@@ -56,7 +56,7 @@ export const deleteEmployeeService = employeeService => (
     urlAPI +
       `/employees/${employeeService.employeeId}/employeeServices/${
         employeeService.id
-      }.json?storeId=${getCurrentStoreId(getState())}`,
+      }?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),

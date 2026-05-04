@@ -5,6 +5,7 @@ import { addEmployeeService } from './employeeServices'
 import { addGlobalError, createErrorLog, addGlobalMessages } from './index'
 import { getCurrentStoreId } from '../selectors'
 import moment from 'moment'
+import {calculateCurrentPrices} from "./payments";
 
 export const addEmployee = employee => {
   return {
@@ -65,8 +66,8 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
     }
     const customerId = getState().posScreen.customerId
     const url = customerServiceId
-    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?customerServiceId=${customerServiceId}&storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
-    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}.json?storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
+    ? urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}?customerServiceId=${customerServiceId}&storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
+    : urlAPI + `/employees/${employeeId}/addEmployeeToCustomer/${customerId}?storeId=${getCurrentStoreId(getState())}&${getStartEndCurrentDate()}`
     fetch(
       url,
       {
@@ -83,6 +84,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
         employeeServices.map(employeeService =>
           dispatch(addEmployeeService(employeeService))
         )
+        dispatch(calculateCurrentPrices())
       })
       .catch(error => {
         dispatch(createErrorLog(error.message))
@@ -91,7 +93,7 @@ export const addEmployeeToCustomer = (employeeId, customerServiceId) => (dispatc
 }
 
 export const createEmployee = employee => (dispatch, getState) => {
-  fetch(urlAPI + `/employees.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/employees?storeId=${getCurrentStoreId(getState())}`, {
     method: 'POST',
     body: JSON.stringify(employee),
     headers: getHeader('POST'),
@@ -112,7 +114,7 @@ export const createEmployee = employee => (dispatch, getState) => {
 }
 
 export const updatingEmployee = employee => (dispatch, getState) => {
-  fetch(urlAPI + `/employees/${employee.id}.json?storeId=${getCurrentStoreId(getState())}`, {
+  fetch(urlAPI + `/employees/${employee.id}?storeId=${getCurrentStoreId(getState())}`, {
     method: 'PUT',
     body: JSON.stringify(employee),
     headers: getHeader('PUT'),
@@ -139,7 +141,7 @@ export const deleteEmployee = employeeId => (
 ) => {
   fetch(
     urlAPI +
-      `/employees/${employeeId}.json?storeId=${getCurrentStoreId(getState())}`,
+      `/employees/${employeeId}?storeId=${getCurrentStoreId(getState())}`,
     {
       method: 'DELETE',
       headers: getHeader('DELETE'),
