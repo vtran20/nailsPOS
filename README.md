@@ -106,3 +106,4 @@ git push -u origin main
 
 - API endpoints are currently defined in `src/utils.js`.
 - Ensure backend auth/CORS settings allow requests from your frontend origin.
+- This is for testing purpose
